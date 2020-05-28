@@ -3,6 +3,7 @@ const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const compression = require('compression')
 const helmet = require('helmet')
+const cors = require('cors')
 
 const apiRouter = require('./routers/api-router')
 
@@ -10,6 +11,9 @@ const PORT = process.env.PORT || 3143
 
 const app = express()
 
+app.use(cors({
+  origin: 'https://scan-and-go-for-gpay.an.r.appspot.com/'
+}))
 app.use(helmet())
 app.use(compression())
 app.use(express.json())
