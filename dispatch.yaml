@@ -1,0 +1,4 @@
+dispatch:
+  # Forward requests to */api to our backend service
+  - url: "*/api/*"
+    service: api
