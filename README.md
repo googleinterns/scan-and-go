@@ -21,6 +21,10 @@ After setup of gcloud-SDK, run `gcloud app deploy` in subdirectories `/client` a
 
 We will deploy client front-end react app to default service and back-end express app to api service.
 
+### Routing
+
+On project root directory, run `gcloud app deploy dispatch.yaml` to ensure we re-route all requests to `*/api/*` to our api appengine service which is running our express server.
+
 ## Development
 
 `cd server && yarn start` - Start express server first
