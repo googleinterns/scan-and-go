@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Cold Storage",
+    "merchant-id": "QOIRBNF",
+    "payment": {
+      "payeeVpa": "cs@pay"
+    },
+    "api-url": "/api/coldstorage"
+  },
+  {
+    "name": "Fairprice",
+    "merchant-id": "WPANCUD",
+    "payment": {
+      "payeeVpa": "fp@pay"
+    },
+    "api-url": ""
+  },
+  {
+    "name": "Mama Shop",
+    "merchant-id": "ZNJVUWO",
+    "payment": {
+      "payeeVpa": "mama@pay"
+    },
+    "api-url": ""
+  }
+]

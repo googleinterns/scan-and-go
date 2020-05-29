@@ -1,0 +1,37 @@
+[
+  {
+    "name": "Vivocity Cold Storage",
+    "merchant-id": "QOIRBNF",
+    "store-id": "QOIRBNF-1",
+    "latitude": 1.2642532,
+    "longitude": 103.8232039
+  },
+  {
+    "name": "Fairprice Nex",
+    "merchant-id": "WPANCUD",
+    "store-id": "WPANCUD-1",
+    "latitude": 1.3510334,
+    "longitude": 103.8697198
+  },
+  {
+    "name": "Fairprice Jurong Point",
+    "merchant-id": "WPANCUD",
+    "store-id": "WPANCUD-2",
+    "latitude": 1.3399398,
+    "longitude": 103.7560524
+  },
+  {
+    "name": "Fairprice Tampines Mall",
+    "merchant-id": "WPANCUD",
+    "store-id": "WPANCUD-3",
+    "latitude": 1.3520855,
+    "longitude": 103.9422183
+  },
+  {
+    "name": "Woodlands Mart",
+    "merchant-id": "ZNJVUWO",
+    "store-id": "ZNJVUWO-1",
+    "latitude": 1.4454145,
+    "longitude": 103.7988018
+  }
+]

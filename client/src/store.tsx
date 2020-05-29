@@ -1,22 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import StoreList from './StoreList';
+import StoreUI from './StoreUI';
 import * as serviceWorker from './serviceWorker';
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('header')
-);
+alert("yo");
 
 ReactDOM.render(
   <React.StrictMode>
-    <StoreList />
+    <StoreUI />
   </React.StrictMode>,
-  document.getElementById('stores')
+  document.getElementById('UI')
 );
 
 // If you want your app to work offline and load faster, you can change

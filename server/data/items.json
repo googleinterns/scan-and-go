@@ -1,0 +1,26 @@
+[
+  {
+    "name": "cheese",
+    "price": "3.20",
+    "merchant-id": "QOIRBNF",
+    "barcode": "1029324503"
+  },
+  {
+    "name": "milk",
+    "price": "5.60",
+    "merchant-id": "QOIRBNF",
+    "barcode": "1029320241"
+  },
+  {
+    "name": "tea",
+    "price": "7.00",
+    "merchant-id": "QOIRBNF",
+    "barcode": "1029329204"
+  },
+  {
+    "name": "coffee",
+    "price": "10.00",
+    "merchant-id": "QOIRBNF",
+    "barcode": "1029329384"
+  }
+]
