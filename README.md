@@ -1,7 +1,7 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 # ScanAndGo Development Project
-Open-source 2020 Google Internship project. ScanAndGo is a Spot-as-a-service app within the larger Google Pay app that allows for users to scan barcodes within registered stores for quick checkout without queuing.
+Open-source 2020 Google Internship project. ScanAndGo is a Spot-as-a-service app within the larger Google Pay app that allows for users to scan barcodes within registered stores for quick checkout without queuing. View the [webapp](https://scan-and-go-for-gpay.an.r.appspot.com/).
 
 ## Front-end Server (React)
 
@@ -20,6 +20,10 @@ Starts express server running
 After setup of gcloud-SDK, run `gcloud app deploy` in subdirectories `/client` and `/server`
 
 We will deploy client front-end react app to default service and back-end express app to api service.
+
+### Routing
+
+On project root directory, run `gcloud app deploy dispatch.yaml` to ensure we re-route all requests to `*/api/*` to our api appengine service which is running our express server.
 
 ## Development
 

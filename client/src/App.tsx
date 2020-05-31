@@ -25,11 +25,11 @@ function App() {
       'id': userid
     }
     // Fetch /api
-    const msg = await fetch('/api',{
+    const msg = await fetch('/api/',{
       method: 'POST',
-      mode: 'same-origin',
+      mode: 'cors',
       cache: 'no-cache',
-      credentials: 'same-origin',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json'
       },
