@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-const microapps = require('./../microapps.js')
+//const microapps = require('./../microapps.js')
 
 interface Store {
   "store-id": string;
@@ -16,12 +16,12 @@ function StoreList() {
   const [storeList, setStoreList] = useState<Store[]>([])
 
   function grabLoc() {
-    if (window.location !== window.parent.location){
+    /*if (window.location !== window.parent.location){
       microapps.getCurrentLocation().then((loc:any) => {
         setUserCoords([loc['latitude'],loc['longitude']])
       })
-    }
-    else if (navigator.geolocation){
+    }*/
+    if (navigator.geolocation){
       navigator.geolocation.getCurrentPosition(callbackLoc, errorbackLoc)
     }
   }
