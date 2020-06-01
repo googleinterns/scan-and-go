@@ -5,7 +5,7 @@ interface Store {
   name: string;
   distance: number;
   latitude: number;
-  longtitude: number;
+  longitude: number;
 }
 
 const emptyStore = (): Store => ({
@@ -13,10 +13,10 @@ const emptyStore = (): Store => ({
     name: '',
     distance: 0.0,
     latitude: 0.0,
-    longtitude: 0.0,
+    longitude: 0.0,
 });
 
-function StoreUI() {
+function ScanStore() {
   // Update the current store we're in
   const [curStore, setCurStore] = useState<Store>(emptyStore())
   // Update URL params
@@ -57,27 +57,28 @@ function StoreUI() {
     })
       .then(res => getStore(res))  // returns the res as a json object
       .catch(err => catchStore(err))
+
     setCurStore(stores) // Is there something like runtime errors if json is not properly formatted?
   }
+
+  useEffect(() => {
+    fetchStore()
+  }, []);
 
   class LocationTrack extends React.Component {
     constructor(props: any){
       super(props)
     }
-    componentDidMount(){
-      alert("mounting")
-      fetchStore()
-    }
     render() {
       return (
-        <h3>[{curStore['latitude']},{curStore['longtitude']}]</h3>
+        <h3>[{curStore.latitude},{curStore.longitude}]</h3>
       )
     }
   }
 
   // Html DOM element returned
   return (
-    <div className="StoreUI">
+    <div className="ScanStore">
       <LocationTrack />
       {curStore.hasOwnProperty('store-id') && <table>
         <thead>
@@ -89,7 +90,7 @@ function StoreUI() {
         <tbody>
           <tr key={curStore["store-id"]}>
             <td>{curStore["store-id"]}</td>
-            <td>curStore.name</td>
+            <td>{curStore.name}</td>
           </tr>
         </tbody>
       </table>}
@@ -97,4 +98,4 @@ function StoreUI() {
   )
 }
 
-export default StoreUI
+export default ScanStore

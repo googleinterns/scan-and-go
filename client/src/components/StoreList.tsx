@@ -96,7 +96,7 @@ function StoreList() {
           {storeList.map((store: Store) => (
             <tr key={store["store-id"]}>
               <td>{store["store-id"]}</td>
-              <td><a href={"/store.html?id=" + store["store-id"]}>{store.name}</a></td>
+              <td><a href={"/store?id=" + store["store-id"]}>{store.name}</a></td>
               <td>{store.distance}</td>
             </tr>
           ))}

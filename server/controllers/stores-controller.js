@@ -51,8 +51,8 @@ exports.storeGet = async(req, res) => {
   let retStore = {};
   if (reqProps.hasOwnProperty('store-id')){
     for (let i=0;i<stores.length;++i){
-      if (store[i]['store-id'] == reqProps['store-id']){
-        retStore = store[i];
+      if (stores[i]['store-id'] == reqProps['store-id']){
+        retStore = stores[i];
         break;
       }
     }
