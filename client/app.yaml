@@ -1,5 +1,6 @@
 runtime: nodejs10
 
+# Taken from https://stackoverflow.com/questions/54247953/how-do-i-setup-routing-for-react-in-gae-directly-routing-to-react-router-dom-ro
 handlers:
   - url: /static
     static_dir: build/static
