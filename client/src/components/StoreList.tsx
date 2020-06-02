@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Store } from "./../interfaces";
 import { fetchJson } from "./../utils";
 //const microapps = require('./../microapps.js')
+declare const window: any;
+const microapps = window.microapps;
 
 function StoreList() {
   // Current Location (from API call)
@@ -10,12 +12,11 @@ function StoreList() {
   const [storeList, setStoreList] = useState<Store[]>([]);
 
   function grabLoc() {
-    /*if (window.location !== window.parent.location){
-      microapps.getCurrentLocation().then((loc:any) => {
-        setUserCoords([loc['latitude'],loc['longitude']])
-      })
-    }*/
-    if (navigator.geolocation) {
+    if (window.location !== window.parent.location) {
+      microapps.getCurrentLocation().then((loc: any) => {
+        setUserCoords([loc["latitude"], loc["longitude"]]);
+      });
+    } else if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(callbackLoc, errorbackLoc);
     }
   }
@@ -29,7 +30,7 @@ function StoreList() {
   }
 
   // fetch user location
-  grabLoc();
+  //grabLoc();
 
   // fetch list of users
   const fetchStores = async () => {
