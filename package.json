@@ -6,7 +6,6 @@
   "author": "YH <yaoyiheng@google.com>",
   "license": "MIT",
   "devDependencies": {
-    "husky": "^4.2.5",
     "lint-staged": "^10.2.7",
     "prettier": "^2.0.5"
   },
@@ -16,11 +15,11 @@
     }
   },
   "lint-staged": {
-    "client/src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
-      "prettier --write"
-    ],
-    "server/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+    "**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "husky": "^4.2.5"
   }
 }
