@@ -1,0 +1,25 @@
+{
+  "name": "scan-and-go",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:devYaoYH/scan-and-go.git",
+  "author": "YH <yaoyiheng@google.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "lint-staged": "^10.2.7",
+    "prettier": "^2.0.5"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+      "prettier --write"
+    ]
+  },
+  "dependencies": {
+    "husky": "^4.2.5"
+  }
+}

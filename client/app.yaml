@@ -1,9 +1,15 @@
 runtime: nodejs10
 
+# Taken from https://stackoverflow.com/questions/54247953/how-do-i-setup-routing-for-react-in-gae-directly-routing-to-react-router-dom-ro
 handlers:
-  - url: /
+  - url: /static
+    static_dir: build/static
+
+  - url: /(.*\.(json|ico|js))$
+    static_files: build/\1
+    upload: build/.*\.(json|ico|js)$
+
+  # Redirect all other traffic to index.html for routing?
+  - url: .*
     static_files: build/index.html
     upload: build/index.html
-
-  - url: /
-    static_dir: build

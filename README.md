@@ -1,6 +1,7 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 # ScanAndGo Development Project
+
 Open-source 2020 Google Internship project. ScanAndGo is a Spot-as-a-service app within the larger Google Pay app that allows for users to scan barcodes within registered stores for quick checkout without queuing. View the [webapp](https://scan-and-go-for-gpay.an.r.appspot.com/).
 
 ## Front-end Server (React)
