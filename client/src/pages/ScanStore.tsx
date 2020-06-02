@@ -74,10 +74,11 @@ function ScanStore() {
     // Should do batched fetch with list of barcodes in 1 request-response
     const item_barcodes = items.map((zippedItem: any) => zippedItem.barcode)
     let iData = {
+      //'merchant-id': merchantID,
       'store-id': storeID,
       'items': item_barcodes
     }
-    const extractedItems = await fetch('/api/item',{
+    const extractedItems = await fetch('/api/items',{
       method: 'POST',
         mode: 'cors',
         cache: 'no-cache',

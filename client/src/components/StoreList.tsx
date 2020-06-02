@@ -89,6 +89,7 @@ function StoreList() {
   return (
     <div className="StoreList">
       <LocationTrack />
+      <button><a href="/store?id=WPANCUD-1">Test Store</a></button>
       <button onClick={fetchStores}>Lookup Stores</button>
       {storeList.length > 0 && <table>
         <thead>
