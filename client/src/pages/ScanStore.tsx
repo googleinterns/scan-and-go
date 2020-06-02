@@ -1,30 +1,8 @@
 import React, { useEffect, useState } from "react";
 import StoreHeader from "./../components/StoreHeader";
 import Divider from "@material-ui/core/Divider";
-
-interface Item {
-  barcode: string;
-  name: string;
-  price: number;
-  "merchant-id": string;
-}
-
-const emptyItem = (): Item => ({
-  barcode: "",
-  name: "",
-  price: 0.0,
-  "merchant-id": "",
-});
-
-interface CartItem {
-  item: Item;
-  quantity: number;
-}
-
-const emptyCartItem = (): CartItem => ({
-  item: emptyItem(),
-  quantity: 0,
-});
+import { Item, emptyItem, CartItem, emptyCartItem } from "./../interfaces";
+import { fetchJson } from "./../utils";
 
 function ScanStore() {
   // Update URL params to find storeID
@@ -32,71 +10,42 @@ function ScanStore() {
   const urlParams = new URLSearchParams(curUrl);
   const storeID = urlParams.get("id");
 
+  let cartItems: CartItem[] = [];
+
   // Declare list of items in our cart
   const [shoppingList, setShoppingList] = useState<CartItem[]>([]);
 
-  // Get user's cart items
-  const getJson = (res: any) => {
-    let res_json = res.json();
-    if (res.ok) {
-      return res_json;
-    } else {
-      alert(`Response code: ${res.status}`);
-      return [];
-    }
-  };
-
-  const catchErr = (err: any) => {
-    alert("Error: " + err);
-  };
-
-  // fetch list of users
+  // wrapper function to fetch cart items and execute callback upon success
   const fetchCart = async () => {
     let data = {
       "store-id": storeID,
     };
-    const items = await fetch("/api/cart", {
-      method: "POST",
-      mode: "cors",
-      cache: "no-cache",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      redirect: "follow",
-      referrerPolicy: "no-referrer",
-      body: JSON.stringify(data),
-    })
-      .then((res) => getJson(res)) // returns the res as a json object
-      .catch((err) => catchErr(err));
+    fetchJson(data, "/api/cart", fetchCartCallback);
+  };
 
+  const fetchCartCallback = async (items: any) => {
+    cartItems = items;
     // Should do batched fetch with list of barcodes in 1 request-response
     const item_barcodes = items.map((zippedItem: any) => zippedItem.barcode);
-    let iData = {
+    let data = {
       //'merchant-id': merchantID,
       "store-id": storeID,
       items: item_barcodes,
     };
-    const extractedItems = await fetch("/api/items", {
-      method: "POST",
-      mode: "cors",
-      cache: "no-cache",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      redirect: "follow",
-      referrerPolicy: "no-referrer",
-      body: JSON.stringify(iData),
-    }).then((res) => res.json());
+    fetchJson(data, "/api/items", fetchCartItemsCallback);
+  };
 
+  const fetchCartItemsCallback = (extractedItems: any) => {
+    updateShoppingList(cartItems, extractedItems);
+  };
+
+  const updateShoppingList = (items: any, extractedItems: any) => {
     const sList = items.map((zippedItem: any) => {
       let cItem = emptyCartItem();
       cItem.item = extractedItems[zippedItem.barcode];
       cItem.quantity = zippedItem.quantity;
       return cItem;
     });
-
     setShoppingList(sList);
   };
 

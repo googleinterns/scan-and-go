@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import logo from "./../logo.svg";
 import StoreList from "./../components/StoreList";
 import "./../App.css";
+import { fetchJson, fetchText } from "./../utils";
 
+// Testing code, will be removed soon
 interface UserUI {
-  id: string;
-  username: string;
+  "user-id": string;
   name: string;
-  email: string;
 }
 
 function Home() {
@@ -20,57 +20,40 @@ function Home() {
   // users list?
   const [usersList, setUsersList] = useState<UserUI[]>([]);
 
-  // fetch welcome message
+  // fetch POST welcome message
   const fetchMsg = async () => {
     // annonymous function that is async
     let data = {
-      id: userid,
+      "user-id": userid,
     };
-    // Fetch /api
-    const msg = await fetch("/api/", {
-      method: "POST",
-      mode: "cors",
-      cache: "no-cache",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      redirect: "follow",
-      referrerPolicy: "no-referrer",
-      body: JSON.stringify(data),
-    }).then((res) => (res.status === 200 ? res.text() : "hello")); // same as passing 'res' to a function call
-    // .then(func(res))
-    // function func(res){ return res.text()) }
-    setWelMsg(msg);
+    fetchText(data, "/api/", fetchMsgCallback);
   };
 
-  const getUsers = (res: any) => {
-    let res_json = res.json();
-    if (res.ok) {
-      return res_json;
+  // Action after returning from POST req to /api/
+  const fetchMsgCallback = (text: any) => {
+    if (text == null) {
+      setWelMsg("hello");
     } else {
-      alert(`Response code: ${res.status}`);
-      return [];
+      setWelMsg(text);
     }
   };
 
-  const catchUsers = (err: any) => {
-    alert("Error: " + err);
+  // Wrapper to issue fetch GET to /api/users/all
+  const fetchUsers = async () => {
+    fetchJson(null, "/api/users/all", fetchUsersCallback);
   };
 
-  // fetch list of users
-  const fetchUsers = async () => {
-    const users = await fetch("/api/users/all") // why the additional /all route?
-      .then((res) => getUsers(res)) // returns the res as a json object
-      .catch((err) => catchUsers(err));
-    setUsersList(users); // Is there something like runtime errors if json is not properly formatted?
+  // Action after retrieval of users from GET call
+  const fetchUsersCallback = (users: any) => {
+    setUsersList(users);
   };
 
   // useEffect runs on rendered elements changing DOM update
+  // thus, here we update upon every visual refresh
+  //Yiheng: I think a better model can be used here to reduce api calls
   useEffect(() => {
-    // Named useEffect hooks? -> Likely custom react Hooks
     fetchMsg();
-  }); // Means don't run first time loading?
+  });
 
   function TextInputField(props: any) {
     const onTextChange = (e: any) => {
@@ -100,18 +83,14 @@ function Home() {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Username</th>
                 <th>Name</th>
-                <th>Email</th>
               </tr>
             </thead>
             <tbody>
               {usersList.map((user: UserUI) => (
-                <tr key={user.id}>
-                  <td>{user.id}</td>
-                  <td>{user.username}</td>
+                <tr key={user["user-id"]}>
+                  <td>{user["user-id"]}</td>
                   <td>{user.name}</td>
-                  <td>{user.email}</td>
                 </tr>
               ))}
             </tbody>

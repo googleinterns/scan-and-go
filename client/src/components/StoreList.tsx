@@ -1,13 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { Store } from "./../interfaces";
+import { fetchJson } from "./../utils";
 //const microapps = require('./../microapps.js')
-
-interface Store {
-  "store-id": string;
-  name: string;
-  distance: number;
-  latitude: number;
-  longtitude: number;
-}
 
 function StoreList() {
   // Current Location (from API call)
@@ -37,45 +31,20 @@ function StoreList() {
   // fetch user location
   grabLoc();
 
-  const getStores = (res: any) => {
-    let res_json = res.json();
-    if (res.ok) {
-      return res_json;
-    } else {
-      alert(`Response code: ${res.status}`);
-      return [];
-    }
-  };
-
-  const catchStores = (err: any) => {
-    alert("Error: " + err);
-  };
-
   // fetch list of users
   const fetchStores = async () => {
     // Update location
     grabLoc(); //blocking? race on userCoords update?
-
     let data = {
       distance: 10000,
       latitude: userCoords[0],
       longitude: userCoords[1],
     };
-    const stores = await fetch("/api/stores", {
-      method: "POST",
-      mode: "cors",
-      cache: "no-cache",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      redirect: "follow",
-      referrerPolicy: "no-referrer",
-      body: JSON.stringify(data),
-    })
-      .then((res) => getStores(res)) // returns the res as a json object
-      .catch((err) => catchStores(err));
-    setStoreList(stores); // Is there something like runtime errors if json is not properly formatted?
+    fetchJson(data, "/api/stores", fetchStoresCallback);
+  };
+
+  const fetchStoresCallback = (stores: any) => {
+    setStoreList(stores);
   };
 
   function LocationTrack(props: any) {
