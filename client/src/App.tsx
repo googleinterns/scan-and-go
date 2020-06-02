@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react'
-import {Route, Switch} from 'react-router-dom'
-import Home from './pages/Home'
-import ScanStore from './pages/ScanStore'
-import NotFound from './pages/NotFound'
+import React, { useEffect, useState } from "react";
+import { Route, Switch } from "react-router-dom";
+import Home from "./pages/Home";
+import ScanStore from "./pages/ScanStore";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
@@ -13,7 +13,7 @@ function App() {
         <Route component={NotFound} />
       </Switch>
     </main>
-  )
+  );
 }
 
-export default App // Exports the 'App' function as a React DOM component
+export default App; // Exports the 'App' function as a React DOM component
