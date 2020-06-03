@@ -1,51 +1,129 @@
 import React, { useEffect, useState } from "react";
-import { Store } from "./../interfaces";
+import {
+  Store,
+  IdentityToken,
+  emptyIdentityToken,
+  GMapPlace,
+} from "./../interfaces";
 import { fetchJson } from "./../utils";
-//const microapps = require('./../microapps.js')
+import Divider from "@material-ui/core/Divider";
+
+// Applease typescript
 declare const window: any;
+// Grab handle to our microapps js library
 const microapps = window.microapps;
+// Grab handle to google client js API
+const google = window.google;
 
 function StoreList() {
   // Current Location (from API call)
   const [userCoords, setUserCoords] = useState<[number, number]>([0.0, 0.0]);
   // List of stores (from Database)
   const [storeList, setStoreList] = useState<Store[]>([]);
+  // User Identity
+  const [identity, setIdentity] = useState<IdentityToken>(emptyIdentityToken());
+  // Nearby Google Map Places
+  const [nearbyPlaces, setNearbyPlaces] = useState<GMapPlace[]>([]);
+  // Loading spinner
+  const [isLoading, setIsLoading] = useState(false);
 
-  function grabLoc() {
-    if (window.location !== window.parent.location) {
-      microapps.getCurrentLocation().then((loc: any) => {
-        setUserCoords([loc["latitude"], loc["longitude"]]);
-      });
-    } else if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(callbackLoc, errorbackLoc);
-    }
-  }
+  // Dummy map attachment
+  const map = new google.maps.Map(document.getElementById("mapPlaceholder"));
+  // Declare our Google Map/Places API service handler
+  const service = new google.maps.places.PlacesService(map);
 
-  function callbackLoc(position: any) {
-    setUserCoords([position.coords.latitude, position.coords.longitude]);
-  }
-
-  function errorbackLoc(error: any) {
+  // Error callback for location API call
+  const errorbackLoc = (error: any) => {
     alert(error);
-  }
+  };
 
-  // fetch user location
-  //grabLoc();
+  // Grab the location of device
+  const grabLoc = () => {
+    // Use microapps API if we are in an iframe
+    if (window.location !== window.parent.location) {
+      setIsLoading(true);
+      microapps
+        .getCurrentLocation()
+        .then((loc: any) => {
+          const position = {
+            coords: {
+              latitude: loc["latitude"],
+              longitude: loc["longitude"],
+            },
+          };
+          fetchStores(position);
+        })
+        .catch((err: any) => errorbackLoc(err));
+    }
+    // Otherwise, use browser navigator
+    else if (navigator.geolocation) {
+      setIsLoading(true);
+      navigator.geolocation.getCurrentPosition(fetchStores, errorbackLoc);
+    }
+  };
 
   // fetch list of users
-  const fetchStores = async () => {
+  const fetchStores = async (position: any) => {
     // Update location
-    grabLoc(); //blocking? race on userCoords update?
+    setUserCoords([position.coords.latitude, position.coords.longitude]);
+    // Format request data json
     let data = {
       distance: 10000,
-      latitude: userCoords[0],
-      longitude: userCoords[1],
+      latitude: position.coords.latitude,
+      longitude: position.coords.longitude,
     };
+    //TODO(#8)
+    //Update utils fetchJson function to return json instead of run callback
+    //and use await syntax here for cleaner code (no callbacks)
+    // POST data to fetch stores
     fetchJson(data, "/api/stores", fetchStoresCallback);
   };
 
   const fetchStoresCallback = (stores: any) => {
     setStoreList(stores);
+    setIsLoading(false);
+  };
+
+  const getNearbyPlaces = () => {
+    const curLoc = new google.maps.LatLng(userCoords[0], userCoords[1]);
+    const request = {
+      location: curLoc,
+      radius: "5000",
+      type: ["restaurant"],
+    };
+    setIsLoading(true);
+    service.nearbySearch(request, getNearbyPlacesCallback);
+  };
+
+  const getNearbyPlacesCallback = (places: any, status: any) => {
+    if (status == google.maps.places.PlacesServiceStatus.OK) {
+      setNearbyPlaces(places);
+    } else {
+      alert("PlacesAPI failure to return");
+      console.log(status);
+      console.log(places);
+    }
+    setIsLoading(false);
+  };
+
+  // Get user identity details
+  const loginUser = async () => {
+    // Only run in iframe (on app)
+    if (window.location !== window.parent.location) {
+      const request = { nonce: "Don't Hack me please" };
+      microapps
+        .getIdentity(request)
+        .then((response: any) => {
+          const decoded = JSON.parse(atob(response.split(".")[1]));
+          setIdentity(decoded);
+          console.log("getIdentity response: ", decoded);
+        })
+        .catch((error: any) => {
+          console.error("An error occurred: ", error);
+        });
+    } else {
+      console.log("Only supported in GPay microapp");
+    }
   };
 
   function LocationTrack(props: any) {
@@ -60,10 +138,15 @@ function StoreList() {
   return (
     <div className="StoreList">
       <LocationTrack />
+      <h4>
+        {identity.sub} [{isLoading ? "Loading..." : ""}]
+      </h4>
       <button>
         <a href="/store?id=WPANCUD-1">Test Store</a>
       </button>
-      <button onClick={fetchStores}>Lookup Stores</button>
+      <button onClick={loginUser}>User Login</button>
+      <button onClick={grabLoc}>Nearby Stores</button>
+      <button onClick={getNearbyPlaces}>Nearby Restaurants</button>
       {storeList.length > 0 && (
         <table>
           <thead>
@@ -81,6 +164,27 @@ function StoreList() {
                   <a href={"/store?id=" + store["store-id"]}>{store.name}</a>
                 </td>
                 <td>{store.distance}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+      <Divider />
+      {nearbyPlaces.length > 0 && (
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Address</th>
+            </tr>
+          </thead>
+          <tbody>
+            {nearbyPlaces.map((place: GMapPlace) => (
+              <tr key={place["place_id"]}>
+                <td>{place["place_id"]}</td>
+                <td>{place.name}</td>
+                <td>{place.vicinity}</td>
               </tr>
             ))}
           </tbody>

@@ -1,7 +1,7 @@
 // Get json from response
 const getJson = (res: any) => {
-  let res_json = res.json();
   if (res.ok) {
+    let res_json = res.json();
     return res_json;
   } else {
     alert(`Response code: ${res.status}`);
@@ -31,7 +31,17 @@ const catchErr = (err: any) => {
 export const fetchJson = async (data: any, url: string, callback: any) => {
   let responseJson = "";
   if (data == null) {
-    responseJson = await fetch(url)
+    responseJson = await fetch(url, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+    })
       .then((res) => getJson(res))
       .catch((err) => catchErr(err));
   } else {
