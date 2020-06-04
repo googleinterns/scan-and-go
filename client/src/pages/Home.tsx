@@ -3,6 +3,7 @@ import logo from "./../logo.svg";
 import StoreList from "./../components/StoreList";
 import "./../App.css";
 import { fetchJson, fetchText } from "./../utils";
+import { TextInputField } from "./../components/Components";
 
 // Testing code, will be removed soon
 interface UserUI {
@@ -55,19 +56,6 @@ function Home() {
     fetchMsg();
   });
 
-  function TextInputField(props: any) {
-    const onTextChange = (e: any) => {
-      setUserid(e.target.value);
-    };
-    return (
-      <input
-        type="text"
-        placeholder={userid ? userid : "...id"}
-        onBlur={onTextChange}
-      />
-    );
-  }
-
   // Html DOM element returned
   // Note style, {} specifies javascript code that gets run into text before whole
   // chunk of data is returned as webpage info (wonder if this two comments mess things up)
@@ -76,7 +64,7 @@ function Home() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>{welMsg}</p>
-        <TextInputField />
+        <TextInputField text={userid} callback={setUserid} />
         <button onClick={fetchUsers}>Fetch Users</button>
         {usersList.length > 0 && (
           <table>
@@ -96,8 +84,8 @@ function Home() {
             </tbody>
           </table>
         )}
+        <StoreList />
       </header>
-      <StoreList />
     </div>
   );
 }

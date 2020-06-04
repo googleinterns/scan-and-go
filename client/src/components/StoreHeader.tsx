@@ -2,17 +2,17 @@ import React, { useEffect, useState } from "react";
 import { Store, emptyStore } from "./../interfaces";
 import { fetchJson } from "./../utils";
 
-function StoreHeader() {
+function StoreHeader(props: any) {
   // Update the current store we're in
   const [curStore, setCurStore] = useState<Store>(emptyStore());
   // Update URL params
-  const curUrl = window.location.search;
-  const urlParams = new URLSearchParams(curUrl);
+  const store_id = props.store_id;
 
   // fetch list of users
   const fetchStore = async () => {
     let data = {
-      "store-id": urlParams.get("id"),
+      // "store-id": urlParams.get("id"),
+      "store-id": store_id,
     };
     const stores = fetchJson(data, "/api/store", fetchStoreCallback);
   };
@@ -25,23 +25,12 @@ function StoreHeader() {
     fetchStore();
   }, []);
 
-  class LocationTrack extends React.Component {
-    constructor(props: any) {
-      super(props);
-    }
-    render() {
-      return (
-        <h3>
-          [{curStore.latitude},{curStore.longitude}]
-        </h3>
-      );
-    }
-  }
-
   // Html DOM element returned
   return (
     <div className="StoreHeader">
-      <LocationTrack />
+      <h3>
+        [{curStore.latitude},{curStore.longitude}]
+      </h3>
       {curStore["store-id"] && (
         <table>
           <thead>

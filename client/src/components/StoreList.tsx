@@ -84,6 +84,7 @@ function StoreList() {
     setIsLoading(false);
   };
 
+  // Request PlacesAPI for nearby locations
   const getNearbyPlaces = () => {
     const curLoc = new google.maps.LatLng(userCoords[0], userCoords[1]);
     const request = {
@@ -95,6 +96,7 @@ function StoreList() {
     service.nearbySearch(request, getNearbyPlacesCallback);
   };
 
+  // Digest PlacesAPI results
   const getNearbyPlacesCallback = (places: any, status: any) => {
     if (status == google.maps.places.PlacesServiceStatus.OK) {
       setNearbyPlaces(places);
@@ -126,18 +128,12 @@ function StoreList() {
     }
   };
 
-  function LocationTrack(props: any) {
-    return (
-      <h3>
-        [{userCoords[0]},{userCoords[1]}]
-      </h3>
-    );
-  }
-
   // Html DOM element returned
   return (
     <div className="StoreList">
-      <LocationTrack />
+      <h3>
+        [{userCoords[0]},{userCoords[1]}]
+      </h3>
       <h4>
         {identity.sub} [{isLoading ? "Loading..." : ""}]
       </h4>
@@ -161,7 +157,16 @@ function StoreList() {
               <tr key={store["store-id"]}>
                 <td>{store["store-id"]}</td>
                 <td>
-                  <a href={"/store?id=" + store["store-id"]}>{store.name}</a>
+                  <a
+                    href={
+                      "/store?id=" +
+                      store["store-id"] +
+                      "&mid=" +
+                      store["merchant-id"]
+                    }
+                  >
+                    {store.name}
+                  </a>
                 </td>
                 <td>{store.distance}</td>
               </tr>
