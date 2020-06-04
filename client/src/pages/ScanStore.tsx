@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import StoreHeader from "./../components/StoreHeader";
+import Cart from "./../components/Cart";
 import Divider from "@material-ui/core/Divider";
 import { Item, emptyItem, CartItem, emptyCartItem } from "./../interfaces";
 import { fetchJson } from "./../utils";
@@ -12,12 +13,15 @@ function ScanStore() {
   const storeID = urlParams.get("id");
   const merchantID = urlParams.get("mid");
 
-  //TODO: Look into `class ScanStore extends React.Component` syntax
-  //      in order to declare class-level instance variables (cache cart)
-  let cartItems: CartItem[] = [];
+  // Toggle Cart Display
+  const [showCart, setShowCart] = useState(false);
 
   // Declare list of items in our cart
   const [shoppingList, setShoppingList] = useState<CartItem[]>([]);
+
+  //TODO: Look into `class ScanStore extends React.Component` syntax
+  //      in order to declare class-level instance variables (cache cart)
+  let cartItems: CartItem[] = [];
 
   // wrapper function to fetch cart items and execute callback upon success
   const fetchCart = async () => {
@@ -72,24 +76,52 @@ function ScanStore() {
   };
 
   const displayItems = (extractedItems: Item[]) => {
+    // Build barcode:idx mapping
+    let idxMap: { [key: string]: number } = {};
+    // Retrieve from State first
+    for (let i = 0; i < shoppingList.length; ++i) {
+      cartItems.push(shoppingList[i]);
+      const barcode: string = shoppingList[i].item.barcode;
+      idxMap[barcode] = i;
+    }
+    console.log(idxMap);
     for (let i = 0; i < extractedItems.length; ++i) {
-      let newItem = emptyCartItem();
-      newItem.item = extractedItems[i];
-      newItem.quantity = 1;
-      cartItems.push(newItem);
+      console.log(idxMap[extractedItems[i].barcode]);
+      if (idxMap[extractedItems[i].barcode] != undefined) {
+        console.log("Add quantity: " + extractedItems[i].barcode);
+        cartItems[idxMap[extractedItems[i].barcode]].quantity += 1;
+      } else {
+        console.log("New item: " + extractedItems[i].barcode);
+        let newItem = emptyCartItem();
+        newItem.item = extractedItems[i];
+        newItem.quantity = 1;
+        cartItems.push(newItem);
+      }
     }
     setShoppingList(cartItems);
   };
+
+  const toggleCart = () => {
+    setShowCart(!showCart);
+  };
+
+  useEffect(() => {
+    if (shoppingList.length > 0) {
+      console.log("Save Cart to server");
+    }
+  }, [shoppingList]);
 
   // Html DOM element returned
   return (
     <div className="ScanStore">
       <a href="/">back</a>
-      <StoreHeader store_id={storeID} />
-      <h1>Scanned Items:</h1>
-      <Divider />
-      <TextInputField text="...barcode" callback={addItem} />
-      {shoppingList.length > 0 && (
+      {!showCart && [
+        <StoreHeader store_id={storeID} />,
+        <h1>Scanned Items:</h1>,
+        <Divider />,
+        <TextInputField text="...barcode" callback={addItem} />,
+      ]}
+      {!showCart && shoppingList.length > 0 && (
         <table>
           <thead>
             <tr>
@@ -109,6 +141,11 @@ function ScanStore() {
           </tbody>
         </table>
       )}
+      <Divider />
+      <button onClick={toggleCart}>
+        {showCart ? "Close Cart" : "View Cart"}
+      </button>
+      {showCart && <Cart contents={shoppingList} />}
     </div>
   );
 }
