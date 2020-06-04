@@ -27,7 +27,7 @@ exports.storesGet = async (req, res) => {
     limDist = reqProps["distance"];
   }
 
-  //TODO(#9) Implement searching with keywords
+  //TODO(#10) Implement searching with keywords
   // Use searching instead
   // if (reqProps.['search']){
 

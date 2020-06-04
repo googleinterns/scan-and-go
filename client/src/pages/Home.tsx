@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import logo from "./../logo.svg";
+import logo from "./../img/logo.svg";
 import StoreList from "./../components/StoreList";
-import "./../App.css";
+import "./../css/App.css";
 import { fetchJson, fetchText } from "./../utils";
 import { TextInputField } from "./../components/Components";
 
