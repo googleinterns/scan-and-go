@@ -6,10 +6,11 @@ function Receipt() {
   // Update URL params to find storeID
   const curUrl = window.location.search;
   const urlParams = new URLSearchParams(curUrl);
-  const urlString = urlParams.get("contents");
+  const urlRawContents = urlParams.get("contents");
+  const orderID = urlParams.get("id");
   let contents: CartItem[] = [];
-  if (urlString != null) {
-    let contentsString = decodeURIComponent(urlString);
+  if (urlRawContents != null) {
+    let contentsString = decodeURIComponent(urlRawContents);
     if (contentsString != null) {
       contents = JSON.parse(contentsString);
     }
@@ -19,7 +20,8 @@ function Receipt() {
   return (
     <div className="Receipt">
       <a href="/">back</a>
-      <h1>Receipt:</h1>
+      <p>Order [{orderID}] Confimed!</p>
+      <h3>Receipt:</h3>
       <Cart contents={contents} />
     </div>
   );
