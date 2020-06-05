@@ -162,7 +162,8 @@ function ScanStore(props: any) {
     console.log("Attempting to make payment for:");
     console.log(shoppingList);
     window.location.href =
-      "/receipt?contents=" + encodeURIComponent(JSON.stringify(shoppingList));
+      "/receipt?id=TEST_ORDER&contents=" +
+      encodeURIComponent(JSON.stringify(shoppingList));
   };
 
   // After first rendering of UI, update CartItem
