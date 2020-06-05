@@ -11,7 +11,6 @@ function StoreHeader(props: any) {
   // fetch list of users
   const fetchStore = async () => {
     let data = {
-      // "store-id": urlParams.get("id"),
       "store-id": store_id,
     };
     const stores = fetchJson(data, "/api/store", fetchStoreCallback);
@@ -28,6 +27,7 @@ function StoreHeader(props: any) {
   // Html DOM element returned
   return (
     <div className="StoreHeader">
+      <a href="/">back</a>
       <h3>
         [{curStore.latitude},{curStore.longitude}]
       </h3>
