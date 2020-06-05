@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { Item, emptyItem, CartItem, emptyCartItem } from "./../interfaces";
+import {
+  Fab,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from "@material-ui/core";
 
 function Cart(props: any) {
   // Update the current store we're in
   const contents: CartItem[] = props.contents;
-
-  const makePayment = () => {
-    console.log("Attempting to make payment for:");
-    console.log(contents);
-  };
 
   const getTotalPrice = () => {
     let tot_price = 0.0;
@@ -21,33 +24,33 @@ function Cart(props: any) {
   // Html DOM element returned
   return (
     <div className="Cart">
-      <h3>Current Cart Contents:</h3>
       {contents.length > 0 && (
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Quantity</th>
-              <th>Price</th>
-            </tr>
-          </thead>
-          <tbody>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell>Quantity</TableCell>
+              <TableCell>Price</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
             {contents.map((curItem: CartItem) => (
-              <tr key={curItem.item.barcode}>
-                <td>{curItem.item.name}</td>
-                <td>{curItem.quantity}</td>
-                <td>{(curItem.quantity * curItem.item.price).toFixed(2)}</td>
-              </tr>
+              <TableRow key={curItem.item.barcode}>
+                <TableCell>{curItem.item.name}</TableCell>
+                <TableCell>{curItem.quantity}</TableCell>
+                <TableCell>
+                  {(curItem.quantity * curItem.item.price).toFixed(2)}
+                </TableCell>
+              </TableRow>
             ))}
-            <tr key="total">
-              <td>Total Price:</td>
-              <td></td>
-              <td>{getTotalPrice()}</td>
-            </tr>
-          </tbody>
-        </table>
+            <TableRow key="total">
+              <TableCell>Total Price:</TableCell>
+              <TableCell></TableCell>
+              <TableCell>{getTotalPrice()}</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
       )}
-      <button onClick={makePayment}>Checkout</button>
     </div>
   );
 }
