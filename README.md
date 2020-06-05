@@ -16,7 +16,7 @@ Run `yarn dev` from `/server` directory. This runs `nodemon server.js --watch co
 
 Alternatively when developing for front-end, we can just do `yarn start &` to run the express server in the background.
 
-**Development Note:** We start the express server on port:3143 and proxy unknown requests received by front-end to this port. See `/client/package.json:26` where we configure the proxy for the react front-end to `http://127.0.0.1:3143` for local development communication between client and server processes.
+**Development Note:** We start the express server on port:3143 and proxy unknown requests received by front-end to this port. See [`/client/package.json:26`](https://github.com/devYaoYH/scan-and-go/blob/b8569d4fadd267bca7737bde8a597a6a2fd31eaa/client/package.json#L26) where we configure the proxy for the react front-end to `http://127.0.0.1:3143` for local development communication between client and server processes.
 
 ## AppEngine Deployment
 
