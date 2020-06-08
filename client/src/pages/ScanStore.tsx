@@ -16,10 +16,21 @@ import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import EditIcon from "@material-ui/icons/Edit";
 import PaymentIcon from "@material-ui/icons/Payment";
 import AddIcon from "@material-ui/icons/Add";
-import { Item, emptyItem, CartItem, emptyCartItem } from "./../interfaces";
+import {
+  Item,
+  emptyItem,
+  CartItem,
+  emptyCartItem,
+  MediaResponse,
+  emptyMediaResponse,
+} from "./../interfaces";
 import { fetchJson } from "./../utils";
 import { TextInputField } from "./../components/Components";
+import { BrowserQRCodeReader } from "@zxing/library";
 declare const window: any;
+
+//Yiheng: For whether we should display our uploaded image for debugging
+const debugImg = true;
 
 function ScanStore(props: any) {
   // Update URL params to find storeID
@@ -36,6 +47,9 @@ function ScanStore(props: any) {
 
   //DEBUGGING Current barcode to 'scan'
   const [curBarcode, setCurBarcode] = useState<string>("");
+
+  // Uploaded image data
+  const [uploadImg, setUploadImg] = useState<MediaResponse>(emptyMediaResponse);
 
   //TODO: Look into `class ScanStore extends React.Component` syntax
   //      in order to declare class-level instance variables (cache cart)
@@ -87,9 +101,25 @@ function ScanStore(props: any) {
     setCurBarcode(barcode);
   };
 
-  const addItem = () => {
-    let barcodes: string[] = [curBarcode];
-    fetchItem(barcodes);
+  const addItem = async () => {
+    if (curBarcode == "") {
+      // If empty, use media API
+      const imgReq = {
+        allowedMimeTypes: ["image/jpeg"],
+        allowedSources: ["camera"], // Restrict to camera scanning only
+      };
+      const imgRes = await window.microapps
+        .requestMedia(imgReq)
+        .then((res: any) => res);
+      mediaUploadCallback(imgRes);
+    } else {
+      let barcodes: string[] = [curBarcode];
+      fetchItem(barcodes);
+    }
+  };
+
+  const mediaUploadCallback = (img: any) => {
+    setUploadImg(img);
   };
 
   const fetchItem = async (barcodes: string[]) => {
@@ -166,19 +196,51 @@ function ScanStore(props: any) {
       encodeURIComponent(JSON.stringify(shoppingList));
   };
 
-  // After first rendering of UI, update CartItem
-  useEffect(() => {
-    console.log("Init");
-    console.log(shoppingList);
-    updateIdxMapping();
-  }, [showCart]);
+  const processImageBarcode = async () => {
+    const codeReader = new BrowserQRCodeReader();
+    const img = document.getElementById("uploadImgSrc") as HTMLImageElement;
+    if (img != null) {
+      const result = await codeReader
+        .decodeFromImage(img)
+        .then((res: any) => res)
+        .catch((err: any) => {
+          console.log(err);
+          return "";
+        });
+      console.log("Processed image: " + result);
+      setDebugItem(result);
+    } else {
+      console.log("Cannot find element: uploadImgSrc");
+    }
+  };
 
+  // Logging purposes for showing of cart
+  /*useEffect(() => {
+    console.log("Toggle Show Cart");
+    console.log(shoppingList);
+  }, [showCart]);*/
+
+  // When we update shoppingList, we should send update to server?
   useEffect(() => {
     if (shoppingList.length > 0) {
       console.log("Save Cart to server");
     }
-    updateIdxMapping();
   }, [shoppingList]);
+
+  // When we change what image we uploaded, run extract barcode client-side
+  useEffect(() => {
+    if (uploadImg.mimeType) {
+      // Have something
+      processImageBarcode();
+    }
+  }, [uploadImg]);
+
+  // After rerendering of UI and React popping variables off our stack,
+  // reinitialize vars
+  // Also, race? Will this run before all other useEffects? What's the ordering of execution here?
+  useEffect(() => {
+    updateIdxMapping(); //TODO(#20) Yiheng: Tech Debt, we need to make this persist as Class Variable
+  });
 
   // Html DOM element returned
   return (
@@ -231,6 +293,21 @@ function ScanStore(props: any) {
                   </Grid>
                 )}
               </Box>
+            </Paper>
+          </Grid>
+        )}
+        {uploadImg.mimeType && (
+          <Grid item xs={12}>
+            <Paper elevation={2}>
+              <img
+                id="uploadImgSrc"
+                hidden={!debugImg}
+                width="300"
+                height="200"
+                src={
+                  "data:" + uploadImg.mimeType + ";base64," + uploadImg.bytes
+                }
+              />
             </Paper>
           </Grid>
         )}
