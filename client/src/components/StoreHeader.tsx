@@ -27,7 +27,7 @@ function StoreHeader(props: any) {
   // Html DOM element returned
   return (
     <div className="StoreHeader">
-      <a href="/">back</a>
+      <a href="/home">back</a>
       <h3>
         [{curStore.latitude},{curStore.longitude}]
       </h3>

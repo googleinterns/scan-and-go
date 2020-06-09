@@ -70,7 +70,7 @@ function Home() {
   // Note style, {} specifies javascript code that gets run into text before whole
   // chunk of data is returned as webpage info (wonder if this two comments mess things up)
   return (
-    <Container className="Home">
+    <Container disableGutters={true} className="Home">
       {debug_user && [
         <p>{welMsg}</p>,
         <TextInputField text={userid} callback={setUserid} />,
