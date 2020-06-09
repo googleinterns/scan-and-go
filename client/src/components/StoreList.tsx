@@ -128,32 +128,6 @@ function StoreList() {
     }
   };
 
-  // Test signing in with google user (not microapp signin)
-  function onSignIn(googleUser: any) {
-    var profile = googleUser.getBasicProfile();
-    console.log("ID: " + profile.getId()); // Do not send to your backend! Use an ID token instead.
-    console.log("Name: " + profile.getName());
-    console.log("Image URL: " + profile.getImageUrl());
-    console.log("Email: " + profile.getEmail()); // This is null if the 'email' scope is not present.
-  }
-
-  function onSignFailure(error: any) {
-    console.log(error);
-  }
-
-  useEffect(() => {
-    console.log("doing stuff to g-signin2");
-    window.gapi.signin2.render("g-signin2", {
-      scope: "https://www.googleapis.com/auth/plus.login",
-      width: 150,
-      height: 50,
-      longtitle: false,
-      theme: "light",
-      onsuccess: onSignIn,
-      onfailure: onSignFailure,
-    });
-  }, []);
-
   // Html DOM element returned
   return (
     <div className="StoreList">
@@ -163,9 +137,8 @@ function StoreList() {
       <h4>
         {identity.sub} [{isLoading ? "Loading..." : ""}]
       </h4>
-      <div id="g-signin2"></div>
       <button>
-        <a href="/store?id=WPANCUD-1">Test Store</a>
+        <a href="/store?id=WPANCUD-1&mid=WPANCUD">Test Store</a>
       </button>
       <button onClick={loginUser}>User Login</button>
       <button onClick={grabLoc}>Nearby Stores</button>

@@ -19,7 +19,7 @@ function Receipt() {
   // Html DOM element returned
   return (
     <div className="Receipt">
-      <a href="/">back</a>
+      <a href="/home">back</a>
       <p>Order [{orderID}] Confimed!</p>
       <h3>Receipt:</h3>
       <Cart contents={contents} />
