@@ -16,15 +16,10 @@ const microapps = window.microapps;
 const google = window.google;
 
 function StoreList() {
-  // Current Location (from API call)
   const [userCoords, setUserCoords] = useState<[number, number]>([0.0, 0.0]);
-  // List of stores (from Database)
   const [storeList, setStoreList] = useState<Store[]>([]);
-  // User Identity
   const [identity, setIdentity] = useState<IdentityToken>(emptyIdentityToken());
-  // Nearby Google Map Places
   const [nearbyPlaces, setNearbyPlaces] = useState<GMapPlace[]>([]);
-  // Loading spinner
   const [isLoading, setIsLoading] = useState(false);
 
   // Dummy map attachment
@@ -45,6 +40,7 @@ function StoreList() {
       microapps
         .getCurrentLocation()
         .then((loc: any) => {
+          console.log(typeof loc["latitude"])
           const position = {
             coords: {
               latitude: loc["latitude"],
@@ -63,7 +59,12 @@ function StoreList() {
   };
 
   // fetch list of users
-  const fetchStores = async (position: any) => {
+  const fetchStores = async (position: {
+    coords: {
+      latitude: number,
+      longitude: number,
+    },
+  }) => {
     // Update location
     grabLoc(); //blocking? race on userCoords update?
     const data = {
@@ -120,7 +121,6 @@ function StoreList() {
     }
   };
 
-  // Html DOM element returned
   return (
     <div className="StoreList">
       <h3>

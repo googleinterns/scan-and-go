@@ -21,19 +21,15 @@ import { fetchJson } from "./../utils";
 import { TextInputField } from "./../components/Components";
 declare const window: any;
 
-function ScanStore(props: any) {
+function ScanStore() {
   // Update URL params to find storeID
   const curUrl = window.location.search;
   const urlParams = new URLSearchParams(curUrl);
   const storeID = urlParams.get("id");
   const merchantID = urlParams.get("mid");
 
-  // Toggle Cart Display
   const [showCart, setShowCart] = useState(false);
-
-  // Declare list of items in our cart
   const [shoppingList, setShoppingList] = useState<CartItem[]>([]);
-
   //DEBUGGING Current barcode to 'scan'
   const [curBarcode, setCurBarcode] = useState<string>("");
 
@@ -132,9 +128,9 @@ function ScanStore(props: any) {
       UI_List.push(
         <Grid key={"grid" + i} item xs={12}>
           <ItemCard
-            item={shoppingList[i]}
+            cartItem={shoppingList[i]}
             idx={i}
-            callback={updateShoppingListQuantity}
+            updateItemQuantity={updateShoppingListQuantity}
           />
         </Grid>
       );
@@ -179,13 +175,12 @@ function ScanStore(props: any) {
     updateIdxMapping();
   }, [shoppingList]);
 
-  // Html DOM element returned
   return (
     <Container className="ScanStore">
       <Grid container spacing={1} direction="column" alignItems="stretch">
         <Grid item xs={12}>
           <Paper elevation={1}>
-            <StoreHeader store_id={storeID} />
+            <StoreHeader storeId={storeID} />
           </Paper>
         </Grid>
         {!showCart && (
@@ -197,7 +192,7 @@ function ScanStore(props: any) {
                     <h1>Shopping List:</h1>
                   </Grid>
                   <Grid item xs={6}>
-                    <TextInputField text="...barcode" callback={setDebugItem} />
+                    <TextInputField text="...barcode" setState={setDebugItem} />
                   </Grid>
                 </Grid>
                 {shoppingList.length > 0 && (
