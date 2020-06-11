@@ -53,7 +53,7 @@ function ScanStore(props: any) {
     updateShoppingList(cartItems, items);
   };
 
-  const fetchCartCallback = async (items: any) => {
+  const fetchCartItems = async (items: any) => {
     // Empty cart contents
     cartItems.length = 0;
     // replace with current items
@@ -95,7 +95,8 @@ function ScanStore(props: any) {
       "merchant-id": merchantID,
       barcode: barcodes,
     };
-    fetchJson(data, "/api/items", displayItems);
+    const items = await fetchJson(data, "/api/items");
+    displayItems(items);
   };
 
   const displayItems = (extractedItems: Item[]) => {
