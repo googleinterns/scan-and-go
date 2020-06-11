@@ -29,7 +29,7 @@ function Home() {
   const [usersList, setUsersList] = useState<UserUI[]>([]);
 
   //DEBUG Show UI for user retrieval debugging
-  const debug_user = false;
+  const debug_user = true;
 
   // fetch POST welcome message
   const fetchMsg = async () => {

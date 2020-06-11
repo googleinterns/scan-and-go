@@ -112,15 +112,11 @@ function ScanStore(props: any) {
       const imgRes = await window.microapps
         .requestMedia(imgReq)
         .then((res: any) => res);
-      mediaUploadCallback(imgRes);
+      setUploadImg(imgRes);
     } else {
       let barcodes: string[] = [curBarcode];
       fetchItem(barcodes);
     }
-  };
-
-  const mediaUploadCallback = (img: any) => {
-    setUploadImg(img);
   };
 
   const fetchItem = async (barcodes: string[]) => {
