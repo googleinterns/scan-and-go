@@ -14,10 +14,7 @@ function StoreHeader() {
     let data = {
       "store-id": urlParams.get("id"),
     };
-    const stores = fetchJson(data, "/api/store", fetchStoreCallback);
-  };
-
-  const fetchStoreCallback = (stores: any) => {
+    const stores = await fetchJson(data, "/api/store")
     setCurStore(stores);
   };
 

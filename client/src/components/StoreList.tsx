@@ -35,15 +35,12 @@ function StoreList() {
   const fetchStores = async () => {
     // Update location
     grabLoc(); //blocking? race on userCoords update?
-    let data = {
+    const data = {
       distance: 10000,
       latitude: userCoords[0],
       longitude: userCoords[1],
     };
-    fetchJson(data, "/api/stores", fetchStoresCallback);
-  };
-
-  const fetchStoresCallback = (stores: any) => {
+    const stores = await fetchJson(data, "/api/stores");
     setStoreList(stores);
   };
 

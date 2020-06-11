@@ -20,11 +20,13 @@ function ScanStore() {
     let data = {
       "store-id": storeID,
     };
-    fetchJson(data, "/api/cart", fetchCartCallback);
+    const cart = await fetchJson(data, "/api/cart");
+    const items = await fetchCartItems(cart)
+    updateShoppingList(cartItems, items);
   };
 
-  const fetchCartCallback = async (items: any) => {
-    cartItems = items;
+  const fetchCartItems = async (items: any) => {
+    cartItems = items; // NI: what is this for?
     // Should do batched fetch with list of barcodes in 1 request-response
     const item_barcodes = items.map((zippedItem: any) => zippedItem.barcode);
     let data = {
@@ -32,11 +34,7 @@ function ScanStore() {
       "store-id": storeID,
       items: item_barcodes,
     };
-    fetchJson(data, "/api/items", fetchCartItemsCallback);
-  };
-
-  const fetchCartItemsCallback = (extractedItems: any) => {
-    updateShoppingList(cartItems, extractedItems);
+    return fetchJson(data, "/api/items");
   };
 
   const updateShoppingList = (items: any, extractedItems: any) => {
