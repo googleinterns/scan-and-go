@@ -1,7 +1,7 @@
 // Get json from response
 const getJson = (res: any) => {
-  let res_json = res.json();
   if (res.ok) {
+    let res_json = res.json();
     return res_json;
   } else {
     alert(`Response code: ${res.status}`);
