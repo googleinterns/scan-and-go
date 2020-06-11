@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Input } from "@material-ui/core";
 
-export function TextInputField(props: any) {
-  const onTextChange = (e: any) => {
-    props.callback(e.target.value);
+export function TextInputField({
+  text, 
+  callback
+}: {
+  text: string,
+  callback: (value: string) => void
+}) {
+  const onTextChange = (e: React.FocusEvent<HTMLInputElement>) => {
+    callback(e.target.value);
   };
   return (
     <Input
-      placeholder={props.text ? props.text : "...id"}
+      placeholder={text ? text : "...id"}
       onBlur={onTextChange}
     />
   );
