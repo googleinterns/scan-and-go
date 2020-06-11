@@ -40,7 +40,6 @@ function StoreList() {
       microapps
         .getCurrentLocation()
         .then((loc: any) => {
-          console.log(typeof loc["latitude"])
           const position = {
             coords: {
               latitude: loc["latitude"],
@@ -95,8 +94,6 @@ function StoreList() {
       setNearbyPlaces(places);
     } else {
       alert("PlacesAPI failure to return");
-      console.log(status);
-      console.log(places);
     }
     setIsLoading(false);
   };
@@ -111,7 +108,6 @@ function StoreList() {
         .then((response: any) => {
           const decoded = JSON.parse(atob(response.split(".")[1]));
           setIdentity(decoded);
-          console.log("getIdentity response: ", decoded);
         })
         .catch((error: any) => {
           console.error("An error occurred: ", error);

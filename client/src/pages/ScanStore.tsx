@@ -97,12 +97,9 @@ function ScanStore() {
 
   const displayItems = (extractedItems: Item[]) => {
     for (let i = 0; i < extractedItems.length; ++i) {
-      console.log(idxMap[extractedItems[i].barcode]);
       if (idxMap[extractedItems[i].barcode] != undefined) {
-        console.log("Add quantity: " + extractedItems[i].barcode);
         cartItems[idxMap[extractedItems[i].barcode]].quantity += 1;
       } else {
-        console.log("New item: " + extractedItems[i].barcode);
         let newItem = emptyCartItem();
         newItem.item = extractedItems[i];
         newItem.quantity = 1;
@@ -113,7 +110,6 @@ function ScanStore() {
   };
 
   const updateShoppingListQuantity = (idx: number, quantity: number) => {
-    console.log(idx);
     if (quantity <= 0) {
       cartItems.splice(idx, 1);
     } else {
@@ -149,13 +145,9 @@ function ScanStore() {
       const barcode: string = shoppingList[i].item.barcode;
       idxMap[barcode] = i;
     }
-    console.log("Map Built");
-    console.log(idxMap);
   };
 
   const makePayment = () => {
-    console.log("Attempting to make payment for:");
-    console.log(shoppingList);
     window.location.href =
       "/receipt?id=TEST_ORDER&contents=" +
       encodeURIComponent(JSON.stringify(shoppingList));
@@ -163,15 +155,10 @@ function ScanStore() {
 
   // After first rendering of UI, update CartItem
   useEffect(() => {
-    console.log("Init");
-    console.log(shoppingList);
     updateIdxMapping();
   }, [showCart]);
 
   useEffect(() => {
-    if (shoppingList.length > 0) {
-      console.log("Save Cart to server");
-    }
     updateIdxMapping();
   }, [shoppingList]);
 
