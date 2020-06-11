@@ -16,7 +16,6 @@ function Receipt() {
     }
   }
 
-  // Html DOM element returned
   return (
     <div className="Receipt">
       <a href="/">back</a>
