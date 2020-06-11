@@ -2,16 +2,14 @@ import React, { useEffect, useState } from "react";
 import { Store, emptyStore } from "./../interfaces";
 import { fetchJson } from "./../utils";
 
-function StoreHeader(props: any) {
+function StoreHeader({ storeId }: { storeId: string | null }) {
   // Update the current store we're in
   const [curStore, setCurStore] = useState<Store>(emptyStore());
-  // Update URL params
-  const store_id = props.store_id;
 
   // fetch list of users
   const fetchStore = async () => {
     let data = {
-      "store-id": store_id,
+      "store-id": storeId,
     };
     const stores = await fetchJson(data, "/api/store")
     setCurStore(stores);

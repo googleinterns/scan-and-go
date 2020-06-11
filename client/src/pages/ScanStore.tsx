@@ -21,7 +21,7 @@ import { fetchJson } from "./../utils";
 import { TextInputField } from "./../components/Components";
 declare const window: any;
 
-function ScanStore(props: any) {
+function ScanStore() {
   // Update URL params to find storeID
   const curUrl = window.location.search;
   const urlParams = new URLSearchParams(curUrl);
@@ -132,7 +132,7 @@ function ScanStore(props: any) {
       UI_List.push(
         <Grid key={"grid" + i} item xs={12}>
           <ItemCard
-            item={shoppingList[i]}
+            cartItem={shoppingList[i]}
             idx={i}
             callback={updateShoppingListQuantity}
           />
@@ -185,7 +185,7 @@ function ScanStore(props: any) {
       <Grid container spacing={1} direction="column" alignItems="stretch">
         <Grid item xs={12}>
           <Paper elevation={1}>
-            <StoreHeader store_id={storeID} />
+            <StoreHeader storeId={storeID} />
           </Paper>
         </Grid>
         {!showCart && (
