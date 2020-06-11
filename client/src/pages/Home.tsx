@@ -20,40 +20,28 @@ function Home() {
   // users list?
   const [usersList, setUsersList] = useState<UserUI[]>([]);
 
-  // fetch POST welcome message
-  const fetchMsg = async () => {
-    // annonymous function that is async
-    let data = {
-      "user-id": userid,
+  useEffect(() => {
+    // fetch POST welcome message
+    const fetchMsg = async () => {
+      const data = {
+        "user-id": userid,
+      };
+      let msg = await fetchText(data, "/api/");
+      if (msg == null) {
+        msg = "hello";
+      }      
+      setWelMsg(msg);
     };
-    fetchText(data, "/api/", fetchMsgCallback);
-  };
 
-  // Action after returning from POST req to /api/
-  const fetchMsgCallback = (text: any) => {
-    if (text == null) {
-      setWelMsg("hello");
-    } else {
-      setWelMsg(text);
-    }
-  };
+    fetchMsg();
+  }, [userid]);
+
 
   // Wrapper to issue fetch GET to /api/users/all
   const fetchUsers = async () => {
-    fetchJson(null, "/api/users/all", fetchUsersCallback);
-  };
-
-  // Action after retrieval of users from GET call
-  const fetchUsersCallback = (users: any) => {
+    const users = await fetchJson(null, "/api/users/all");
     setUsersList(users);
   };
-
-  // useEffect runs on rendered elements changing DOM update
-  // thus, here we update upon every visual refresh
-  //Yiheng: I think a better model can be used here to reduce api calls
-  useEffect(() => {
-    fetchMsg();
-  });
 
   function TextInputField(props: any) {
     const onTextChange = (e: any) => {
