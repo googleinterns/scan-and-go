@@ -28,12 +28,8 @@ function ScanStore() {
   const storeID = urlParams.get("id");
   const merchantID = urlParams.get("mid");
 
-  // Toggle Cart Display
   const [showCart, setShowCart] = useState(false);
-
-  // Declare list of items in our cart
   const [shoppingList, setShoppingList] = useState<CartItem[]>([]);
-
   //DEBUGGING Current barcode to 'scan'
   const [curBarcode, setCurBarcode] = useState<string>("");
 
@@ -179,7 +175,6 @@ function ScanStore() {
     updateIdxMapping();
   }, [shoppingList]);
 
-  // Html DOM element returned
   return (
     <Container className="ScanStore">
       <Grid container spacing={1} direction="column" alignItems="stretch">

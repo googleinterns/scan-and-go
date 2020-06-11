@@ -19,13 +19,8 @@ interface UserUI {
 }
 
 function Home() {
-  // These interact with some global 'React' state? from the import React lib
-  // possibly, likely shared across different files in this running app
-  // welcome msg hook
   const [welMsg, setWelMsg] = useState("");
-  // user query id
   const [userid, setUserid] = useState("");
-  // users list?
   const [usersList, setUsersList] = useState<UserUI[]>([]);
 
   //DEBUG Show UI for user retrieval debugging
@@ -67,9 +62,6 @@ function Home() {
     );
   }
 
-  // Html DOM element returned
-  // Note style, {} specifies javascript code that gets run into text before whole
-  // chunk of data is returned as webpage info (wonder if this two comments mess things up)
   return (
     <Container className="Home">
       {debug_user && [
