@@ -40,6 +40,7 @@ function StoreList() {
       microapps
         .getCurrentLocation()
         .then((loc: any) => {
+          console.log(typeof loc["latitude"])
           const position = {
             coords: {
               latitude: loc["latitude"],
@@ -58,7 +59,12 @@ function StoreList() {
   };
 
   // fetch list of users
-  const fetchStores = async (position: any) => {
+  const fetchStores = async (position: {
+    coords: {
+      latitude: number,
+      longitude: number,
+    },
+  }) => {
     // Update location
     grabLoc(); //blocking? race on userCoords update?
     const data = {
