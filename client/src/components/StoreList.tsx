@@ -18,7 +18,7 @@ const google = window.google;
 function StoreList() {
   const [userCoords, setUserCoords] = useState<[number, number]>([0.0, 0.0]);
   const [storeList, setStoreList] = useState<Store[]>([]);
-  const [identity, setIdentity] = useState<IdentityToken>(emptyIdentityToken());
+  const [identity, setIdentity] = useState<IdentityToken>(emptyIdentityToken);
   const [nearbyPlaces, setNearbyPlaces] = useState<GMapPlace[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
