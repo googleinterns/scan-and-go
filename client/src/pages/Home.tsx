@@ -1,8 +1,16 @@
 import React, { useEffect, useState } from "react";
-import logo from "./../logo.svg";
 import StoreList from "./../components/StoreList";
-import "./../App.css";
 import { fetchJson, fetchText } from "./../utils";
+import { TextInputField } from "./../components/Components";
+import {
+  Container,
+  Grid,
+  Table,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell,
+} from "@material-ui/core";
 
 // Testing code, will be removed soon
 interface UserUI {
@@ -19,6 +27,9 @@ function Home() {
   const [userid, setUserid] = useState("");
   // users list?
   const [usersList, setUsersList] = useState<UserUI[]>([]);
+
+  //DEBUG Show UI for user retrieval debugging
+  const debug_user = false;
 
   useEffect(() => {
     // fetch POST welcome message
@@ -60,33 +71,32 @@ function Home() {
   // Note style, {} specifies javascript code that gets run into text before whole
   // chunk of data is returned as webpage info (wonder if this two comments mess things up)
   return (
-    <div className="Home">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>{welMsg}</p>
-        <TextInputField />
-        <button onClick={fetchUsers}>Fetch Users</button>
-        {usersList.length > 0 && (
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-              </tr>
-            </thead>
-            <tbody>
-              {usersList.map((user: UserUI) => (
-                <tr key={user["user-id"]}>
-                  <td>{user["user-id"]}</td>
-                  <td>{user.name}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </header>
+    <Container className="Home">
+      {debug_user && [
+        <p>{welMsg}</p>,
+        <TextInputField text={userid} callback={setUserid} />,
+        <button onClick={fetchUsers}>Fetch Users</button>,
+      ]}
+      {debug_user && usersList.length > 0 && (
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>ID</TableCell>
+              <TableCell>Name</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {usersList.map((user: UserUI) => (
+              <TableRow key={user["user-id"]}>
+                <TableCell>{user["user-id"]}</TableCell>
+                <TableCell>{user.name}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
       <StoreList />
-    </div>
+    </Container>
   );
 }
 
