@@ -65,21 +65,13 @@ function StoreList() {
   // fetch list of users
   const fetchStores = async (position: any) => {
     // Update location
-    setUserCoords([position.coords.latitude, position.coords.longitude]);
-    // Format request data json
-    let data = {
+    grabLoc(); //blocking? race on userCoords update?
+    const data = {
       distance: 10000,
       latitude: position.coords.latitude,
       longitude: position.coords.longitude,
     };
-    //TODO(#8)
-    //Update utils fetchJson function to return json instead of run callback
-    //and use await syntax here for cleaner code (no callbacks)
-    // POST data to fetch stores
-    fetchJson(data, "/api/stores", fetchStoresCallback);
-  };
-
-  const fetchStoresCallback = (stores: any) => {
+    const stores = await fetchJson(data, "/api/stores");
     setStoreList(stores);
     setIsLoading(false);
   };

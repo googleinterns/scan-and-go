@@ -13,10 +13,7 @@ function StoreHeader(props: any) {
     let data = {
       "store-id": store_id,
     };
-    const stores = fetchJson(data, "/api/store", fetchStoreCallback);
-  };
-
-  const fetchStoreCallback = (stores: any) => {
+    const stores = await fetchJson(data, "/api/store")
     setCurStore(stores);
   };
 

@@ -48,10 +48,12 @@ function ScanStore(props: any) {
     let data = {
       "store-id": storeID,
     };
-    fetchJson(data, "/api/cart", fetchCartCallback);
+    const cart = await fetchJson(data, "/api/cart");
+    const items = await fetchCartItems(cart)
+    updateShoppingList(cartItems, items);
   };
 
-  const fetchCartCallback = async (items: any) => {
+  const fetchCartItems = async (items: any) => {
     // Empty cart contents
     cartItems.length = 0;
     // replace with current items
@@ -65,11 +67,7 @@ function ScanStore(props: any) {
       "store-id": storeID,
       items: item_barcodes,
     };
-    fetchJson(data, "/api/items", fetchCartItemsCallback);
-  };
-
-  const fetchCartItemsCallback = (extractedItems: any) => {
-    updateShoppingList(cartItems, extractedItems);
+    return fetchJson(data, "/api/items");
   };
 
   const updateShoppingList = (items: any, extractedItems: any) => {
@@ -97,7 +95,8 @@ function ScanStore(props: any) {
       "merchant-id": merchantID,
       barcode: barcodes,
     };
-    fetchJson(data, "/api/items", displayItems);
+    const items = await fetchJson(data, "/api/items");
+    displayItems(items);
   };
 
   const displayItems = (extractedItems: Item[]) => {
