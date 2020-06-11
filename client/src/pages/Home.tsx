@@ -66,7 +66,7 @@ function Home() {
     <Container className="Home">
       {debug_user && [
         <p>{welMsg}</p>,
-        <TextInputField text={userid} callback={setUserid} />,
+        <TextInputField text={userid} setState={setUserid} />,
         <button onClick={fetchUsers}>Fetch Users</button>,
       ]}
       {debug_user && usersList.length > 0 && (

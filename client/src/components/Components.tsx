@@ -3,13 +3,13 @@ import { Input } from "@material-ui/core";
 
 export function TextInputField({
   text, 
-  callback
+  setState
 }: {
   text: string,
-  callback: (value: string) => void
+  setState: (value: string) => void
 }) {
   const onTextChange = (e: React.FocusEvent<HTMLInputElement>) => {
-    callback(e.target.value);
+    setState(e.target.value);
   };
   return (
     <Input

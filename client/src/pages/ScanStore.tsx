@@ -130,7 +130,7 @@ function ScanStore() {
           <ItemCard
             cartItem={shoppingList[i]}
             idx={i}
-            callback={updateShoppingListQuantity}
+            updateItemQuantity={updateShoppingListQuantity}
           />
         </Grid>
       );
@@ -192,7 +192,7 @@ function ScanStore() {
                     <h1>Shopping List:</h1>
                   </Grid>
                   <Grid item xs={6}>
-                    <TextInputField text="...barcode" callback={setDebugItem} />
+                    <TextInputField text="...barcode" setState={setDebugItem} />
                   </Grid>
                 </Grid>
                 {shoppingList.length > 0 && (
