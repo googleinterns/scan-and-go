@@ -28,10 +28,6 @@ exports.storesGet = async (req, res) => {
   }
 
   //TODO(#10) Implement searching with keywords
-  // Use searching instead
-  // if (reqProps.['search']){
-
-  // }
 
   if (reqProps["latitude"] && reqProps["longitude"]) {
     let userLat = reqProps["latitude"];

@@ -18,7 +18,6 @@ function Cart({ contents }: { contents: CartItem[] }) {
     return tot_price.toFixed(2);
   };
 
-  // Html DOM element returned
   return (
     <div className="Cart">
       {contents.length > 0 && (
