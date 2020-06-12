@@ -60,9 +60,9 @@ function StoreList() {
   // fetch list of users
   const fetchStores = async (position: {
     coords: {
-      latitude: number,
-      longitude: number,
-    },
+      latitude: number;
+      longitude: number;
+    };
   }) => {
     // Update location
     grabLoc(); //blocking? race on userCoords update?
@@ -126,7 +126,7 @@ function StoreList() {
         {identity.sub} [{isLoading ? "Loading..." : ""}]
       </h4>
       <button>
-        <a href="/store?id=WPANCUD-1">Test Store</a>
+        <a href="/store?id=WPANCUD-1&mid=WPANCUD">Test Store</a>
       </button>
       <button onClick={loginUser}>User Login</button>
       <button onClick={grabLoc}>Nearby Stores</button>
