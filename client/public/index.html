@@ -26,12 +26,15 @@
     -->
     <!--
       Link to CDN for microapps.js library?
-      <script async src="https://microapps.google.com/apis/v1alpha/microapps.js"></script>
     -->
+    <script src="https://microapps.google.com/apis/v1alpha/microapps.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=***REMOVED***&libraries=places"></script>
+    <meta name="google-signin-client_id" content="***REMOVED***">
     <title>ScanAndGo GPay</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="mapPlaceholder"></div>
     <div id="root"></div>
     <!--
       This HTML file is a template.
