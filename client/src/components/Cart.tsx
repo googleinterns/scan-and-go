@@ -9,10 +9,7 @@ import {
   TableRow,
 } from "@material-ui/core";
 
-function Cart(props: any) {
-  // Update the current store we're in
-  const contents: CartItem[] = props.contents;
-
+function Cart({ contents }: { contents: CartItem[] }) {
   const getTotalPrice = () => {
     let tot_price = 0.0;
     for (let i = 0; i < contents.length; ++i) {
@@ -21,7 +18,6 @@ function Cart(props: any) {
     return tot_price.toFixed(2);
   };
 
-  // Html DOM element returned
   return (
     <div className="Cart">
       {contents.length > 0 && (

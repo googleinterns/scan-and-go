@@ -75,7 +75,7 @@ function Login() {
             <TextInputField
               text="Username"
               fullWidth={true}
-              callback={updateUser}
+              setState={updateUser}
             />
           </Grid>
           <Grid item>

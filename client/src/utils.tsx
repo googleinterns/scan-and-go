@@ -25,27 +25,12 @@ const catchErr = (err: any) => {
   alert("Error: " + err);
 };
 
-//Yiheng: Some code refactoring can still be done here given the amount of overlap
-
-// fetch json response from url
-export const fetchJson = async (data: any, url: string, callback: any) => {
-  let responseJson = "";
+// fetch response from url
+const fetchRes = async (data: any, url: string) => {
   if (data == null) {
-    responseJson = await fetch(url, {
-      method: "GET",
-      mode: "cors",
-      cache: "no-cache",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      redirect: "follow",
-      referrerPolicy: "no-referrer",
-    })
-      .then((res) => getJson(res))
-      .catch((err) => catchErr(err));
+    return await fetch(url);
   } else {
-    responseJson = await fetch(url, {
+    return await fetch(url, {
       method: "POST",
       mode: "cors",
       cache: "no-cache",
@@ -56,41 +41,20 @@ export const fetchJson = async (data: any, url: string, callback: any) => {
       redirect: "follow",
       referrerPolicy: "no-referrer",
       body: JSON.stringify(data),
-    })
-      .then((res) => getJson(res)) // returns the res as a json object
-      .catch((err) => catchErr(err));
-  }
-  // Only callback if we are given a valid response
-  if (responseJson != null) {
-    callback(responseJson);
+    });
   }
 };
 
+// fetch json response from url
+export const fetchJson = async (data: any, url: string) => {
+  return fetchRes(data, url)
+    .then((res) => getJson(res))
+    .catch((err) => catchErr(err));
+};
+
 // fetch text response from url
-export const fetchText = async (data: any, url: string, callback: any) => {
-  let responseJson = "";
-  if (data == null) {
-    responseJson = await fetch(url)
-      .then((res) => getText(res))
-      .catch((err) => catchErr(err));
-  } else {
-    responseJson = await fetch(url, {
-      method: "POST",
-      mode: "cors",
-      cache: "no-cache",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      redirect: "follow",
-      referrerPolicy: "no-referrer",
-      body: JSON.stringify(data),
-    })
-      .then((res) => getText(res)) // returns the res as a json object
-      .catch((err) => catchErr(err));
-  }
-  // Only callback if we are given a valid response
-  if (responseJson != null) {
-    callback(responseJson);
-  }
+export const fetchText = async (data: any, url: string) => {
+  return fetchRes(data, url)
+    .then((res) => getText(res))
+    .catch((err) => catchErr(err));
 };
