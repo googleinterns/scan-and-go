@@ -20,15 +20,10 @@ const microapps = window.microapps;
 const google = window.google;
 
 function StoreList() {
-  // Current Location (from API call)
   const [userCoords, setUserCoords] = useState<[number, number]>([0.0, 0.0]);
-  // List of stores (from Database)
   const [storeList, setStoreList] = useState<Store[]>([]);
-  // User Identity
   const [identity, setIdentity] = useState<IdentityToken>(emptyIdentityToken());
-  // Nearby Google Map Places
   const [nearbyPlaces, setNearbyPlaces] = useState<GMapPlace[]>([]);
-  // Loading spinner
   const [isLoading, setIsLoading] = useState(false);
   // Uploaded image data
   const [uploadImg, setUploadImg] = useState<MediaResponse>(emptyMediaResponse);
@@ -69,23 +64,20 @@ function StoreList() {
   };
 
   // fetch list of users
-  const fetchStores = async (position: any) => {
+  const fetchStores = async (position: {
+    coords: {
+      latitude: number;
+      longitude: number;
+    };
+  }) => {
     // Update location
-    setUserCoords([position.coords.latitude, position.coords.longitude]);
-    // Format request data json
-    let data = {
+    grabLoc(); //blocking? race on userCoords update?
+    const data = {
       distance: 10000,
       latitude: position.coords.latitude,
       longitude: position.coords.longitude,
     };
-    //TODO(#8)
-    //Update utils fetchJson function to return json instead of run callback
-    //and use await syntax here for cleaner code (no callbacks)
-    // POST data to fetch stores
-    fetchJson(data, "/api/stores", fetchStoresCallback);
-  };
-
-  const fetchStoresCallback = (stores: any) => {
+    const stores = await fetchJson(data, "/api/stores");
     setStoreList(stores);
     setIsLoading(false);
   };
@@ -108,8 +100,6 @@ function StoreList() {
       setNearbyPlaces(places);
     } else {
       alert("PlacesAPI failure to return");
-      console.log(status);
-      console.log(places);
     }
     setIsLoading(false);
   };
@@ -124,7 +114,6 @@ function StoreList() {
         .then((response: any) => {
           const decoded = JSON.parse(atob(response.split(".")[1]));
           setIdentity(decoded);
-          console.log("getIdentity response: ", decoded);
         })
         .catch((error: any) => {
           console.error("An error occurred: ", error);
@@ -180,7 +169,6 @@ function StoreList() {
     }
   }, [uploadImg]);
 
-  // Html DOM element returned
   return (
     <div className="StoreList">
       {uploadImg.mimeType && (

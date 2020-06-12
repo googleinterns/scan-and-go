@@ -31,7 +31,6 @@ exports.storesGet = async (req, res) => {
   }
 
   //TODO(#10) Implement searching with keywords
-
   try {
     const snapshot = await collectionRef.get();
     const stores = snapshot.docs.map((doc) => doc.data());

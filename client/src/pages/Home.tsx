@@ -19,61 +19,53 @@ interface UserUI {
 }
 
 function Home() {
-  // These interact with some global 'React' state? from the import React lib
-  // possibly, likely shared across different files in this running app
-  // welcome msg hook
   const [welMsg, setWelMsg] = useState("");
-  // user query id
   const [userid, setUserid] = useState("");
-  // users list?
   const [usersList, setUsersList] = useState<UserUI[]>([]);
 
   //DEBUG Show UI for user retrieval debugging
   const debug_user = true;
 
-  // fetch POST welcome message
-  const fetchMsg = async () => {
-    // annonymous function that is async
-    let data = {
-      "user-id": userid,
+  useEffect(() => {
+    // fetch POST welcome message
+    const fetchMsg = async () => {
+      const data = {
+        "user-id": userid,
+      };
+      let msg = await fetchText(data, "/api/");
+      if (msg == null) {
+        msg = "hello";
+      }
+      setWelMsg(msg);
     };
-    fetchText(data, "/api/", fetchMsgCallback);
-  };
 
-  // Action after returning from POST req to /api/
-  const fetchMsgCallback = (text: any) => {
-    if (text == null) {
-      setWelMsg("hello");
-    } else {
-      setWelMsg(text);
-    }
-  };
+    fetchMsg();
+  }, [userid]);
 
   // Wrapper to issue fetch GET to /api/users/all
   const fetchUsers = async () => {
-    fetchJson(null, "/api/users/all", fetchUsersCallback);
-  };
-
-  // Action after retrieval of users from GET call
-  const fetchUsersCallback = (users: any) => {
+    const users = await fetchJson(null, "/api/users/all");
     setUsersList(users);
   };
 
-  // useEffect runs on rendered elements changing DOM update
-  // thus, here we update upon every visual refresh
-  //Yiheng: I think a better model can be used here to reduce api calls
-  useEffect(() => {
-    fetchMsg();
-  });
+  function TextInputField(props: any) {
+    const onTextChange = (e: any) => {
+      setUserid(e.target.value);
+    };
+    return (
+      <input
+        type="text"
+        placeholder={userid ? userid : "...id"}
+        onBlur={onTextChange}
+      />
+    );
+  }
 
-  // Html DOM element returned
-  // Note style, {} specifies javascript code that gets run into text before whole
-  // chunk of data is returned as webpage info (wonder if this two comments mess things up)
   return (
     <Container disableGutters={true} className="Home">
       {debug_user && [
         <p>{welMsg}</p>,
-        <TextInputField text={userid} callback={setUserid} />,
+        <TextInputField text={userid} setState={setUserid} />,
         <button onClick={fetchUsers}>Fetch Users</button>,
       ]}
       {debug_user && usersList.length > 0 && (

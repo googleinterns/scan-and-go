@@ -2,21 +2,15 @@ import React, { useEffect, useState } from "react";
 import { Store, emptyStore } from "./../interfaces";
 import { fetchJson } from "./../utils";
 
-function StoreHeader(props: any) {
-  // Update the current store we're in
+function StoreHeader({ storeId }: { storeId: string | null }) {
   const [curStore, setCurStore] = useState<Store>(emptyStore());
-  // Update URL params
-  const store_id = props.store_id;
 
   // fetch list of users
   const fetchStore = async () => {
     let data = {
-      "store-id": store_id,
+      "store-id": storeId,
     };
-    const stores = fetchJson(data, "/api/store", fetchStoreCallback);
-  };
-
-  const fetchStoreCallback = (stores: any) => {
+    const stores = await fetchJson(data, "/api/store");
     setCurStore(stores);
   };
 
@@ -24,7 +18,6 @@ function StoreHeader(props: any) {
     fetchStore();
   }, []);
 
-  // Html DOM element returned
   return (
     <div className="StoreHeader">
       <a href="/home">back</a>

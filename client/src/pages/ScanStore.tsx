@@ -33,19 +33,15 @@ declare const window: any;
 //Yiheng: For whether we should display our uploaded image for debugging
 const debugImg = true;
 
-function ScanStore(props: any) {
+function ScanStore() {
   // Update URL params to find storeID
   const curUrl = window.location.search;
   const urlParams = new URLSearchParams(curUrl);
   const storeID = urlParams.get("id");
   const merchantID = urlParams.get("mid");
 
-  // Toggle Cart Display
   const [showCart, setShowCart] = useState(false);
-
-  // Declare list of items in our cart
   const [shoppingList, setShoppingList] = useState<CartItem[]>([]);
-
   //DEBUGGING Current barcode to 'scan'
   const [curBarcode, setCurBarcode] = useState<string>("");
 
@@ -63,10 +59,12 @@ function ScanStore(props: any) {
     let data = {
       "store-id": storeID,
     };
-    fetchJson(data, "/api/cart", fetchCartCallback);
+    const cart = await fetchJson(data, "/api/cart");
+    const items = await fetchCartItems(cart);
+    updateShoppingList(cartItems, items);
   };
 
-  const fetchCartCallback = async (items: any) => {
+  const fetchCartItems = async (items: any) => {
     // Empty cart contents
     cartItems.length = 0;
     // replace with current items
@@ -80,11 +78,7 @@ function ScanStore(props: any) {
       "store-id": storeID,
       items: item_barcodes,
     };
-    fetchJson(data, "/api/items", fetchCartItemsCallback);
-  };
-
-  const fetchCartItemsCallback = (extractedItems: any) => {
-    updateShoppingList(cartItems, extractedItems);
+    return fetchJson(data, "/api/items");
   };
 
   const updateShoppingList = (items: any, extractedItems: any) => {
@@ -138,18 +132,16 @@ function ScanStore(props: any) {
         "merchant-id": merchantID,
         barcode: unknown_barcodes,
       };
-      fetchJson(data, "/api/items", displayItems);
+      const items = await fetchJson(data, "/api/items");
+      displayItems(items);
     }
   };
 
   const displayItems = (extractedItems: Item[]) => {
     for (let i = 0; i < extractedItems.length; ++i) {
-      console.log(idxMap[extractedItems[i].barcode]);
       if (idxMap[extractedItems[i].barcode] != undefined) {
-        console.log("Add quantity: " + extractedItems[i].barcode);
         cartItems[idxMap[extractedItems[i].barcode]].quantity += 1;
       } else {
-        console.log("New item: " + extractedItems[i].barcode);
         let newItem = emptyCartItem();
         newItem.item = extractedItems[i];
         newItem.quantity = 1;
@@ -160,7 +152,6 @@ function ScanStore(props: any) {
   };
 
   const updateShoppingListQuantity = (idx: number, quantity: number) => {
-    console.log(idx);
     if (quantity <= 0) {
       cartItems.splice(idx, 1);
     } else {
@@ -175,9 +166,9 @@ function ScanStore(props: any) {
       UI_List.push(
         <Grid key={"grid" + i} item xs={12}>
           <ItemCard
-            item={shoppingList[i]}
+            cartItem={shoppingList[i]}
             idx={i}
-            callback={updateShoppingListQuantity}
+            updateItemQuantity={updateShoppingListQuantity}
           />
         </Grid>
       );
@@ -196,13 +187,9 @@ function ScanStore(props: any) {
       const barcode: string = shoppingList[i].item.barcode;
       idxMap[barcode] = i;
     }
-    console.log("Map Built");
-    console.log(idxMap);
   };
 
   const makePayment = () => {
-    console.log("Attempting to make payment for:");
-    console.log(shoppingList);
     //Yiheng: This should be just an ID without exposing the contents of our Order
     window.location.href =
       "/receipt?id=TEST_ORDER&contents=" +
@@ -231,18 +218,7 @@ function ScanStore(props: any) {
     processImageBarcode(img);
   };
 
-  // Logging purposes for showing of cart
-  /*useEffect(() => {
-    console.log("Toggle Show Cart");
-    console.log(shoppingList);
-  }, [showCart]);*/
-
-  // When we update shoppingList, we should send update to server?
-  useEffect(() => {
-    if (shoppingList.length > 0) {
-      console.log("Save Cart to server");
-    }
-  }, [shoppingList]);
+  //TODO When we update shoppingList, we should send update to server?
 
   // When we change what image we uploaded, run extract barcode client-side
   useEffect(() => {
@@ -260,13 +236,12 @@ function ScanStore(props: any) {
     updateIdxMapping(); //TODO(#20) Yiheng: Tech Debt, we need to make this persist as Class Variable
   });
 
-  // Html DOM element returned
   return (
     <Container disableGutters={true} className="ScanStore">
       <Grid container spacing={1} direction="column" alignItems="stretch">
         <Grid item xs={12}>
           <Paper elevation={1}>
-            <StoreHeader store_id={storeID} />
+            <StoreHeader storeId={storeID} />
           </Paper>
         </Grid>
         {!showCart && (
@@ -280,7 +255,7 @@ function ScanStore(props: any) {
                   <Grid item xs={6}>
                     <TextInputField
                       text={curBarcode ? curBarcode : "...barcode"}
-                      callback={setDebugItem}
+                      setState={setDebugItem}
                     />
                   </Grid>
                 </Grid>
