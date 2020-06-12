@@ -40,6 +40,7 @@ function ScanStore() {
   const storeID = urlParams.get("id");
   const merchantID = urlParams.get("mid");
 
+  const [cartItems, updateCart] = useState<CartItem[]>([]);
   const [showCart, setShowCart] = useState(false);
   const [curBarcode, setCurBarcode] = useState<string>("");
   const [uploadImg, setUploadImg] = useState<MediaResponse>(emptyMediaResponse);
@@ -47,30 +48,14 @@ function ScanStore() {
   // const emptyCart = new Map<string, CartItem>();
   // const [cart, setCart] = useState<Map<string, CartItem>>(emptyCart);
   
-  const [cartItems, updateCart] = useState<CartItem[]>([]);
-
-  const setDebugItem = (barcode: string) => {
-    setCurBarcode(barcode);
-    // updateCart(cartItems);
-  };
-
   const addItem = async () => {
-    if (curBarcode == "") { // DEBUG: remove
-      await setCurBarcode("93245036");  
+    let barcode = curBarcode;
+    barcode = "93245036"; // DEBUG: remove
+    if (barcode == "") {
+      barcode = await getBarcodeByImage();
+      // no need to call additem to cart if barcode empty
     }
-    if (curBarcode == "") {
-      // If empty, use media API
-      const imgReq = {
-        allowedMimeTypes: ["image/jpeg"],
-        allowedSources: ["camera"], // Restrict to camera scanning only
-      };
-      const imgRes = await window.microapps
-        .requestMedia(imgReq)
-        .then((res: any) => res);
-      setUploadImg(imgRes);
-    } else {
-      await addItemToCart(curBarcode);
-    }
+    addItemToCart(barcode);
   };
 
   const addItemToCart = async (barcode: string) => {
@@ -130,36 +115,43 @@ function ScanStore() {
       encodeURIComponent(JSON.stringify(cartItems));
   };
 
+  const getBarcodeByImage = async () => {
+    let barcode = "";
+    const imgReq = {
+      allowedMimeTypes: ["image/jpeg"],
+      allowedSources: ["camera"], // Restrict to camera scanning only
+    };
+    const imgRes = await window.microapps
+      .requestMedia(imgReq)
+      .then((res: any) => res);
+    if (imgRes.mimeType) {
+      const img = document.getElementById("uploadImgSrc") as HTMLImageElement;
+      barcode = await processImageBarcode(img);
+    }
+    return barcode;
+  }
+
   const processImageBarcode = async (img: HTMLImageElement) => {
     const codeReader = new BrowserMultiFormatReader();
+    let barcode = "";
     if (img != null) {
-      const result = await codeReader
+      barcode = await codeReader
         .decodeFromImage(img)
         .then((res: any) => res)
         .catch((err: any) => {
           console.log(err);
           return "";
         });
-      console.log("Processed image: " + result);
-      setDebugItem(result.text);
     } else {
       console.log("Cannot find element: uploadImgSrc");
     }
+    return barcode;
   };
 
   const testBarcode = () => {
     const img = document.getElementById("testImgSrc") as HTMLImageElement;
     processImageBarcode(img);
   };
-
-  // When we change what image we uploaded, run extract barcode client-side
-  useEffect(() => {
-    if (uploadImg.mimeType) {
-      // Have something
-      const img = document.getElementById("uploadImgSrc") as HTMLImageElement;
-      processImageBarcode(img);
-    }
-  }, [uploadImg]);
 
   return (
     <Container disableGutters={true} className="ScanStore">
@@ -255,7 +247,7 @@ function ScanStore() {
       <Fab
         style={{ position: "fixed", bottom: "10px", right: "10px" }}
         color="secondary"
-        onClick={makePayment}
+        onClick={showCart ? makePayment : addItem}
       >
         {showCart ? <PaymentIcon /> : <AddIcon />}
       </Fab>,
