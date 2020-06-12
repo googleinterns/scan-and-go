@@ -10,7 +10,7 @@ function StoreHeader({ storeId }: { storeId: string | null }) {
     let data = {
       "store-id": storeId,
     };
-    const stores = await fetchJson(data, "/api/store")
+    const stores = await fetchJson(data, "/api/store");
     setCurStore(stores);
   };
 
@@ -20,7 +20,7 @@ function StoreHeader({ storeId }: { storeId: string | null }) {
 
   return (
     <div className="StoreHeader">
-      <a href="/">back</a>
+      <a href="/home">back</a>
       <h3>
         [{curStore.latitude},{curStore.longitude}]
       </h3>

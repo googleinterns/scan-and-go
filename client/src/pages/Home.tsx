@@ -35,13 +35,12 @@ function Home() {
       let msg = await fetchText(data, "/api/");
       if (msg == null) {
         msg = "hello";
-      }      
+      }
       setWelMsg(msg);
     };
 
     fetchMsg();
   }, [userid]);
-
 
   // Wrapper to issue fetch GET to /api/users/all
   const fetchUsers = async () => {
@@ -63,7 +62,7 @@ function Home() {
   }
 
   return (
-    <Container className="Home">
+    <Container disableGutters={true} className="Home">
       {debug_user && [
         <p>{welMsg}</p>,
         <TextInputField text={userid} setState={setUserid} />,
