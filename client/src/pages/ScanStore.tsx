@@ -53,18 +53,16 @@ function ScanStore() {
     barcode = "93245036"; // DEBUG: remove
     if (barcode == "") {
       barcode = await getBarcodeByImage();
-      // no need to call additem to cart if barcode empty
+      // TODO: no need to call additem to cart if barcode empty
     }
     addItemToCart(barcode);
   };
 
   const addItemToCart = async (barcode: string) => {
+    console.log(cartItems);
     const idx = cartItems.findIndex(cartItem => cartItem.item.barcode == barcode);
     if (idx != -1) {
-      // updateCart(cartItems.filter(cartItem => {
-      //   cartItem.item.barcode !== barcode
-      // }));
-      updateQuantity(idx, cartItems[idx].quantity + 1);
+      updateItemQuantity(barcode, cartItems[idx].quantity + 1);
     } else {
       const data = {
         "merchant-id": merchantID,
@@ -79,12 +77,16 @@ function ScanStore() {
     }
   };
 
-  const updateQuantity = (idx: number, quantity: number) => {
+  const updateItemQuantity = (barcode: string, quantity: number) => {
     if (quantity <= 0) {
-      updateCart(cartItems.filter((_, i) => i !== idx));
+      updateCart(cartItems.filter(cartItem => cartItem.item.barcode !== barcode));
     } else {
-      const cartItem = cartItems[idx];
-      updateCart(cartItems => ({...cartItems, [idx]: {...cartItem, quantity}}))
+      updateCart(cartItems.map(cartItem => {
+        if (cartItem.item.barcode === barcode) {
+          cartItem.quantity = quantity;
+        }
+        return cartItem;
+      }));
     }
   };
 
@@ -95,8 +97,7 @@ function ScanStore() {
         <Grid key={"grid" + i} item xs={12}>
           <ItemCard
             cartItem={cartItems[i]}
-            idx={i}
-            updateItemQuantity={updateQuantity}
+            updateItemQuantity={updateItemQuantity}
           />
         </Grid>
       );
@@ -124,6 +125,7 @@ function ScanStore() {
     const imgRes = await window.microapps
       .requestMedia(imgReq)
       .then((res: any) => res);
+    setUploadImg(imgRes); // NI: is this only for testing the barcode API?
     if (imgRes.mimeType) {
       const img = document.getElementById("uploadImgSrc") as HTMLImageElement;
       barcode = await processImageBarcode(img);
@@ -217,7 +219,7 @@ function ScanStore() {
           height="200"
           src={SampleBarcode}
         />
-        {uploadImg.mimeType && (
+        {uploadImg.mimeType && ( // NI: debugging purpose only?
           <Grid item xs={12} justify="center">
             <Paper elevation={2}>
               <img
