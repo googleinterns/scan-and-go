@@ -59,10 +59,9 @@ function ScanStore() {
   };
 
   const addItemToCart = async (barcode: string) => {
-    console.log(cartItems);
-    const idx = cartItems.findIndex(cartItem => cartItem.item.barcode == barcode);
-    if (idx != -1) {
-      updateItemQuantity(barcode, cartItems[idx].quantity + 1);
+    const cartItem = cartItems.find(cartItem => cartItem.item.barcode == barcode);
+    if (cartItem) {
+      updateItemQuantity(barcode, cartItem.quantity + 1);
     } else {
       const data = {
         "merchant-id": merchantID,
@@ -91,18 +90,14 @@ function ScanStore() {
   };
 
   const renderShoppingList = () => {
-    let UI_List = [];
-    for (let i = 0; i < cartItems.length; ++i) {
-      UI_List.push(
-        <Grid key={"grid" + i} item xs={12}>
-          <ItemCard
-            cartItem={cartItems[i]}
-            updateItemQuantity={updateItemQuantity}
-          />
-        </Grid>
-      );
-    }
-    return UI_List;
+    return cartItems.map(cartItem => {
+      return <Grid key={cartItem.item.barcode} item xs={12}>
+        <ItemCard
+          cartItem={cartItem}
+          updateItemQuantity={updateItemQuantity}
+        />
+      </Grid>
+    });
   };
 
   const toggleCart = () => {
