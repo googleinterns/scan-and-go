@@ -48,19 +48,6 @@ function Home() {
     setUsersList(users);
   };
 
-  function TextInputField(props: any) {
-    const onTextChange = (e: any) => {
-      setUserid(e.target.value);
-    };
-    return (
-      <input
-        type="text"
-        placeholder={userid ? userid : "...id"}
-        onBlur={onTextChange}
-      />
-    );
-  }
-
   return (
     <Container disableGutters={true} className="Home">
       {debug_user && [
