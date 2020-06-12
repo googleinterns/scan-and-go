@@ -22,18 +22,14 @@ exports.storesGet = async (req, res) => {
   let retStores = [];
   let limDist = 2000;
 
-  if (reqProps.hasOwnProperty("distance")) {
+  if (reqProps["distance"]) {
     // Limit search radius
     limDist = reqProps["distance"];
   }
-  // Use searching instead
-  // if (reqProps.hasOwnProperty('search')){
 
-  // }
-  if (
-    reqProps.hasOwnProperty("latitude") &&
-    reqProps.hasOwnProperty("longitude")
-  ) {
+  //TODO(#10) Implement searching with keywords
+
+  if (reqProps["latitude"] && reqProps["longitude"]) {
     let userLat = reqProps["latitude"];
     let userLong = reqProps["longitude"];
     for (let i = 0; i < stores.length; ++i) {
@@ -52,7 +48,7 @@ exports.storesGet = async (req, res) => {
 exports.storeGet = async (req, res) => {
   let reqProps = req.body;
   let retStore = {};
-  if (reqProps.hasOwnProperty("store-id")) {
+  if (reqProps["store-id"]) {
     for (let i = 0; i < stores.length; ++i) {
       if (stores[i]["store-id"] == reqProps["store-id"]) {
         retStore = stores[i];
