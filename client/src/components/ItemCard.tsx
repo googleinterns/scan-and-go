@@ -1,13 +1,22 @@
 import React, { useEffect, useState } from "react";
+import { CartItem } from "./../interfaces";
 import { Typography, Paper, Grid, Divider } from "@material-ui/core";
 
-function ItemCard(props: any) {
+function ItemCard({
+  cartItem,
+  idx,
+  updateItemQuantity,
+}: {
+  cartItem: CartItem;
+  idx: number;
+  updateItemQuantity: (idx: number, quantity: number) => void;
+}) {
   const increaseCounter = () => {
-    props.callback(props.idx, props.item.quantity + 1);
+    updateItemQuantity(idx, cartItem.quantity + 1);
   };
 
   const decreaseCounter = () => {
-    props.callback(props.idx, props.item.quantity - 1);
+    updateItemQuantity(idx, cartItem.quantity - 1);
   };
 
   return (
@@ -17,16 +26,16 @@ function ItemCard(props: any) {
           <p>Media</p>
         </Grid>
         <Grid item xs={3}>
-          <Typography variant="body1">{props.item.item.name}</Typography>
+          <Typography variant="body1">{cartItem.item.name}</Typography>
         </Grid>
         <Grid item xs={2}>
           <Typography variant="body1">
-            ${props.item.item.price.toFixed(2)}
+            ${cartItem.item.price.toFixed(2)}
           </Typography>
         </Grid>
         <Grid item xs={2}>
           <Typography variant="body1">
-            ${(props.item.item.price * props.item.quantity).toFixed(2)}
+            ${(cartItem.item.price * cartItem.quantity).toFixed(2)}
           </Typography>
         </Grid>
         <Grid
@@ -41,7 +50,7 @@ function ItemCard(props: any) {
             <button onClick={increaseCounter}>Plus</button>
           </Grid>
           <Grid item xs={12}>
-            <p>{props.item.quantity}</p>
+            <p>{cartItem.quantity}</p>
           </Grid>
           <Grid item xs={12}>
             <button onClick={decreaseCounter}>Minus</button>
