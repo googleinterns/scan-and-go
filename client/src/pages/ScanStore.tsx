@@ -18,9 +18,7 @@ import PaymentIcon from "@material-ui/icons/Payment";
 import AddIcon from "@material-ui/icons/Add";
 import {
   Item,
-  emptyItem,
   CartItem,
-  emptyCartItem,
   MediaResponse,
   emptyMediaResponse,
 } from "./../interfaces";
@@ -34,7 +32,7 @@ declare const window: any;
 const debugImg = true;
 
 function ScanStore() {
-  // Update URL params to find storeID
+  // TODO (#27): Extract logic to get parameters as a function
   const curUrl = window.location.search;
   const urlParams = new URLSearchParams(curUrl);
   const storeID = urlParams.get("id");
@@ -45,34 +43,21 @@ function ScanStore() {
   const [curBarcode, setCurBarcode] = useState<string>("");
   const [uploadImg, setUploadImg] = useState<MediaResponse>(emptyMediaResponse);
 
-  // const emptyCart = new Map<string, CartItem>();
-  // const [cart, setCart] = useState<Map<string, CartItem>>(emptyCart);
-  
+  // TODO (#56): Separate UI and control functions
   const addItem = async () => {
     let barcode = curBarcode;
-    barcode = "93245036"; // DEBUG: remove
-    if (barcode == "") {
+    if (barcode === "") {
       barcode = await getBarcodeByImage();
-      // TODO: no need to call additem to cart if barcode empty
-    }
+    } 
     addItemToCart(barcode);
   };
 
   const addItemToCart = async (barcode: string) => {
-    const cartItem = cartItems.find(cartItem => cartItem.item.barcode == barcode);
-    if (cartItem) {
-      updateItemQuantity(barcode, cartItem.quantity + 1);
+    const existingItem = cartItems.find(cartItem => cartItem.item.barcode == barcode);
+    if (existingItem) {
+      updateItemQuantity(barcode, existingItem.quantity + 1);
     } else {
-      const data = {
-        "merchant-id": merchantID,
-        barcode: [barcode]
-      };
-      const [ item ]: Item[] = await fetchJson(data, "/api/items");
-      const cartItem: CartItem = {
-        item: item,
-        quantity: 1
-      }
-      updateCart(cartItems => [...cartItems, cartItem]);
+      updateNewItem(barcode);
     }
   };
 
@@ -88,6 +73,22 @@ function ScanStore() {
       }));
     }
   };
+
+  const updateNewItem = async (barcode: string) => {
+    const data = {
+      "merchant-id": merchantID,
+      barcode: [barcode]
+    };
+    const [ item ]: Item[] = await fetchJson(data, "/api/items");
+    if (item) {
+      const cartItem: CartItem = {
+        item: item,
+        quantity: 1
+      }
+      updateCart(cartItems => [...cartItems, cartItem]);
+    }
+    // TODO (#59): Notify user if barcode is invalid or item not found
+  }
 
   const renderShoppingList = () => {
     return cartItems.map(cartItem => {
@@ -120,7 +121,7 @@ function ScanStore() {
     const imgRes = await window.microapps
       .requestMedia(imgReq)
       .then((res: any) => res);
-    setUploadImg(imgRes); // NI: is this only for testing the barcode API?
+    setUploadImg(imgRes);
     if (imgRes.mimeType) {
       const img = document.getElementById("uploadImgSrc") as HTMLImageElement;
       barcode = await processImageBarcode(img);
@@ -131,17 +132,14 @@ function ScanStore() {
   const processImageBarcode = async (img: HTMLImageElement) => {
     const codeReader = new BrowserMultiFormatReader();
     let barcode = "";
-    if (img != null) {
+    if (img) {
       barcode = await codeReader
         .decodeFromImage(img)
         .then((res: any) => res)
         .catch((err: any) => {
-          console.log(err);
           return "";
         });
-    } else {
-      console.log("Cannot find element: uploadImgSrc");
-    }
+    } 
     return barcode;
   };
 
@@ -163,6 +161,7 @@ function ScanStore() {
             <Paper elevation={1}>
               <Box p={1}>
                 <Grid item container direction="row" alignItems="center">
+                  {/* TODO (#60): Keep Cart or Shopping List, but not both */}
                   <Grid item xs={6}>
                     <h1>Shopping List:</h1>
                   </Grid>
@@ -214,7 +213,7 @@ function ScanStore() {
           height="200"
           src={SampleBarcode}
         />
-        {uploadImg.mimeType && ( // NI: debugging purpose only?
+        {uploadImg.mimeType && (
           <Grid item xs={12} justify="center">
             <Paper elevation={2}>
               <img
