@@ -59,7 +59,7 @@ function ScanStore() {
     let data = {
       "store-id": storeID,
     };
-    const cart = await fetchJson(data, "/api/cart");
+    const cart = await fetchJson("POST", data, "/api/cart");
     const items = await fetchCartItems(cart);
     updateShoppingList(cartItems, items);
   };
@@ -78,7 +78,7 @@ function ScanStore() {
       "store-id": storeID,
       items: item_barcodes,
     };
-    return fetchJson(data, "/api/items");
+    return fetchJson("POST", data, "/api/item/list");
   };
 
   const updateShoppingList = (items: any, extractedItems: any) => {
@@ -132,7 +132,7 @@ function ScanStore() {
         "merchant-id": merchantID,
         barcode: unknown_barcodes,
       };
-      const items = await fetchJson(data, "/api/items");
+      const items = await fetchJson("POST", data, "/api/item/list");
       displayItems(items);
     }
   };

@@ -1,28 +1,9 @@
 const config = require("./../config");
-const firestore = require("./../firestore");
-const { StoresCollection } = require("./../db-consts");
-const storesCollectionRef = firestore.collection(StoresCollection);
-const env = process.env.NODE_ENV || config.DEV;
-
-function geoDist(lat1, lon1, lat2, lon2) {
-  // script taken from: https://www.movable-type.co.uk/scripts/latlong.html
-  const R = 6371e3; // metres
-  let φ1 = (lat1 * Math.PI) / 180; // φ, λ in radians
-  let φ2 = (lat2 * Math.PI) / 180;
-  let Δφ = ((lat2 - lat1) * Math.PI) / 180;
-  let Δλ = ((lon2 - lon1) * Math.PI) / 180;
-
-  let a =
-    Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-    Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
-  let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-  let d = R * c; // in metres
-  return d;
-}
+const { storesCollection } = require("./../firestore");
+const { geoDist, flatMap } = require("./../utils");
 
 // Extraction of list of stores
-exports.storesGet = async (req, res) => {
+exports.listStores = async (req, res) => {
   const reqProps = req.body;
   let retStores = [];
 
@@ -33,7 +14,7 @@ exports.storesGet = async (req, res) => {
   //TODO(#10) Implement searching with keywords
   try {
     if (userLat && userLong) {
-      const storesQuery = await storesCollectionRef.get();
+      const storesQuery = await storesCollection.get();
       const stores = storesQuery.docs.map((doc) => doc.data());
       for (let i = 0; i < stores.length; ++i) {
         let lat = stores[i]["latitude"];
@@ -52,7 +33,7 @@ exports.storesGet = async (req, res) => {
 };
 
 // Extraction of a single store details
-exports.storeGet = async (req, res) => {
+exports.getStore = async (req, res) => {
   const reqProps = req.body;
   let retStore = {};
 
@@ -60,13 +41,11 @@ exports.storeGet = async (req, res) => {
 
   try {
     if (storeID) {
-      const storeQuery = await storesCollectionRef
+      const storeQuery = await storesCollection
         .where("store-id", "==", storeID)
         .get();
       const stores = storeQuery.docs.map((doc) => doc.data());
-      if (stores.length > 0) {
-        retStore = stores[0];
-      }
+      retStore = flatMap(stores, {});
     }
   } catch (err) {
     console.log(err);
