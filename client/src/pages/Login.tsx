@@ -19,10 +19,10 @@ function Login() {
   // Flag for us to manually run login on mobile
   const [loginError, setLoginError] = useState(false);
   // User Identity
-  const [identity, setIdentity] = useState<IdentityToken>(emptyIdentityToken());
+  const [identity, setIdentity] = useState<IdentityToken>(emptyIdentityToken);
 
   const updateUser = (text: string) => {
-    const newIdentity = emptyIdentityToken();
+    const newIdentity = emptyIdentityToken;
     newIdentity.sub = text;
     setIdentity(newIdentity);
   };
