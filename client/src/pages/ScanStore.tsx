@@ -167,6 +167,7 @@ function ScanStore() {
                   </Grid>
                   <Grid item xs={6}>
                     <TextInputField
+                      // TODO (#23): create constants file with default values
                       text={curBarcode ? curBarcode : "...barcode"}
                       setState={setCurBarcode}
                     />
