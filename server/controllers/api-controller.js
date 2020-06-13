@@ -20,7 +20,7 @@ exports.getWelcomeMessage = async (req, res) => {
       }
     }
   } catch (err) {
-    console.err(err);
+    console.error(err);
   } finally {
     res.send(`Welcome back ${username}.`);
   }

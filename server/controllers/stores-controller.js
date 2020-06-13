@@ -16,17 +16,17 @@ exports.listStores = async (req, res) => {
     if (userLat && userLong) {
       const storesQuery = await storesCollection.get();
       const stores = storesQuery.docs.map((doc) => doc.data());
-      for (let i = 0; i < stores.length; ++i) {
-        let lat = stores[i]["latitude"];
-        let long = stores[i]["longitude"];
-        let curDist = geoDist(userLat, userLong, lat, long);
+      for (let store of stores) {
+        const lat = store["latitude"];
+        const long = store["longitude"];
+        const curDist = geoDist(userLat, userLong, lat, long);
         if (curDist < limDist) {
-          retStores.push(Object.assign({}, stores[i], { distance: curDist }));
+          retStores.push(Object.assign({}, store, { distance: curDist }));
         }
       }
     }
   } catch (err) {
-    console.err(err);
+    console.error(err);
   } finally {
     res.json(retStores);
   }
@@ -48,7 +48,7 @@ exports.getStore = async (req, res) => {
       retStore = flatMap(stores, {});
     }
   } catch (err) {
-    console.log(err);
+    console.error(err);
   } finally {
     res.json(retStore);
   }

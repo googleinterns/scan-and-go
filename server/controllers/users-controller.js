@@ -8,7 +8,7 @@ exports.listUsers = async (req, res) => {
     const usersQuery = await usersCollection.get();
     users = usersQuery.docs.map((doc) => doc.data());
   } catch (err) {
-    console.err(err);
+    console.error(err);
   } finally {
     res.json(users);
   }
@@ -29,7 +29,7 @@ exports.getUser = async (req, res) => {
       user = flatMap(users, {});
     }
   } catch (err) {
-    console.err(err);
+    console.error(err);
   } finally {
     res.json(user);
   }
