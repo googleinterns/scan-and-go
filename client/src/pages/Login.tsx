@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { fetchJson, fetchText } from "./../utils";
 import { TextInputField } from "./../components/Components";
 import { Container, Grid, Typography, Button } from "@material-ui/core";
 import { IdentityToken, emptyIdentityToken } from "./../interfaces";

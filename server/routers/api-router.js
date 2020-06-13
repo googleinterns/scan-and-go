@@ -1,12 +1,23 @@
 const express = require("express");
-const apiController = require("./../controllers/api-controller.js");
-const usersRouter = require("./users-router");
+const apiController = require("./../controllers/api-controller");
+const usersController = require("./../controllers/users-controller");
+const itemsController = require("./../controllers/items-controller");
+const storesController = require("./../controllers/stores-controller");
 const router = express.Router();
 
-router.post("/stores", apiController.storesGet);
-router.post("/store", apiController.storeGet);
-router.post("/", apiController.msgGet);
-router.use("/users", usersRouter);
-router.post("/items", apiController.itemsGet);
+// Debugging Endpoints
+router.post("/", apiController.getWelcomeMessage);
+router.get("/user/list", usersController.listUsers);
+
+// Store API
+router.post("/store", storesController.getStore);
+router.post("/store/list", storesController.listStores); //Batch Operation
+
+// Users API
+router.post("/user", usersController.getUser);
+
+// Items API
+router.post("/item", itemsController.getItem);
+router.post("/item/list", itemsController.listItems); //Batch Operation
 
 module.exports = router;
