@@ -1,26 +1,25 @@
-const { Firestore } = require("@google-cloud/firestore");
+const config = require("./../config");
+const firestore = require("./../firestore");
+const { UsersCollection } = require("./../db-consts");
+const usersCollectionRef = firestore.collection(UsersCollection);
+const env = process.env.NODE_ENV || config.DEV;
 
 exports.homeGet = async (req, res) => {
-  //Yiheng: Cost of initializing new entry into Firestore()?
-  const firestore = new Firestore();
-  const collectionRef = firestore.collection("users");
   let reqProps = req.body;
   let username = "commander";
-  console.log("waiting on firestore");
   try {
-    const snapshot = await collectionRef.get();
-    const users = snapshot.docs.map((doc) => doc.data());
-    if (reqProps["user-id"]) {
-      for (let i = 0; i < users.length; ++i) {
-        if (users[i]["user-id"] == reqProps["user-id"]) {
-          username = users[i]["name"];
-          break;
-        }
+    const userID = reqProps["user-id"];
+    if (userID) {
+      const userQuery = await usersCollectionRef
+        .where("user-id", "==", userID)
+        .get();
+      const users = userQuery.docs.map((doc) => doc.data());
+      if (users.length > 0) {
+        username = users[0]["name"];
       }
     }
   } catch (err) {
-    console.log(err);
-    res.send(err.stack);
+    console.err(err);
   } finally {
     res.send(`Welcome back ${username}.`);
   }

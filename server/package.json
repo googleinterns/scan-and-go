@@ -5,7 +5,8 @@
   "main": "server.js",
   "license": "MIT",
   "scripts": {
-    "dev": "./node_modules/.bin/nodemon server.js --watch controllers/ --watch routers/"
+    "dev": "NODE_ENV=\"development\" ./node_modules/.bin/nodemon server.js --watch controllers/ --watch routers/",
+    "start": "NODE_ENV=\"production\" node server.js"
   },
   "eslintConfig": {
     "extends": "prettier"

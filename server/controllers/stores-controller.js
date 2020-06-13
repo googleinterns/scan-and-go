@@ -1,4 +1,8 @@
-const { Firestore } = require("@google-cloud/firestore");
+const config = require("./../config");
+const firestore = require("./../firestore");
+const { StoresCollection } = require("./../db-consts");
+const storesCollectionRef = firestore.collection(StoresCollection);
+const env = process.env.NODE_ENV || config.DEV;
 
 function geoDist(lat1, lon1, lat2, lon2) {
   // script taken from: https://www.movable-type.co.uk/scripts/latlong.html
@@ -17,63 +21,51 @@ function geoDist(lat1, lon1, lat2, lon2) {
   return d;
 }
 
+// Extraction of list of stores
 exports.storesGet = async (req, res) => {
-  const firestore = new Firestore();
-  const collectionRef = firestore.collection("stores");
-
-  let reqProps = req.body;
+  const reqProps = req.body;
   let retStores = [];
-  let limDist = 2000;
 
-  if (reqProps["distance"]) {
-    // Limit search radius
-    limDist = reqProps["distance"];
-  }
+  const limDist = reqProps["distance"] || 2000; // Limit search radius
+  const userLat = reqProps["latitude"];
+  const userLong = reqProps["longitude"];
 
   //TODO(#10) Implement searching with keywords
   try {
-    const snapshot = await collectionRef.get();
-    const stores = snapshot.docs.map((doc) => doc.data());
-
-    if (reqProps["latitude"] && reqProps["longitude"]) {
-      let userLat = reqProps["latitude"];
-      let userLong = reqProps["longitude"];
+    if (userLat && userLong) {
+      const storesQuery = await storesCollectionRef.get();
+      const stores = storesQuery.docs.map((doc) => doc.data());
       for (let i = 0; i < stores.length; ++i) {
         let lat = stores[i]["latitude"];
         let long = stores[i]["longitude"];
         let curDist = geoDist(userLat, userLong, lat, long);
-        console.log("distance: " + curDist);
         if (curDist < limDist) {
           retStores.push(Object.assign({}, stores[i], { distance: curDist }));
         }
       }
     }
   } catch (err) {
-    console.log(err);
+    console.err(err);
   } finally {
     res.json(retStores);
   }
 };
 
+// Extraction of a single store details
 exports.storeGet = async (req, res) => {
-  const firestore = new Firestore();
-  const collectionRef = firestore.collection("stores");
-  let reqProps = req.body;
+  const reqProps = req.body;
   let retStore = {};
+
+  const storeID = reqProps["store-id"];
+
   try {
-    if (reqProps["store-id"]) {
-      const queryRef = collectionRef.where(
-        "store-id",
-        "==",
-        reqProps["store-id"]
-      );
-      const snapshot = await queryRef.get();
-      const stores = snapshot.docs.map((doc) => doc.data());
-      for (let i = 0; i < stores.length; ++i) {
-        if (stores[i]["store-id"] == reqProps["store-id"]) {
-          retStore = stores[i];
-          break;
-        }
+    if (storeID) {
+      const storeQuery = await storesCollectionRef
+        .where("store-id", "==", storeID)
+        .get();
+      const stores = storeQuery.docs.map((doc) => doc.data());
+      if (stores.length > 0) {
+        retStore = stores[0];
       }
     }
   } catch (err) {

@@ -1,31 +1,24 @@
-const { Firestore } = require("@google-cloud/firestore");
+const config = require("./../config");
+const firestore = require("./../firestore");
+const { ItemsCollection } = require("./../db-consts");
+const itemsCollectionRef = firestore.collection(ItemsCollection);
+const env = process.env.NODE_ENV || config.DEV;
 
 exports.itemsGet = async (req, res) => {
-  let reqProps = req.body;
+  const reqProps = req.body;
   let retItems = [];
-  const firestore = new Firestore();
-  const collectionRef = firestore.collection("items");
-
+  const queryMerchant = reqProps["merchant-id"];
+  const queryBarcodes = reqProps["barcode"];
   try {
-    const snapshot = await collectionRef.get();
-    const items = snapshot.docs.map((doc) => doc.data());
-    if (reqProps["merchant-id"] && reqProps["barcode"]) {
-      let queryMerchant = reqProps["merchant-id"];
-      let queryBarcodes = new Set(reqProps["barcode"]);
-      for (let i = 0; i < items.length; ++i) {
-        let merchant_id = items[i]["merchant-id"];
-        if (merchant_id != queryMerchant) {
-          continue;
-        }
-        let barcode = items[i]["barcode"];
-        if (queryBarcodes.has(barcode)) {
-          retItems.push(items[i]);
-          console.log(items[i]);
-        }
-      }
+    if (queryMerchant && queryBarcodes) {
+      const itemsQueryRef = await itemsCollectionRef
+        .where("merchant-id", "==", queryMerchant)
+        .where("barcode", "in", queryBarcodes)
+        .get();
+      retItems = itemsQueryRef.docs.map((doc) => doc.data());
     }
   } catch (err) {
-    console.log(err);
+    console.err(err);
   } finally {
     res.json(retItems);
   }
