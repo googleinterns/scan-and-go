@@ -19,7 +19,7 @@ exports.listItems = async (req, res) => {
       retItems = itemsQueryRef.docs.map((doc) => doc.data());
     }
   } catch (err) {
-    console.err(err);
+    console.error(err);
   } finally {
     res.json(retItems);
   }
@@ -42,7 +42,7 @@ exports.getItem = async (req, res) => {
       retItem = flatMap(items, {});
     }
   } catch (err) {
-    console.err(err);
+    console.error(err);
   } finally {
     res.json(retItem);
   }
