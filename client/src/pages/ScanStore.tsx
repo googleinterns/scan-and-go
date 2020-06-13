@@ -79,7 +79,7 @@ function ScanStore() {
       "merchant-id": merchantID,
       barcode: [barcode]
     };
-    const [ item ]: Item[] = await fetchJson(data, "/api/items");
+    const [ item ]: Item[] = await fetchJson("POST", data, "/api/item/list");
     if (item) {
       const cartItem: CartItem = {
         item: item,

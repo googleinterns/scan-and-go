@@ -10,7 +10,7 @@ function StoreHeader({ storeId }: { storeId: string | null }) {
     let data = {
       "store-id": storeId,
     };
-    const stores = await fetchJson(data, "/api/store");
+    const stores = await fetchJson("POST", data, "/api/store");
     setCurStore(stores);
   };
 

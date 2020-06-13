@@ -4,9 +4,13 @@ import {
   IdentityToken,
   emptyIdentityToken,
   GMapPlace,
+  MediaResponse,
+  emptyMediaResponse,
 } from "./../interfaces";
 import { fetchJson } from "./../utils";
 import Divider from "@material-ui/core/Divider";
+import { BrowserMultiFormatReader } from "@zxing/library";
+import SampleStoreQR from "./../img/Sample_StoreQR.png";
 
 // Applease typescript
 declare const window: any;
@@ -21,6 +25,8 @@ function StoreList() {
   const [identity, setIdentity] = useState<IdentityToken>(emptyIdentityToken);
   const [nearbyPlaces, setNearbyPlaces] = useState<GMapPlace[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  // Uploaded image data
+  const [uploadImg, setUploadImg] = useState<MediaResponse>(emptyMediaResponse);
 
   // Dummy map attachment
   const map = new google.maps.Map(document.getElementById("mapPlaceholder"));
@@ -71,7 +77,7 @@ function StoreList() {
       latitude: position.coords.latitude,
       longitude: position.coords.longitude,
     };
-    const stores = await fetchJson(data, "/api/stores");
+    const stores = await fetchJson("POST", data, "/api/store/list");
     setStoreList(stores);
     setIsLoading(false);
   };
@@ -117,8 +123,62 @@ function StoreList() {
     }
   };
 
+  // Scan Store's QR code
+  const storeQR = async () => {
+    if (window.location == window.parent.location) {
+      const img = document.getElementById(
+        "sampleStoreQRImgSrc"
+      ) as HTMLImageElement;
+      processImageBarcode(img);
+    } else {
+      const imgReq = {
+        allowedMimeTypes: ["image/jpeg"],
+        allowedSources: ["camera"], // Restrict to camera scanning only
+      };
+      const imgRes = await window.microapps
+        .requestMedia(imgReq)
+        .then((res: any) => res);
+      setUploadImg(imgRes);
+    }
+  };
+
+  const processImageBarcode = async (img: HTMLImageElement) => {
+    const codeReader = new BrowserMultiFormatReader();
+    if (img != null) {
+      const result = await codeReader
+        .decodeFromImage(img)
+        .then((res: any) => res)
+        .catch((err: any) => {
+          console.log(err);
+          return "";
+        });
+      if (result) {
+        window.location.href = "/store?" + result.text;
+      } else {
+        console.log("Unable to redirect, QR Code not scanned correctly");
+      }
+    } else {
+      console.log("Cannot find element: storeQRImgSrc");
+    }
+  };
+
+  useEffect(() => {
+    if (uploadImg.mimeType) {
+      const img = document.getElementById("storeQRImgSrc") as HTMLImageElement;
+      processImageBarcode(img);
+    }
+  }, [uploadImg]);
+
   return (
     <div className="StoreList">
+      {uploadImg.mimeType && (
+        <img
+          hidden={true}
+          id="storeQRImgSrc"
+          src={"data:" + uploadImg.mimeType + ";base64," + uploadImg.bytes}
+        />
+      )}
+      <img hidden={true} id="sampleStoreQRImgSrc" src={SampleStoreQR} />
       <h3>
         [{userCoords[0]},{userCoords[1]}]
       </h3>
@@ -129,6 +189,7 @@ function StoreList() {
         <a href="/store?id=WPANCUD-1&mid=WPANCUD">Test Store</a>
       </button>
       <button onClick={loginUser}>User Login</button>
+      <button onClick={storeQR}>Scan Store QR</button>
       <button onClick={grabLoc}>Nearby Stores</button>
       <button onClick={getNearbyPlaces}>Nearby Restaurants</button>
       {storeList.length > 0 && (
