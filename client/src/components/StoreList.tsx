@@ -77,7 +77,7 @@ function StoreList() {
       latitude: position.coords.latitude,
       longitude: position.coords.longitude,
     };
-    const stores = await fetchJson(data, "/api/stores");
+    const stores = await fetchJson("POST", data, "/api/store/list");
     setStoreList(stores);
     setIsLoading(false);
   };

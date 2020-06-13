@@ -32,7 +32,7 @@ function Home() {
       const data = {
         "user-id": userid,
       };
-      let msg = await fetchText(data, "/api/");
+      let msg = await fetchText("POST", data, "/api/");
       if (msg == null) {
         msg = "hello";
       }
@@ -44,7 +44,7 @@ function Home() {
 
   // Wrapper to issue fetch GET to /api/users/all
   const fetchUsers = async () => {
-    const users = await fetchJson(null, "/api/users/all");
+    const users = await fetchJson("GET", null, "/api/user/list");
     setUsersList(users);
   };
 

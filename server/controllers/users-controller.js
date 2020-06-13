@@ -1,17 +1,36 @@
 const config = require("./../config");
-const firestore = require("./../firestore");
-const { UsersCollection } = require("./../db-consts");
-const usersCollectionRef = firestore.collection(UsersCollection);
-const env = process.env.NODE_ENV || config.DEV;
+const { usersCollection } = require("./../firestore");
+const { flatMap } = require("./../utils");
 
-exports.usersGetAll = async (req, res) => {
-  if (env == config.DEV) {
-    console.time("Users ALL query");
+exports.listUsers = async (req, res) => {
+  let users = [];
+  try {
+    const usersQuery = await usersCollection.get();
+    users = usersQuery.docs.map((doc) => doc.data());
+  } catch (err) {
+    console.err(err);
+  } finally {
+    res.json(users);
   }
-  const usersQuery = await usersCollectionRef.get();
-  const users = usersQuery.docs.map((doc) => doc.data());
-  if (env == config.DEV) {
-    console.timeEnd("Users ALL query");
+};
+
+exports.getUser = async (req, res) => {
+  const reqProps = req.body;
+  let user = {};
+
+  const userID = reqProps["user-id"];
+
+  try {
+    if (userID) {
+      const userQuery = await usersCollection
+        .where("user-id", "==", userID)
+        .get();
+      const users = userQuery.docs.map((doc) => doc.data());
+      user = flatMap(users, {});
+    }
+  } catch (err) {
+    console.err(err);
+  } finally {
+    res.json(user);
   }
-  res.json(users);
 };
