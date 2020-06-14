@@ -83,7 +83,7 @@ function StoreList() {
     const request = {
       location: curLoc,
       radius: LOCATION_RADIUS_METERS,
-      type: ["restaurant"],
+      type: PLACES_TYPES,
     };
     setIsLoading(true);
     service.nearbySearch(request, getNearbyPlacesCallback);
