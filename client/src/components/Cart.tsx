@@ -12,9 +12,9 @@ import {
 function Cart({ contents }: { contents: CartItem[] }) {
   const getTotalPrice = () => {
     let tot_price = 0.0;
-    for (let i = 0; i < contents.length; ++i) {
-      tot_price += contents[i].quantity * contents[i].item.price;
-    }
+    contents.forEach(cartItem => {
+      tot_price += cartItem.quantity * cartItem.item.price;
+    });
     return tot_price.toFixed(2);
   };
 
