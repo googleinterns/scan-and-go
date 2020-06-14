@@ -11,6 +11,7 @@ import {
   TableRow,
   TableCell,
 } from "@material-ui/core";
+import { API, USERS_ALL_API, DEFAULT_WELCOME_MSG, ID_PLACEHOLDER, DEFAULT_INPUT_TYPE } from "../constants";
 
 // Testing code, will be removed soon
 interface UserUI {
@@ -32,9 +33,9 @@ function Home() {
       const data = {
         "user-id": userid,
       };
-      let msg = await fetchText(data, "/api/");
-      if (msg == null) {
-        msg = "hello";
+      let msg = await fetchText(data, API);
+      if (!msg) {
+        msg = DEFAULT_WELCOME_MSG;
       }      
       setWelMsg(msg);
     };
@@ -45,7 +46,7 @@ function Home() {
 
   // Wrapper to issue fetch GET to /api/users/all
   const fetchUsers = async () => {
-    const users = await fetchJson(null, "/api/users/all");
+    const users = await fetchJson(null, USERS_ALL_API);
     setUsersList(users);
   };
 
@@ -55,8 +56,8 @@ function Home() {
     };
     return (
       <input
-        type="text"
-        placeholder={userid ? userid : "...id"}
+        type={DEFAULT_INPUT_TYPE}
+        placeholder={userid ? userid : ID_PLACEHOLDER}
         onBlur={onTextChange}
       />
     );

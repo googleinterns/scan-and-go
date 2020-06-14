@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { CartItem } from "./../interfaces";
+import { PRICE_FRACTION_DIGITS } from '../constants'
 import { Typography, Paper, Grid, Divider } from "@material-ui/core";
 
 function ItemCard({
@@ -30,12 +31,12 @@ function ItemCard({
         </Grid>
         <Grid item xs={2}>
           <Typography variant="body1">
-            ${cartItem.item.price.toFixed(2)}
+            ${cartItem.item.price.toFixed(PRICE_FRACTION_DIGITS)}
           </Typography>
         </Grid>
         <Grid item xs={2}>
           <Typography variant="body1">
-            ${(cartItem.item.price * cartItem.quantity).toFixed(2)}
+            ${(cartItem.item.price * cartItem.quantity).toFixed(PRICE_FRACTION_DIGITS)}
           </Typography>
         </Grid>
         <Grid
