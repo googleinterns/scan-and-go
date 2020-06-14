@@ -16,10 +16,22 @@ import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import EditIcon from "@material-ui/icons/Edit";
 import PaymentIcon from "@material-ui/icons/Payment";
 import AddIcon from "@material-ui/icons/Add";
-import { Item, emptyItem, CartItem, emptyCartItem } from "./../interfaces";
+import {
+  Item,
+  emptyItem,
+  CartItem,
+  emptyCartItem,
+  MediaResponse,
+  emptyMediaResponse,
+} from "./../interfaces";
 import { fetchJson } from "./../utils";
 import { TextInputField } from "./../components/Components";
+import { BrowserMultiFormatReader } from "@zxing/library";
+import SampleBarcode from "./../img/Sample_EAN8.png";
 declare const window: any;
+
+//Yiheng: For whether we should display our uploaded image for debugging
+const debugImg = true;
 
 function ScanStore() {
   // Update URL params to find storeID
@@ -33,6 +45,9 @@ function ScanStore() {
   //DEBUGGING Current barcode to 'scan'
   const [curBarcode, setCurBarcode] = useState<string>("");
 
+  // Uploaded image data
+  const [uploadImg, setUploadImg] = useState<MediaResponse>(emptyMediaResponse);
+
   //TODO: Look into `class ScanStore extends React.Component` syntax
   //      in order to declare class-level instance variables (cache cart)
   let cartItems: CartItem[] = [];
@@ -44,8 +59,8 @@ function ScanStore() {
     let data = {
       "store-id": storeID,
     };
-    const cart = await fetchJson(data, "/api/cart");
-    const items = await fetchCartItems(cart)
+    const cart = await fetchJson("POST", data, "/api/cart");
+    const items = await fetchCartItems(cart);
     updateShoppingList(cartItems, items);
   };
 
@@ -63,7 +78,7 @@ function ScanStore() {
       "store-id": storeID,
       items: itemBarcodes,
     };
-    return fetchJson(data, "/api/items");
+    return fetchJson("POST", data, "/api/item/list");
   };
 
   const updateShoppingList = (items: any, extractedItems: any) => {
@@ -78,22 +93,49 @@ function ScanStore() {
   };
 
   const setDebugItem = (barcode: string) => {
-    setShoppingList(cartItems);
     setCurBarcode(barcode);
+    setShoppingList(cartItems);
   };
 
-  const addItem = () => {
-    let barcodes: string[] = [curBarcode];
-    fetchItem(barcodes);
+  const addItem = async () => {
+    if (curBarcode == "") {
+      // If empty, use media API
+      const imgReq = {
+        allowedMimeTypes: ["image/jpeg"],
+        allowedSources: ["camera"], // Restrict to camera scanning only
+      };
+      const imgRes = await window.microapps
+        .requestMedia(imgReq)
+        .then((res: any) => res);
+      setUploadImg(imgRes);
+    } else {
+      let barcodes: string[] = [curBarcode];
+      fetchItem(barcodes);
+    }
   };
 
   const fetchItem = async (barcodes: string[]) => {
-    let data = {
-      "merchant-id": merchantID,
-      barcode: barcodes,
-    };
-    const items = await fetchJson(data, "/api/items");
-    displayItems(items);
+    // Check first if we have previously retrieved this item
+    let unknown_barcodes: string[] = [];
+    let matchedItems: Item[] = [];
+    for (let i = 0; i < barcodes.length; ++i) {
+      if (idxMap[barcodes[i]] != undefined) {
+        let matchedCartItem = cartItems[idxMap[barcodes[i]]];
+        matchedItems.push(matchedCartItem.item);
+      } else {
+        unknown_barcodes.push(barcodes[i]);
+      }
+    }
+    if (matchedItems.length > 0) {
+      displayItems(matchedItems);
+    } else if (unknown_barcodes.length > 0) {
+      let data = {
+        "merchant-id": merchantID,
+        barcode: unknown_barcodes,
+      };
+      const items = await fetchJson("POST", data, "/api/item/list");
+      displayItems(items);
+    }
   };
 
   const displayItems = (extractedItems: Item[]) => {
@@ -150,22 +192,54 @@ function ScanStore() {
   };
 
   const makePayment = () => {
+    //Yiheng: This should be just an ID without exposing the contents of our Order
     window.location.href =
       "/receipt?id=TEST_ORDER&contents=" +
       encodeURIComponent(JSON.stringify(shoppingList));
   };
 
-  // After first rendering of UI, update CartItem
-  useEffect(() => {
-    updateIdxMapping();
-  }, [showCart]);
+  const processImageBarcode = async (img: HTMLImageElement) => {
+    const codeReader = new BrowserMultiFormatReader();
+    if (img != null) {
+      const result = await codeReader
+        .decodeFromImage(img)
+        .then((res: any) => res)
+        .catch((err: any) => {
+          console.log(err);
+          return "";
+        });
+      console.log("Processed image: " + result);
+      setDebugItem(result.text);
+    } else {
+      console.log("Cannot find element: uploadImgSrc");
+    }
+  };
 
+  const testBarcode = () => {
+    const img = document.getElementById("testImgSrc") as HTMLImageElement;
+    processImageBarcode(img);
+  };
+
+  //TODO When we update shoppingList, we should send update to server?
+
+  // When we change what image we uploaded, run extract barcode client-side
   useEffect(() => {
-    updateIdxMapping();
-  }, [shoppingList]);
+    if (uploadImg.mimeType) {
+      // Have something
+      const img = document.getElementById("uploadImgSrc") as HTMLImageElement;
+      processImageBarcode(img);
+    }
+  }, [uploadImg]);
+
+  // After rerendering of UI and React popping variables off our stack,
+  // reinitialize vars
+  // Also, race? Will this run before all other useEffects? What's the ordering of execution here?
+  useEffect(() => {
+    updateIdxMapping(); //TODO(#20) Yiheng: Tech Debt, we need to make this persist as Class Variable
+  });
 
   return (
-    <Container className="ScanStore">
+    <Container disableGutters={true} className="ScanStore">
       <Grid container spacing={1} direction="column" alignItems="stretch">
         <Grid item xs={12}>
           <Paper elevation={1}>
@@ -181,7 +255,10 @@ function ScanStore() {
                     <h1>Shopping List:</h1>
                   </Grid>
                   <Grid item xs={6}>
-                    <TextInputField text="...barcode" setState={setDebugItem} />
+                    <TextInputField
+                      text={curBarcode ? curBarcode : "...barcode"}
+                      setState={setDebugItem}
+                    />
                   </Grid>
                 </Grid>
                 {shoppingList.length > 0 && (
@@ -214,6 +291,29 @@ function ScanStore() {
                   </Grid>
                 )}
               </Box>
+            </Paper>
+          </Grid>
+        )}
+        <button onClick={testBarcode}>Test Barcode API</button>
+        <img
+          id="testImgSrc"
+          hidden={true}
+          width="200"
+          height="200"
+          src={SampleBarcode}
+        />
+        {uploadImg.mimeType && (
+          <Grid item xs={12} justify="center">
+            <Paper elevation={2}>
+              <img
+                id="uploadImgSrc"
+                hidden={!debugImg}
+                width="200"
+                height="200"
+                src={
+                  "data:" + uploadImg.mimeType + ";base64," + uploadImg.bytes
+                }
+              />
             </Paper>
           </Grid>
         )}

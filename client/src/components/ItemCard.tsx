@@ -5,11 +5,11 @@ import { Typography, Paper, Grid, Divider } from "@material-ui/core";
 function ItemCard({
   cartItem,
   idx,
-  updateItemQuantity
+  updateItemQuantity,
 }: {
-  cartItem: CartItem,
-  idx: number,
-  updateItemQuantity: (idx: number, quantity: number) => void
+  cartItem: CartItem;
+  idx: number;
+  updateItemQuantity: (idx: number, quantity: number) => void;
 }) {
   const increaseCounter = () => {
     updateItemQuantity(idx, cartItem.quantity + 1);
