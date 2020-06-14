@@ -10,10 +10,6 @@ export const STORES_API = '/api/stores';
 export const USERS_API = '/api/users';
 export const USERS_ALL_API = '/api/users/all';
 
-// Data formats
-export const PRICE_FRACTION_DIGITS = 2;
-export const LOCATION_RADIUS_METERS = '5000';
-
 // UI attributes
 export const BARCODE_PLACEHOLDER = '...barcode';
 export const ID_PLACEHOLDER = '...id';
@@ -22,6 +18,9 @@ export const ID_PLACEHOLDER = '...id';
 export const DEFAULT_INPUT_TYPE = 'text';
 export const DEFAULT_WELCOME_MSG = 'hello';
 export const DEFAULT_USERNAME = 'commander';
+export const PRICE_FRACTION_DIGITS = 2;
+export const PLACES_RADIUS_METERS = '5000';
+export const PLACES_TYPES = ['restaurant'];
 
 // Test variables
 export const TEST_STORE_ID = 'WPANCUD';
