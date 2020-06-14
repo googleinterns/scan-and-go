@@ -5,15 +5,15 @@
   "main": "server.js",
   "license": "MIT",
   "scripts": {
-    "dev": "./node_modules/.bin/nodemon server.js --watch controllers/ --watch routers/"
+    "dev": "NODE_ENV=\"development\" ./node_modules/.bin/nodemon server.js --watch controllers/ --watch routers/",
+    "start": "NODE_ENV=\"production\" node server.js"
   },
   "eslintConfig": {
     "extends": "prettier"
   },
   "dependencies": {
-    "body-parser": "^1.19.0",
+    "@google-cloud/firestore": "^3.8.5",
     "compression": "^1.7.4",
-    "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "helmet": "^3.22.0"
