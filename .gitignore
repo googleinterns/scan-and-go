@@ -3,3 +3,4 @@
 **/*.log
 *.sublime-project
 *.sublime-workspace
+**/__snapshots__/
