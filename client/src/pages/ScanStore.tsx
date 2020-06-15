@@ -46,19 +46,15 @@ function ScanStore() {
 
   const [showCart, setShowCart] = useState(false);
   const [shoppingList, setShoppingList] = useState<CartItem[]>([]);
-  //DEBUGGING Current barcode to 'scan'
-  const [curBarcode, setCurBarcode] = useState<string>("");
-
-  // Debugging Item Barcode img
-  const debugImgId = "testImgSrc";
-
-  // Img Element id containing user-uploaded image
-  const uploadImgId = "uploadImgSrc";
-
-  // Uploaded image data
   const [uploadImg, setUploadImg] = useState<MediaResponse>(
     emptyMediaResponse()
   );
+
+  const debugImgId = "testImgSrc";
+  const uploadImgId = "uploadImgSrc";
+
+  //DEBUGGING Current barcode to 'scan'
+  const [curBarcode, setCurBarcode] = useState<string>("");
 
   //TODO: Look into `class ScanStore extends React.Component` syntax
   //      in order to declare class-level instance variables (cache cart)
@@ -116,9 +112,7 @@ function ScanStore() {
         allowedMimeTypes: ["image/jpeg"],
         allowedSources: ["camera"], // Restrict to camera scanning only
       };
-      const imgRes = await microapps
-        .requestMedia(imgReq)
-        .then((res: any) => res);
+      const imgRes = await microapps.requestMedia(imgReq);
       setUploadImg(imgRes);
     } else {
       let barcodes: string[] = [curBarcode];
@@ -215,13 +209,13 @@ function ScanStore() {
     if (img != null) {
       const result = await codeReader
         .decodeFromImage(img)
-        .then((res: any) => res)
+        .then((res: any) => res.text)
         .catch((err: any) => {
           console.log(err);
           return "";
         });
       console.log("Processed image: " + result);
-      setDebugItem(result.text);
+      setDebugItem(result);
     } else {
       console.log(`Cannot find element: ${uploadImgId}`);
     }
