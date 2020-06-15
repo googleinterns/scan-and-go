@@ -1,9 +1,12 @@
-export const isDebug = false;
+declare const window: any;
 
-export declare const window: any;
+export const isDebug = true;
 
 // Grab a handle to our microapps javascript library
 export const microapps = window.microapps;
+
+// Grab handle to google client js API
+export const google = window.google;
 
 // Detect if our app is running from within an iframe
 // if so, then we are *likely* in the microapps environment
@@ -11,9 +14,10 @@ export const microapps = window.microapps;
 export const isWeb = window.location == window.parent.location;
 
 // API endpoints
-export const API = "/api";
+export const API = "/api/";
 export const CART_API = "/api/cart";
 export const ITEM_API = "/api/item";
+export const ITEM_LIST_API = "/api/item/list";
 export const ORDER_API = "/api/order";
 export const ORDER_LIST_API = "/api/order/list";
 export const PAY_API = "/api/pay";
@@ -24,6 +28,8 @@ export const USER_LIST_API = "/api/user/list";
 // UI attributes
 export const BARCODE_PLACEHOLDER = "...barcode";
 export const ID_PLACEHOLDER = "...id";
+export const EMPTY_PLACEHOLDER = "";
+export const TITLE_TEXT = "ScanAndGo";
 // Default values
 export const DEFAULT_INPUT_TYPE = "text";
 export const DEFAULT_WELCOME_MSG = "hello";
@@ -32,4 +38,5 @@ export const PRICE_FRACTION_DIGITS = 2;
 export const PLACES_RADIUS_METERS = "5000";
 export const PLACES_TYPES = ["restaurant"];
 // Test variables
-export const TEST_STORE_ID = "WPANCUD";
+export const TEST_STORE_ID = "WPANCUD-1";
+export const TEST_STORE_MERCHANT_ID = "WPANCUD";

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Input } from "@material-ui/core";
-import { ID_PLACEHOLDER } from "../constants";
+import { EMPTY_PLACEHOLDER } from "../constants";
 
 export function TextInputField({
   text,
@@ -22,7 +22,7 @@ export function TextInputField({
     <Input
       type={type ? type : "text"}
       fullWidth={fullWidth}
-      placeholder={text ? text : ID_PLACEHOLDER}
+      placeholder={text ? text : EMPTY_PLACEHOLDER}
       onBlur={onTextChange}
     />
   );

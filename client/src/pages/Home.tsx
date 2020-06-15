@@ -4,20 +4,13 @@ import { fetchJson, fetchText } from "./../utils";
 import { TextInputField } from "./../components/Components";
 import {
   Container,
-  Grid,
   Table,
   TableBody,
   TableHead,
   TableRow,
   TableCell,
 } from "@material-ui/core";
-import {
-  API,
-  USERS_ALL_API,
-  DEFAULT_WELCOME_MSG,
-  ID_PLACEHOLDER,
-  DEFAULT_INPUT_TYPE,
-} from "../constants";
+import { API, USER_LIST_API, DEFAULT_WELCOME_MSG } from "../constants";
 
 // Testing code, will be removed soon
 interface UserUI {

@@ -4,7 +4,7 @@ import { fetchJson } from "./../utils";
 import { STORE_API } from "../constants";
 
 function StoreHeader({ storeId }: { storeId: string | null }) {
-  const [curStore, setCurStore] = useState<Store>(emptyStore);
+  const [curStore, setCurStore] = useState<Store>(emptyStore());
 
   // fetch list of users
   const fetchStore = async () => {

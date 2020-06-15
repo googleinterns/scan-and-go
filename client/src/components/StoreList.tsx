@@ -8,26 +8,31 @@ import {
   emptyMediaResponse,
 } from "./../interfaces";
 import { fetchJson, extractIdentityToken } from "./../utils";
-import { STORES_API, LOCATION_RADIUS_METERS } from "../constants";
+import {
+  STORE_LIST_API,
+  PLACES_RADIUS_METERS,
+  PLACES_TYPES,
+  TEST_STORE_ID,
+  TEST_STORE_MERCHANT_ID,
+  microapps,
+  google,
+  isWeb,
+} from "../constants";
 import Divider from "@material-ui/core/Divider";
 import { BrowserMultiFormatReader } from "@zxing/library";
 import SampleStoreQR from "./../img/Sample_StoreQR.png";
-
-// Applease typescript
 declare const window: any;
-// Grab handle to our microapps js library
-const microapps = window.microapps;
-// Grab handle to google client js API
-const google = window.google;
 
 function StoreList() {
   const [userCoords, setUserCoords] = useState<[number, number]>([0.0, 0.0]);
   const [storeList, setStoreList] = useState<Store[]>([]);
-  const [identity, setIdentity] = useState<IdentityToken>(emptyIdentityToken);
+  const [identity, setIdentity] = useState<IdentityToken>(emptyIdentityToken());
   const [nearbyPlaces, setNearbyPlaces] = useState<GMapPlace[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   // Uploaded image data
-  const [uploadImg, setUploadImg] = useState<MediaResponse>(emptyMediaResponse);
+  const [uploadImg, setUploadImg] = useState<MediaResponse>(
+    emptyMediaResponse()
+  );
 
   // Dummy map attachment
   const map = new google.maps.Map(document.getElementById("mapPlaceholder"));
@@ -41,8 +46,13 @@ function StoreList() {
 
   // Grab the location of device
   const grabLoc = () => {
-    // Use microapps API if we are in an iframe
-    if (window.location !== window.parent.location) {
+    // Use browser navigator if we are in web environment & available
+    if (isWeb) {
+      if (navigator.geolocation) {
+        setIsLoading(true);
+        navigator.geolocation.getCurrentPosition(fetchStores, errorbackLoc);
+      }
+    } else {
       setIsLoading(true);
       microapps
         .getCurrentLocation()
@@ -57,11 +67,6 @@ function StoreList() {
         })
         .catch((err: any) => errorbackLoc(err));
     }
-    // Otherwise, use browser navigator
-    else if (navigator.geolocation) {
-      setIsLoading(true);
-      navigator.geolocation.getCurrentPosition(fetchStores, errorbackLoc);
-    }
   };
 
   // fetch list of users
@@ -72,13 +77,13 @@ function StoreList() {
     };
   }) => {
     // Update location
-    grabLoc(); //blocking? race on userCoords update?
     const data = {
       distance: 10000,
       latitude: position.coords.latitude,
       longitude: position.coords.longitude,
     };
     const stores = await fetchJson("POST", data, STORE_LIST_API);
+    setUserCoords([position.coords.latitude, position.coords.longitude]);
     setStoreList(stores);
     setIsLoading(false);
   };
@@ -88,7 +93,7 @@ function StoreList() {
     const curLoc = new google.maps.LatLng(userCoords[0], userCoords[1]);
     const request = {
       location: curLoc,
-      radius: LOCATION_RADIUS_METERS,
+      radius: PLACES_RADIUS_METERS,
       type: PLACES_TYPES,
     };
     setIsLoading(true);
@@ -108,7 +113,9 @@ function StoreList() {
   // Get user identity details
   const loginUser = async () => {
     // Only run in iframe (on app)
-    if (window.location !== window.parent.location) {
+    if (isWeb) {
+      console.log("Only supported in GPay microapp");
+    } else {
       const request = { nonce: "Don't Hack me please" };
       microapps
         .getIdentity(request)
@@ -118,14 +125,12 @@ function StoreList() {
         .catch((error: any) => {
           console.error("An error occurred: ", error);
         });
-    } else {
-      console.log("Only supported in GPay microapp");
     }
   };
 
   // Scan Store's QR code
   const storeQR = async () => {
-    if (window.location == window.parent.location) {
+    if (isWeb) {
       const img = document.getElementById(
         "sampleStoreQRImgSrc"
       ) as HTMLImageElement;
@@ -186,7 +191,9 @@ function StoreList() {
         {identity.sub} [{isLoading ? "Loading..." : ""}]
       </h4>
       <button>
-        <a href="/store?id=WPANCUD-1&mid=WPANCUD">Test Store</a>
+        <a href="/store?id={TEST_STORE_ID}&mid={TEST_STORE_MERCHANT_ID}">
+          Test Store
+        </a>
       </button>
       <button onClick={loginUser}>User Login</button>
       <button onClick={storeQR}>Scan Store QR</button>

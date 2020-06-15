@@ -11,23 +11,25 @@ import {
   Paper,
   Typography,
 } from "@material-ui/core";
-import { spacing } from "@material-ui/system";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import EditIcon from "@material-ui/icons/Edit";
 import PaymentIcon from "@material-ui/icons/Payment";
 import AddIcon from "@material-ui/icons/Add";
 import {
   Item,
-  emptyItem,
   CartItem,
-  emptyCartItem,
   MediaResponse,
   emptyMediaResponse,
 } from "./../interfaces";
 import { fetchJson } from "./../utils";
 import { TextInputField } from "./../components/Components";
 import { BrowserMultiFormatReader } from "@zxing/library";
-import { CART_API, ITEMS_API, BARCODE_PLACEHOLDER } from "../constants";
+import {
+  CART_API,
+  ITEM_LIST_API,
+  BARCODE_PLACEHOLDER,
+  microapps,
+} from "../constants";
 import SampleBarcode from "./../img/Sample_EAN8.png";
 declare const window: any;
 
@@ -47,7 +49,9 @@ function ScanStore() {
   const [curBarcode, setCurBarcode] = useState<string>("");
 
   // Uploaded image data
-  const [uploadImg, setUploadImg] = useState<MediaResponse>(emptyMediaResponse);
+  const [uploadImg, setUploadImg] = useState<MediaResponse>(
+    emptyMediaResponse()
+  );
 
   //TODO: Look into `class ScanStore extends React.Component` syntax
   //      in order to declare class-level instance variables (cache cart)
@@ -105,7 +109,7 @@ function ScanStore() {
         allowedMimeTypes: ["image/jpeg"],
         allowedSources: ["camera"], // Restrict to camera scanning only
       };
-      const imgRes = await window.microapps
+      const imgRes = await microapps
         .requestMedia(imgReq)
         .then((res: any) => res);
       setUploadImg(imgRes);
