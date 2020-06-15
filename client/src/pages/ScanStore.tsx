@@ -19,7 +19,7 @@ import AddIcon from "@material-ui/icons/Add";
 import { Item, emptyItem, CartItem, emptyCartItem } from "./../interfaces";
 import { fetchJson } from "./../utils";
 import { TextInputField } from "./../components/Components";
-import { CART_API, ITEMS_API, BARCODE_PLACEHOLDER } from "../constants";
+import { CART_API, ITEM_LIST_API, BARCODE_PLACEHOLDER } from "../constants";
 declare const window: any;
 
 function ScanStore() {
@@ -45,7 +45,7 @@ function ScanStore() {
     let data = {
       "store-id": storeID,
     };
-    const cart = await fetchJson(data, CART_API);
+    const cart = await fetchJson("POST", data, CART_API);
     const items = await fetchCartItems(cart);
     updateShoppingList(cartItems, items);
   };
@@ -64,7 +64,7 @@ function ScanStore() {
       "store-id": storeID,
       items: itemBarcodes,
     };
-    return fetchJson(data, ITEMS_API);
+    return fetchJson("POST", data, ITEM_LIST_API);
   };
 
   const updateShoppingList = (items: any, extractedItems: any) => {
@@ -93,7 +93,7 @@ function ScanStore() {
       "merchant-id": merchantID,
       barcode: barcodes,
     };
-    const items = await fetchJson(data, ITEMS_API);
+    const items = await fetchJson("POST", data, ITEM_LIST_API);
     displayItems(items);
   };
 

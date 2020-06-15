@@ -6,7 +6,11 @@ import {
   GMapPlace,
 } from "./../interfaces";
 import { fetchJson } from "./../utils";
-import { STORES_API, LOCATION_RADIUS_METERS } from "../constants";
+import {
+  STORE_LIST_API,
+  PLACES_RADIUS_METERS,
+  PLACES_TYPES,
+} from "../constants";
 import Divider from "@material-ui/core/Divider";
 
 // Applease typescript
@@ -72,7 +76,7 @@ function StoreList() {
       latitude: position.coords.latitude,
       longitude: position.coords.longitude,
     };
-    const stores = await fetchJson(data, STORES_API);
+    const stores = await fetchJson("POST", data, STORE_LIST_API);
     setStoreList(stores);
     setIsLoading(false);
   };
@@ -82,7 +86,7 @@ function StoreList() {
     const curLoc = new google.maps.LatLng(userCoords[0], userCoords[1]);
     const request = {
       location: curLoc,
-      radius: LOCATION_RADIUS_METERS,
+      radius: PLACES_RADIUS_METERS,
       type: PLACES_TYPES,
     };
     setIsLoading(true);
