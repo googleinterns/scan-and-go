@@ -7,7 +7,7 @@ import {
   MediaResponse,
   emptyMediaResponse,
 } from "./../interfaces";
-import { fetchJson } from "./../utils";
+import { fetchJson, extractIdentityToken } from "./../utils";
 import Divider from "@material-ui/core/Divider";
 import { BrowserMultiFormatReader } from "@zxing/library";
 import SampleStoreQR from "./../img/Sample_StoreQR.png";
@@ -112,8 +112,7 @@ function StoreList() {
       microapps
         .getIdentity(request)
         .then((response: any) => {
-          const decoded = JSON.parse(atob(response.split(".")[1]));
-          setIdentity(decoded);
+          setIdentity(extractIdentityToken(response));
         })
         .catch((error: any) => {
           console.error("An error occurred: ", error);
