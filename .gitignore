@@ -3,3 +3,7 @@
 **/*.log
 *.sublime-project
 *.sublime-workspace
+
+# Project specific exclusions
+code.list
+client/src/sample_order.json

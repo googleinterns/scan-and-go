@@ -46,7 +46,7 @@ function ScanStore() {
       "store-id": storeID,
     };
     const cart = await fetchJson(data, CART_API);
-    const items = await fetchCartItems(cart)
+    const items = await fetchCartItems(cart);
     updateShoppingList(cartItems, items);
   };
 
@@ -71,7 +71,7 @@ function ScanStore() {
     const sList = items.map((zippedItem: any) => {
       let cItem: CartItem = {
         item: extractedItems[zippedItem.barcode],
-        quantity: zippedItem.quantity
+        quantity: zippedItem.quantity,
       };
       return cItem;
     });
@@ -104,7 +104,7 @@ function ScanStore() {
       } else {
         let newItem: CartItem = {
           item: extractedItems[i],
-          quantity: 1
+          quantity: 1,
         };
         cartItems.push(newItem);
       }
@@ -182,7 +182,10 @@ function ScanStore() {
                     <h1>Shopping List:</h1>
                   </Grid>
                   <Grid item xs={6}>
-                    <TextInputField text={BARCODE_PLACEHOLDER} setState={setDebugItem} />
+                    <TextInputField
+                      text={BARCODE_PLACEHOLDER}
+                      setState={setDebugItem}
+                    />
                   </Grid>
                 </Grid>
                 {shoppingList.length > 0 && (
