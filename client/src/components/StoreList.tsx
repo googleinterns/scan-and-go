@@ -191,7 +191,7 @@ function StoreList() {
         {identity.sub} [{isLoading ? "Loading..." : ""}]
       </h4>
       <button>
-        <a href="/store?id={TEST_STORE_ID}&mid={TEST_STORE_MERCHANT_ID}">
+        <a href={`/store?id=${TEST_STORE_ID}&mid=${TEST_STORE_MERCHANT_ID}`}>
           Test Store
         </a>
       </button>

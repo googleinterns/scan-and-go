@@ -1,6 +1,6 @@
 declare const window: any;
 
-export const isDebug = true;
+export const isDebug = false;
 
 // Grab a handle to our microapps javascript library
 export const microapps = window.microapps;
@@ -9,9 +9,10 @@ export const microapps = window.microapps;
 export const google = window.google;
 
 // Detect if our app is running from within an iframe
-// if so, then we are *likely* in the microapps environment
-// and will render as such.
-export const isWeb = window.location == window.parent.location;
+// On a normal site, the window.parent variable will
+// reference itself. However, within the microapps environment
+// window will be the iframe and window.parent will not be visible
+export const isWeb = window == window.parent;
 
 // API endpoints
 export const API = "/api/";

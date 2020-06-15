@@ -29,6 +29,7 @@ import {
   ITEM_LIST_API,
   BARCODE_PLACEHOLDER,
   microapps,
+  isDebug,
 } from "../constants";
 import SampleBarcode from "./../img/Sample_EAN8.png";
 declare const window: any;

@@ -72,8 +72,7 @@ function Login() {
           </Grid>
           <Grid item>
             <Button variant="contained" color="primary" onClick={login}>
-              {" "}
-              Log in{" "}
+              Log in
             </Button>
           </Grid>
         </Grid>
@@ -105,8 +104,7 @@ function Login() {
             </Grid>,
             <Grid item>
               <Button variant="contained" color="secondary" onClick={login}>
-                {" "}
-                Log in{" "}
+                Log in
               </Button>
             </Grid>,
           ]}
