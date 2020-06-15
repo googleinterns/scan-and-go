@@ -3,9 +3,10 @@ import { TextInputField } from "./../components/Components";
 import { Container, Grid, Typography, Button } from "@material-ui/core";
 import { IdentityToken, emptyIdentityToken } from "./../interfaces";
 import { extractIdentityToken } from "./../utils";
-import { window, microapps, isWeb, isDebug } from "./../constants/index";
+import { TITLE_TEXT, microapps, isWeb, isDebug } from "./../constants/index";
 import Logo from "./../img/Logo.png";
 import "./../css/Login.css";
+declare const window: any;
 
 function Login() {
   const logoSpinnerSpeed = 3;
@@ -13,10 +14,10 @@ function Login() {
   // Flag for us to manually run login on mobile
   const [loginError, setLoginError] = useState(false);
   // User Identity
-  const [identity, setIdentity] = useState<IdentityToken>(emptyIdentityToken);
+  const [identity, setIdentity] = useState<IdentityToken>(emptyIdentityToken());
 
   const updateUser = (text: string) => {
-    const newIdentity = emptyIdentityToken;
+    const newIdentity = emptyIdentityToken();
     newIdentity.sub = text;
     setIdentity(newIdentity);
   };
@@ -54,7 +55,7 @@ function Login() {
       {isWeb && (
         <Grid container spacing={3} direction="column" alignItems="center">
           <Grid item>
-            <Typography variant="h3">$canAndG0</Typography>
+            <Typography variant="h3">{TITLE_TEXT}</Typography>
           </Grid>
           <Grid item>
             <img src={Logo} height="200" width="auto" />

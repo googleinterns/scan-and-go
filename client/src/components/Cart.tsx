@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Item, emptyItem, CartItem, emptyCartItem } from "./../interfaces";
+import { CartItem } from "./../interfaces";
 import { PRICE_FRACTION_DIGITS } from "../constants";
 import {
-  Fab,
   Table,
   TableBody,
   TableCell,

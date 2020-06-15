@@ -45,12 +45,6 @@ const fetchRes = async (reqType: string, data: any, url: string) => {
   }
 };
 
-// Detect if our app is running from within an iframe
-// if so, then we are *likely* in the microapps environment
-// and will render as such.
-declare const window: any;
-export const isWeb = window.location == window.parent.location;
-
 // fetch json response from url
 export const fetchJson = async (reqType: string, data: any, url: string) => {
   return fetchRes(reqType, data, url)
