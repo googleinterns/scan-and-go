@@ -26,12 +26,12 @@ const catchErr = (err: any) => {
 };
 
 // fetch response from url
-const fetchRes = async (reqType: string, data: any, url: string) => {
+const fetchRes = async (data: any, url: string) => {
   if (data == null) {
     return await fetch(url);
   } else {
     return await fetch(url, {
-      method: reqType,
+      method: "POST",
       mode: "cors",
       cache: "no-cache",
       credentials: "include",
@@ -46,25 +46,15 @@ const fetchRes = async (reqType: string, data: any, url: string) => {
 };
 
 // fetch json response from url
-export const fetchJson = async (reqType: string, data: any, url: string) => {
-  return fetchRes(reqType, data, url)
+export const fetchJson = async (data: any, url: string) => {
+  return fetchRes(data, url)
     .then((res) => getJson(res))
     .catch((err) => catchErr(err));
 };
 
 // fetch text response from url
-export const fetchText = async (reqType: string, data: any, url: string) => {
-  return fetchRes(reqType, data, url)
+export const fetchText = async (data: any, url: string) => {
+  return fetchRes(data, url)
     .then((res) => getText(res))
     .catch((err) => catchErr(err));
-};
-
-// Extract Identity Token from getIdentity() call response
-export const extractIdentityToken = (response: any) => {
-  console.log(response.split("."));
-  // Token response is base64 encoded from getIdentity() API call
-  // Furthermore, it is split into period-separated sections
-  // [0] describes the encryption scheme used
-  // [1] identity Token JSON object we require
-  return JSON.parse(atob(response.split(".")[1]));
 };

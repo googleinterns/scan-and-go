@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Route, Switch } from "react-router-dom";
-import Login from "./pages/Login";
 import Home from "./pages/Home";
 import ScanStore from "./pages/ScanStore";
 import Receipt from "./pages/Receipt";
@@ -10,8 +9,7 @@ function App() {
   return (
     <main>
       <Switch>
-        <Route path="/" component={Login} exact />
-        <Route path="/home" component={Home} />
+        <Route path="/" component={Home} exact />
         <Route path="/store" component={ScanStore} />
         <Route path="/receipt" component={Receipt} />
         <Route component={NotFound} />
