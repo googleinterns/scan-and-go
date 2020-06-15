@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { CartItem } from "./../interfaces";
-import { PRICE_FRACTION_DIGITS } from '../constants'
+import { PRICE_FRACTION_DIGITS } from "../constants";
 import { Typography, Paper, Grid, Divider } from "@material-ui/core";
 
 function ItemCard({
   cartItem,
   idx,
-  updateItemQuantity
+  updateItemQuantity,
 }: {
-  cartItem: CartItem,
-  idx: number,
-  updateItemQuantity: (idx: number, quantity: number) => void
+  cartItem: CartItem;
+  idx: number;
+  updateItemQuantity: (idx: number, quantity: number) => void;
 }) {
   const increaseCounter = () => {
     updateItemQuantity(idx, cartItem.quantity + 1);
@@ -36,7 +36,10 @@ function ItemCard({
         </Grid>
         <Grid item xs={2}>
           <Typography variant="body1">
-            ${(cartItem.item.price * cartItem.quantity).toFixed(PRICE_FRACTION_DIGITS)}
+            $
+            {(cartItem.item.price * cartItem.quantity).toFixed(
+              PRICE_FRACTION_DIGITS
+            )}
           </Typography>
         </Grid>
         <Grid

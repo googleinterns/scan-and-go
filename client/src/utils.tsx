@@ -28,7 +28,7 @@ const catchErr = (err: any) => {
 // fetch response from url
 const fetchRes = async (data: any, url: string) => {
   if (data == null) {
-    return await fetch(url)
+    return await fetch(url);
   } else {
     return await fetch(url, {
       method: "POST",
@@ -41,7 +41,7 @@ const fetchRes = async (data: any, url: string) => {
       redirect: "follow",
       referrerPolicy: "no-referrer",
       body: JSON.stringify(data),
-    })
+    });
   }
 };
 
@@ -50,11 +50,11 @@ export const fetchJson = async (data: any, url: string) => {
   return fetchRes(data, url)
     .then((res) => getJson(res))
     .catch((err) => catchErr(err));
-  };
+};
 
 // fetch text response from url
 export const fetchText = async (data: any, url: string) => {
   return fetchRes(data, url)
     .then((res) => getText(res))
     .catch((err) => catchErr(err));
-  };
+};

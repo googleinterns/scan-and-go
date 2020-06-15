@@ -6,7 +6,7 @@ import {
   GMapPlace,
 } from "./../interfaces";
 import { fetchJson } from "./../utils";
-import { STORES_API, LOCATION_RADIUS_METERS } from '../constants'
+import { STORES_API, LOCATION_RADIUS_METERS } from "../constants";
 import Divider from "@material-ui/core/Divider";
 
 // Applease typescript
@@ -61,9 +61,9 @@ function StoreList() {
   // fetch list of users
   const fetchStores = async (position: {
     coords: {
-      latitude: number,
-      longitude: number,
-    },
+      latitude: number;
+      longitude: number;
+    };
   }) => {
     // Update location
     grabLoc(); //blocking? race on userCoords update?
