@@ -10,7 +10,7 @@ import {
   TableRow,
   TableCell,
 } from "@material-ui/core";
-import { API, USER_LIST_API, DEFAULT_WELCOME_MSG } from "../constants";
+import { API, USER_LIST_API, DEFAULT_WELCOME_MSG, isDebug } from "../constants";
 
 // Testing code, will be removed soon
 interface UserUI {
@@ -22,9 +22,6 @@ function Home() {
   const [welMsg, setWelMsg] = useState("");
   const [userid, setUserid] = useState("");
   const [usersList, setUsersList] = useState<UserUI[]>([]);
-
-  //DEBUG Show UI for user retrieval debugging
-  const debug_user = true;
 
   useEffect(() => {
     // fetch POST welcome message
@@ -50,12 +47,12 @@ function Home() {
 
   return (
     <Container disableGutters={true} className="Home">
-      {debug_user && [
+      {isDebug && [
         <p>{welMsg}</p>,
         <TextInputField text={userid} setState={setUserid} />,
         <button onClick={fetchUsers}>Fetch Users</button>,
       ]}
-      {debug_user && usersList.length > 0 && (
+      {isDebug && usersList.length > 0 && (
         <Table>
           <TableHead>
             <TableRow>

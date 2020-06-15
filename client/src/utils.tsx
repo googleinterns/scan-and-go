@@ -61,5 +61,10 @@ export const fetchText = async (reqType: string, data: any, url: string) => {
 
 // Extract Identity Token from getIdentity() call response
 export const extractIdentityToken = (response: any) => {
+  console.log(response.split("."));
+  // Token response is base64 encoded from getIdentity() API call
+  // Furthermore, it is split into period-separated sections
+  // [0] describes the encryption scheme used
+  // [1] identity Token JSON object we require
   return JSON.parse(atob(response.split(".")[1]));
 };
