@@ -4,14 +4,14 @@ import { fetchJson } from "./../utils";
 import { STORE_API } from "../constants";
 
 function StoreHeader({ storeId }: { storeId: string | null }) {
-  const [curStore, setCurStore] = useState<Store>(emptyStore);
+  const [curStore, setCurStore] = useState<Store>(emptyStore());
 
   // fetch list of users
   const fetchStore = async () => {
     let data = {
       "store-id": storeId,
     };
-    const stores = await fetchJson(data, STORE_API);
+    const stores = await fetchJson("POST", data, STORE_API);
     setCurStore(stores);
   };
 
@@ -21,7 +21,7 @@ function StoreHeader({ storeId }: { storeId: string | null }) {
 
   return (
     <div className="StoreHeader">
-      <a href="/">back</a>
+      <a href="/home">back</a>
       <h3>
         [{curStore.latitude},{curStore.longitude}]
       </h3>

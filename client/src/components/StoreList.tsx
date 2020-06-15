@@ -4,24 +4,38 @@ import {
   IdentityToken,
   emptyIdentityToken,
   GMapPlace,
+  MediaResponse,
+  emptyMediaResponse,
 } from "./../interfaces";
-import { fetchJson } from "./../utils";
-import { STORES_API, LOCATION_RADIUS_METERS } from "../constants";
+import { fetchJson, extractIdentityToken } from "./../utils";
+import {
+  STORE_LIST_API,
+  PLACES_RADIUS_METERS,
+  PLACES_TYPES,
+  TEST_STORE_ID,
+  TEST_STORE_MERCHANT_ID,
+  microapps,
+  google,
+  isWeb,
+  isDebug,
+} from "../constants";
 import Divider from "@material-ui/core/Divider";
-
-// Applease typescript
+import { BrowserMultiFormatReader } from "@zxing/library";
+import SampleStoreQR from "./../img/Sample_StoreQR.png";
 declare const window: any;
-// Grab handle to our microapps js library
-const microapps = window.microapps;
-// Grab handle to google client js API
-const google = window.google;
 
 function StoreList() {
   const [userCoords, setUserCoords] = useState<[number, number]>([0.0, 0.0]);
   const [storeList, setStoreList] = useState<Store[]>([]);
-  const [identity, setIdentity] = useState<IdentityToken>(emptyIdentityToken);
+  const [identity, setIdentity] = useState<IdentityToken>(emptyIdentityToken());
   const [nearbyPlaces, setNearbyPlaces] = useState<GMapPlace[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [uploadImg, setUploadImg] = useState<MediaResponse>(
+    emptyMediaResponse()
+  );
+
+  const debugImgId = "sampleStoreQRImgSrc";
+  const uploadImgId = "storeQRImgSrc";
 
   // Dummy map attachment
   const map = new google.maps.Map(document.getElementById("mapPlaceholder"));
@@ -35,8 +49,13 @@ function StoreList() {
 
   // Grab the location of device
   const grabLoc = () => {
-    // Use microapps API if we are in an iframe
-    if (window.location !== window.parent.location) {
+    // Use browser navigator if we are in web environment & available
+    if (isWeb) {
+      if (navigator.geolocation) {
+        setIsLoading(true);
+        navigator.geolocation.getCurrentPosition(fetchStores, errorbackLoc);
+      }
+    } else {
       setIsLoading(true);
       microapps
         .getCurrentLocation()
@@ -51,11 +70,6 @@ function StoreList() {
         })
         .catch((err: any) => errorbackLoc(err));
     }
-    // Otherwise, use browser navigator
-    else if (navigator.geolocation) {
-      setIsLoading(true);
-      navigator.geolocation.getCurrentPosition(fetchStores, errorbackLoc);
-    }
   };
 
   // fetch list of users
@@ -66,13 +80,13 @@ function StoreList() {
     };
   }) => {
     // Update location
-    grabLoc(); //blocking? race on userCoords update?
     const data = {
       distance: 10000,
       latitude: position.coords.latitude,
       longitude: position.coords.longitude,
     };
-    const stores = await fetchJson(data, STORES_API);
+    const stores = await fetchJson("POST", data, STORE_LIST_API);
+    setUserCoords([position.coords.latitude, position.coords.longitude]);
     setStoreList(stores);
     setIsLoading(false);
   };
@@ -82,7 +96,7 @@ function StoreList() {
     const curLoc = new google.maps.LatLng(userCoords[0], userCoords[1]);
     const request = {
       location: curLoc,
-      radius: LOCATION_RADIUS_METERS,
+      radius: PLACES_RADIUS_METERS,
       type: PLACES_TYPES,
     };
     setIsLoading(true);
@@ -102,24 +116,73 @@ function StoreList() {
   // Get user identity details
   const loginUser = async () => {
     // Only run in iframe (on app)
-    if (window.location !== window.parent.location) {
+    if (isWeb) {
+      console.log("Only supported in GPay microapp");
+    } else {
       const request = { nonce: "Don't Hack me please" };
       microapps
         .getIdentity(request)
         .then((response: any) => {
-          const decoded = JSON.parse(atob(response.split(".")[1]));
-          setIdentity(decoded);
+          setIdentity(extractIdentityToken(response));
         })
         .catch((error: any) => {
           console.error("An error occurred: ", error);
         });
-    } else {
-      console.log("Only supported in GPay microapp");
     }
   };
 
+  // Scan Store's QR code
+  const storeQR = async () => {
+    if (isWeb) {
+      const img = document.getElementById(debugImgId) as HTMLImageElement;
+      processImageBarcode(img);
+    } else {
+      const imgReq = {
+        allowedMimeTypes: ["image/jpeg"],
+        allowedSources: ["camera"], // Restrict to camera scanning only
+      };
+      const imgRes = await window.microapps.requestMedia(imgReq);
+      setUploadImg(imgRes);
+    }
+  };
+
+  const processImageBarcode = async (img: HTMLImageElement) => {
+    const codeReader = new BrowserMultiFormatReader();
+    if (img) {
+      const result = await codeReader
+        .decodeFromImage(img)
+        .then((res: any) => res.text)
+        .catch((err: any) => {
+          console.error(err);
+        });
+      if (result) {
+        window.location.href = "/store?" + result;
+      } else {
+        //TODO(#65) Render failure message
+        if (isDebug) {
+          console.log("Unable to redirect, QR Code not scanned correctly");
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (uploadImg.mimeType) {
+      const img = document.getElementById(uploadImgId) as HTMLImageElement;
+      processImageBarcode(img);
+    }
+  }, [uploadImg]);
+
   return (
     <div className="StoreList">
+      {uploadImg.mimeType && (
+        <img
+          hidden={true}
+          id={uploadImgId}
+          src={"data:" + uploadImg.mimeType + ";base64," + uploadImg.bytes}
+        />
+      )}
+      <img hidden={true} id={debugImgId} src={SampleStoreQR} />
       <h3>
         [{userCoords[0]},{userCoords[1]}]
       </h3>
@@ -127,9 +190,12 @@ function StoreList() {
         {identity.sub} [{isLoading ? "Loading..." : ""}]
       </h4>
       <button>
-        <a href="/store?id=WPANCUD-1">Test Store</a>
+        <a href={`/store?id=${TEST_STORE_ID}&mid=${TEST_STORE_MERCHANT_ID}`}>
+          Test Store
+        </a>
       </button>
       <button onClick={loginUser}>User Login</button>
+      <button onClick={storeQR}>Scan Store QR</button>
       <button onClick={grabLoc}>Nearby Stores</button>
       <button onClick={getNearbyPlaces}>Nearby Restaurants</button>
       {storeList.length > 0 && (
