@@ -72,20 +72,21 @@ function ScanStore() {
       cartItems.push(items[i]);
     }
     // Should do batched fetch with list of barcodes in 1 request-response
-    const item_barcodes = items.map((zippedItem: any) => zippedItem.barcode);
+    const itemBarcodes = items.map((zippedItem: any) => zippedItem.barcode);
     let data = {
       //'merchant-id': merchantID,
       "store-id": storeID,
-      items: item_barcodes,
+      items: itemBarcodes,
     };
     return fetchJson("POST", data, "/api/item/list");
   };
 
   const updateShoppingList = (items: any, extractedItems: any) => {
     const sList = items.map((zippedItem: any) => {
-      let cItem = emptyCartItem();
-      cItem.item = extractedItems[zippedItem.barcode];
-      cItem.quantity = zippedItem.quantity;
+      let cItem: CartItem = {
+        item: extractedItems[zippedItem.barcode],
+        quantity: zippedItem.quantity
+      };
       return cItem;
     });
     setShoppingList(sList);
@@ -142,9 +143,10 @@ function ScanStore() {
       if (idxMap[extractedItems[i].barcode] != undefined) {
         cartItems[idxMap[extractedItems[i].barcode]].quantity += 1;
       } else {
-        let newItem = emptyCartItem();
-        newItem.item = extractedItems[i];
-        newItem.quantity = 1;
+        let newItem: CartItem = {
+          item: extractedItems[i],
+          quantity: 1
+        };
         cartItems.push(newItem);
       }
     }

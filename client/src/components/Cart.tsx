@@ -10,13 +10,19 @@ import {
 } from "@material-ui/core";
 
 function Cart({ contents }: { contents: CartItem[] }) {
+
+  // TODO (#63): Separate UI and logic
   const getTotalPrice = () => {
     let tot_price = 0.0;
-    for (let i = 0; i < contents.length; ++i) {
-      tot_price += contents[i].quantity * contents[i].item.price;
+    for (let cartItem of contents) {
+      tot_price += cartItem.quantity * cartItem.item.price;
     }
     return tot_price.toFixed(2);
   };
+
+  const getSubtotalPrice = (cartItem: CartItem) => {
+    return (cartItem.quantity * cartItem.item.price).toFixed(2);
+  }
 
   return (
     <div className="Cart">
@@ -35,7 +41,7 @@ function Cart({ contents }: { contents: CartItem[] }) {
                 <TableCell>{curItem.item.name}</TableCell>
                 <TableCell>{curItem.quantity}</TableCell>
                 <TableCell>
-                  {(curItem.quantity * curItem.item.price).toFixed(2)}
+                  {getSubtotalPrice(curItem)}
                 </TableCell>
               </TableRow>
             ))}
