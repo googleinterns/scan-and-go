@@ -27,6 +27,7 @@ import {
 import { fetchJson } from "./../utils";
 import { TextInputField } from "./../components/Components";
 import { BrowserMultiFormatReader } from "@zxing/library";
+import { CART_API, ITEMS_API, BARCODE_PLACEHOLDER } from "../constants";
 import SampleBarcode from "./../img/Sample_EAN8.png";
 declare const window: any;
 
@@ -59,7 +60,7 @@ function ScanStore() {
     let data = {
       "store-id": storeID,
     };
-    const cart = await fetchJson("POST", data, "/api/cart");
+    const cart = await fetchJson("POST", data, CART_API);
     const items = await fetchCartItems(cart);
     updateShoppingList(cartItems, items);
   };
@@ -78,14 +79,14 @@ function ScanStore() {
       "store-id": storeID,
       items: itemBarcodes,
     };
-    return fetchJson("POST", data, "/api/item/list");
+    return fetchJson("POST", data, ITEM_LIST_API);
   };
 
   const updateShoppingList = (items: any, extractedItems: any) => {
     const sList = items.map((zippedItem: any) => {
       let cItem: CartItem = {
         item: extractedItems[zippedItem.barcode],
-        quantity: zippedItem.quantity
+        quantity: zippedItem.quantity,
       };
       return cItem;
     });
@@ -133,7 +134,7 @@ function ScanStore() {
         "merchant-id": merchantID,
         barcode: unknown_barcodes,
       };
-      const items = await fetchJson("POST", data, "/api/item/list");
+      const items = await fetchJson("POST", data, ITEM_LIST_API);
       displayItems(items);
     }
   };
@@ -145,7 +146,7 @@ function ScanStore() {
       } else {
         let newItem: CartItem = {
           item: extractedItems[i],
-          quantity: 1
+          quantity: 1,
         };
         cartItems.push(newItem);
       }
@@ -256,7 +257,7 @@ function ScanStore() {
                   </Grid>
                   <Grid item xs={6}>
                     <TextInputField
-                      text={curBarcode ? curBarcode : "...barcode"}
+                      text={curBarcode ? curBarcode : BARCODE_PLACEHOLDER}
                       setState={setDebugItem}
                     />
                   </Grid>

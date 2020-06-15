@@ -8,6 +8,7 @@ import {
   emptyMediaResponse,
 } from "./../interfaces";
 import { fetchJson, extractIdentityToken } from "./../utils";
+import { STORES_API, LOCATION_RADIUS_METERS } from "../constants";
 import Divider from "@material-ui/core/Divider";
 import { BrowserMultiFormatReader } from "@zxing/library";
 import SampleStoreQR from "./../img/Sample_StoreQR.png";
@@ -77,7 +78,7 @@ function StoreList() {
       latitude: position.coords.latitude,
       longitude: position.coords.longitude,
     };
-    const stores = await fetchJson("POST", data, "/api/store/list");
+    const stores = await fetchJson("POST", data, STORE_LIST_API);
     setStoreList(stores);
     setIsLoading(false);
   };
@@ -87,8 +88,8 @@ function StoreList() {
     const curLoc = new google.maps.LatLng(userCoords[0], userCoords[1]);
     const request = {
       location: curLoc,
-      radius: "5000",
-      type: ["restaurant"],
+      radius: LOCATION_RADIUS_METERS,
+      type: PLACES_TYPES,
     };
     setIsLoading(true);
     service.nearbySearch(request, getNearbyPlacesCallback);
