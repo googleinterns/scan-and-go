@@ -6,12 +6,8 @@
   "author": "YH <yaoyiheng@google.com>",
   "license": "MIT",
   "devDependencies": {
-    "@types/jest": "^26.0.0",
-    "jest": "^26.0.1",
     "lint-staged": "^10.2.7",
-    "prettier": "^2.0.5",
-    "ts-jest": "^26.1.0",
-    "typescript": "^3.9.5"
+    "prettier": "^2.0.5"
   },
   "husky": {
     "hooks": {
