@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Input } from "@material-ui/core";
+import { ID_PLACEHOLDER } from "../constants";
 
 export function TextInputField({
   text, 
@@ -13,7 +14,7 @@ export function TextInputField({
   };
   return (
     <Input
-      placeholder={text ? text : "...id"}
+      placeholder={text ? text : ID_PLACEHOLDER}
       onBlur={onTextChange}
     />
   );

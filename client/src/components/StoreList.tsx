@@ -6,6 +6,7 @@ import {
   GMapPlace,
 } from "./../interfaces";
 import { fetchJson } from "./../utils";
+import { STORES_API, LOCATION_RADIUS_METERS } from '../constants'
 import Divider from "@material-ui/core/Divider";
 
 // Applease typescript
@@ -71,7 +72,7 @@ function StoreList() {
       latitude: position.coords.latitude,
       longitude: position.coords.longitude,
     };
-    const stores = await fetchJson(data, "/api/stores");
+    const stores = await fetchJson(data, STORES_API);
     setStoreList(stores);
     setIsLoading(false);
   };
@@ -81,8 +82,8 @@ function StoreList() {
     const curLoc = new google.maps.LatLng(userCoords[0], userCoords[1]);
     const request = {
       location: curLoc,
-      radius: "5000",
-      type: ["restaurant"],
+      radius: LOCATION_RADIUS_METERS,
+      type: PLACES_TYPES,
     };
     setIsLoading(true);
     service.nearbySearch(request, getNearbyPlacesCallback);
