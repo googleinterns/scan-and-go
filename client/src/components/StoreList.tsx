@@ -34,6 +34,12 @@ function StoreList() {
     emptyMediaResponse()
   );
 
+  // Debugging Store QR img
+  const debugImgId = "sampleStoreQRImgSrc";
+
+  // Img Element id containing user-uploaded image
+  const uploadImgId = "storeQRImgSrc";
+
   // Dummy map attachment
   const map = new google.maps.Map(document.getElementById("mapPlaceholder"));
   // Declare our Google Map/Places API service handler
@@ -131,9 +137,7 @@ function StoreList() {
   // Scan Store's QR code
   const storeQR = async () => {
     if (isWeb) {
-      const img = document.getElementById(
-        "sampleStoreQRImgSrc"
-      ) as HTMLImageElement;
+      const img = document.getElementById(debugImgId) as HTMLImageElement;
       processImageBarcode(img);
     } else {
       const imgReq = {
@@ -163,13 +167,13 @@ function StoreList() {
         console.log("Unable to redirect, QR Code not scanned correctly");
       }
     } else {
-      console.log("Cannot find element: storeQRImgSrc");
+      console.log(`Cannot find element: ${uploadImgId}`);
     }
   };
 
   useEffect(() => {
     if (uploadImg.mimeType) {
-      const img = document.getElementById("storeQRImgSrc") as HTMLImageElement;
+      const img = document.getElementById(uploadImgId) as HTMLImageElement;
       processImageBarcode(img);
     }
   }, [uploadImg]);
@@ -179,11 +183,11 @@ function StoreList() {
       {uploadImg.mimeType && (
         <img
           hidden={true}
-          id="storeQRImgSrc"
+          id={uploadImgId}
           src={"data:" + uploadImg.mimeType + ";base64," + uploadImg.bytes}
         />
       )}
-      <img hidden={true} id="sampleStoreQRImgSrc" src={SampleStoreQR} />
+      <img hidden={true} id={debugImgId} src={SampleStoreQR} />
       <h3>
         [{userCoords[0]},{userCoords[1]}]
       </h3>

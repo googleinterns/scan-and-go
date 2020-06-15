@@ -20,7 +20,9 @@ function Cart({ contents }: { contents: CartItem[] }) {
   };
 
   const getSubtotalPrice = (cartItem: CartItem) => {
-    return (cartItem.quantity * cartItem.item.price).toFixed(2);
+    return (cartItem.quantity * cartItem.item.price).toFixed(
+      PRICE_FRACTION_DIGITS
+    );
   };
 
   return (

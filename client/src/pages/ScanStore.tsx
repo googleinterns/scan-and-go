@@ -34,7 +34,7 @@ import {
 import SampleBarcode from "./../img/Sample_EAN8.png";
 declare const window: any;
 
-//Yiheng: For whether we should display our uploaded image for debugging
+// Flag to toggle display of taken image (for debugging)
 const debugImg = true;
 
 function ScanStore() {
@@ -48,6 +48,12 @@ function ScanStore() {
   const [shoppingList, setShoppingList] = useState<CartItem[]>([]);
   //DEBUGGING Current barcode to 'scan'
   const [curBarcode, setCurBarcode] = useState<string>("");
+
+  // Debugging Item Barcode img
+  const debugImgId = "testImgSrc";
+
+  // Img Element id containing user-uploaded image
+  const uploadImgId = "uploadImgSrc";
 
   // Uploaded image data
   const [uploadImg, setUploadImg] = useState<MediaResponse>(
@@ -198,7 +204,7 @@ function ScanStore() {
   };
 
   const makePayment = () => {
-    //Yiheng: This should be just an ID without exposing the contents of our Order
+    //TODO(#48) This should be just an ID without exposing the contents of our Order
     window.location.href =
       "/receipt?id=TEST_ORDER&contents=" +
       encodeURIComponent(JSON.stringify(shoppingList));
@@ -217,22 +223,20 @@ function ScanStore() {
       console.log("Processed image: " + result);
       setDebugItem(result.text);
     } else {
-      console.log("Cannot find element: uploadImgSrc");
+      console.log(`Cannot find element: ${uploadImgId}`);
     }
   };
 
   const testBarcode = () => {
-    const img = document.getElementById("testImgSrc") as HTMLImageElement;
+    const img = document.getElementById(debugImgId) as HTMLImageElement;
     processImageBarcode(img);
   };
-
-  //TODO When we update shoppingList, we should send update to server?
 
   // When we change what image we uploaded, run extract barcode client-side
   useEffect(() => {
     if (uploadImg.mimeType) {
       // Have something
-      const img = document.getElementById("uploadImgSrc") as HTMLImageElement;
+      const img = document.getElementById(uploadImgId) as HTMLImageElement;
       processImageBarcode(img);
     }
   }, [uploadImg]);
@@ -302,7 +306,7 @@ function ScanStore() {
         )}
         <button onClick={testBarcode}>Test Barcode API</button>
         <img
-          id="testImgSrc"
+          id={debugImgId}
           hidden={true}
           width="200"
           height="200"
@@ -312,7 +316,7 @@ function ScanStore() {
           <Grid item xs={12} justify="center">
             <Paper elevation={2}>
               <img
-                id="uploadImgSrc"
+                id={uploadImgId}
                 hidden={!debugImg}
                 width="200"
                 height="200"
