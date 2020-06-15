@@ -11,44 +11,39 @@ declare const window: any;
 const microapps = window.microapps;
 
 function Login() {
-  const is_web = window.location == window.parent.location;
-  const is_debug = true;
+  const isWeb = window.location == window.parent.location;
+  const isDebug = true;
   const speed = 3;
 
   // Flag for us to manually run login on mobile
   const [loginError, setLoginError] = useState(false);
   // User Identity
-  const [identity, setIdentity] = useState<IdentityToken>(emptyIdentityToken());
+  const [identity, setIdentity] = useState<IdentityToken>(emptyIdentityToken);
 
   const updateUser = (text: string) => {
-    const newIdentity = emptyIdentityToken();
+    const newIdentity = emptyIdentityToken;
     newIdentity.sub = text;
     setIdentity(newIdentity);
   };
 
   const login = () => {
-    console.log("Login type: " + (is_web ? "Web" : "Microapp"));
-    if (is_web) {
-      // Web 'faked' stuff
-    } else {
-      const request = { nonce: "Don't Hack me please" };
-      microapps
-        .getIdentity(request)
-        .then((response: any) => {
-          const decoded = JSON.parse(atob(response.split(".")[1]));
-          setIdentity(decoded);
-          console.log("getIdentity response: " + decoded);
-        })
-        .catch((error: any) => {
-          console.error("An error occurred: " + error);
-          setLoginError(true);
-        });
+    if (isWeb) {
+      return;
     }
+    const request = { nonce: "Don't Hack me please" };
+    microapps
+      .getIdentity(request)
+      .then((response: any) => {
+        const decoded = JSON.parse(atob(response.split(".")[1]));
+        setIdentity(decoded);
+      })
+      .catch((error: any) => {
+        setLoginError(true);
+      });
   };
 
   useEffect(() => {
     if (identity.sub != "EMPTY" && identity.sub != "") {
-      alert(identity.sub);
       window.location.href = "/home";
     }
   }, [identity]);
@@ -62,7 +57,7 @@ function Login() {
   return (
     <Container disableGutters={true} className="Login">
       {/* Web Interface Testing purposes */}
-      {is_web && (
+      {isWeb && (
         <Grid container spacing={3} direction="column" alignItems="center">
           <Grid item>
             <Typography variant="h3">$canAndG0</Typography>
@@ -88,7 +83,7 @@ function Login() {
           </Grid>
         </Grid>
       )}
-      {(!is_web || is_debug) && (
+      {(!isWeb || isDebug) && (
         <Grid container spacing={5} direction="column" alignItems="center">
           <Grid item>
             <Typography variant="h3">$canAndG0</Typography>

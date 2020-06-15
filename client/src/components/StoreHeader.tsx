@@ -3,7 +3,7 @@ import { Store, emptyStore } from "./../interfaces";
 import { fetchJson } from "./../utils";
 
 function StoreHeader({ storeId }: { storeId: string | null }) {
-  const [curStore, setCurStore] = useState<Store>(emptyStore());
+  const [curStore, setCurStore] = useState<Store>(emptyStore);
 
   // fetch list of users
   const fetchStore = async () => {
