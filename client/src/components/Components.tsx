@@ -1,18 +1,31 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Input } from "@material-ui/core";
-import { ID_PLACEHOLDER } from "../constants";
+import { EMPTY_PLACEHOLDER } from "../constants";
 
 export function TextInputField({
   text,
   setState,
+  type,
+  fullWidth,
 }: {
   text: string;
-  setState: (value: string) => void;
+  setState?: (value: string) => void;
+  type?: string;
+  fullWidth?: boolean;
 }) {
+  const DEFAULT_TYPE = "text";
+
   const onTextChange = (e: React.FocusEvent<HTMLInputElement>) => {
-    setState(e.target.value);
+    if (setState) {
+      setState(e.target.value);
+    }
   };
   return (
-    <Input placeholder={text ? text : ID_PLACEHOLDER} onBlur={onTextChange} />
+    <Input
+      type={type ? type : DEFAULT_TYPE}
+      fullWidth={fullWidth}
+      placeholder={text ? text : EMPTY_PLACEHOLDER}
+      onBlur={onTextChange}
+    />
   );
 }
