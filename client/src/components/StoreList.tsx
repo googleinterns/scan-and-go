@@ -17,6 +17,7 @@ import {
   microapps,
   google,
   isWeb,
+  isDebug,
 } from "../constants";
 import Divider from "@material-ui/core/Divider";
 import { BrowserMultiFormatReader } from "@zxing/library";
@@ -29,15 +30,11 @@ function StoreList() {
   const [identity, setIdentity] = useState<IdentityToken>(emptyIdentityToken());
   const [nearbyPlaces, setNearbyPlaces] = useState<GMapPlace[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  // Uploaded image data
   const [uploadImg, setUploadImg] = useState<MediaResponse>(
     emptyMediaResponse()
   );
 
-  // Debugging Store QR img
   const debugImgId = "sampleStoreQRImgSrc";
-
-  // Img Element id containing user-uploaded image
   const uploadImgId = "storeQRImgSrc";
 
   // Dummy map attachment
@@ -144,30 +141,28 @@ function StoreList() {
         allowedMimeTypes: ["image/jpeg"],
         allowedSources: ["camera"], // Restrict to camera scanning only
       };
-      const imgRes = await window.microapps
-        .requestMedia(imgReq)
-        .then((res: any) => res);
+      const imgRes = await window.microapps.requestMedia(imgReq);
       setUploadImg(imgRes);
     }
   };
 
   const processImageBarcode = async (img: HTMLImageElement) => {
     const codeReader = new BrowserMultiFormatReader();
-    if (img != null) {
+    if (img) {
       const result = await codeReader
         .decodeFromImage(img)
-        .then((res: any) => res)
+        .then((res: any) => res.text)
         .catch((err: any) => {
-          console.log(err);
-          return "";
+          console.error(err);
         });
       if (result) {
-        window.location.href = "/store?" + result.text;
+        window.location.href = "/store?" + result;
       } else {
-        console.log("Unable to redirect, QR Code not scanned correctly");
+        //TODO(#65) Render failure message
+        if (isDebug) {
+          console.log("Unable to redirect, QR Code not scanned correctly");
+        }
       }
-    } else {
-      console.log(`Cannot find element: ${uploadImgId}`);
     }
   };
 
