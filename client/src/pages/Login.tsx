@@ -2,18 +2,13 @@ import React, { useEffect, useState } from "react";
 import { TextInputField } from "./../components/Components";
 import { Container, Grid, Typography, Button } from "@material-ui/core";
 import { IdentityToken, emptyIdentityToken } from "./../interfaces";
+import { extractIdentityToken } from "./../utils";
+import { window, microapps, isWeb, isDebug } from "./../constants/index";
 import Logo from "./../img/Logo.png";
 import "./../css/Login.css";
 
-// Applease typescript
-declare const window: any;
-// Grab handle to our microapps js library
-const microapps = window.microapps;
-
 function Login() {
-  const isWeb = window.location == window.parent.location;
-  const isDebug = true;
-  const speed = 3;
+  const logoSpinnerSpeed = 3;
 
   // Flag for us to manually run login on mobile
   const [loginError, setLoginError] = useState(false);
@@ -34,8 +29,7 @@ function Login() {
     microapps
       .getIdentity(request)
       .then((response: any) => {
-        const decoded = JSON.parse(atob(response.split(".")[1]));
-        setIdentity(decoded);
+        setIdentity(extractIdentityToken(response));
       })
       .catch((error: any) => {
         setLoginError(true);
@@ -91,7 +85,7 @@ function Login() {
           <Grid item>
             <img
               src={Logo}
-              style={{ animation: `spin ${speed}s linear infinite` }}
+              style={{ animation: `spin ${logoSpinnerSpeed}s linear infinite` }}
               height="200"
               width="auto"
             />
