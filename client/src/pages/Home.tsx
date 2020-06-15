@@ -11,7 +11,13 @@ import {
   TableRow,
   TableCell,
 } from "@material-ui/core";
-import { API, USERS_ALL_API, DEFAULT_WELCOME_MSG, ID_PLACEHOLDER, DEFAULT_INPUT_TYPE } from "../constants";
+import {
+  API,
+  USERS_ALL_API,
+  DEFAULT_WELCOME_MSG,
+  ID_PLACEHOLDER,
+  DEFAULT_INPUT_TYPE,
+} from "../constants";
 
 // Testing code, will be removed soon
 interface UserUI {
@@ -36,13 +42,12 @@ function Home() {
       let msg = await fetchText(data, API);
       if (!msg) {
         msg = DEFAULT_WELCOME_MSG;
-      }      
+      }
       setWelMsg(msg);
     };
 
     fetchMsg();
   }, [userid]);
-
 
   // Wrapper to issue fetch GET to /api/users/all
   const fetchUsers = async () => {
