@@ -3,30 +3,30 @@
     "name": "cheese",
     "price": 3.2,
     "merchant-id": "WPANCUD",
-    "barcode": "93245036"
+    "barcode": "1029324503"
   },
   {
     "name": "milk",
     "price": 5.6,
     "merchant-id": "WPANCUD",
-    "barcode": "93202411"
+    "barcode": "1029320241"
   },
   {
     "name": "tea",
     "price": 7.0,
     "merchant-id": "WPANCUD",
-    "barcode": "93292047"
+    "barcode": "1029329204"
   },
   {
     "name": "coffee",
     "price": 10.0,
     "merchant-id": "WPANCUD",
-    "barcode": "93293846"
+    "barcode": "1029329384"
   },
   {
     "name": "coffee",
     "price": 20.0,
     "merchant-id": "QOIRBNF",
-    "barcode": "93293846"
+    "barcode": "1029329384"
   }
 ]

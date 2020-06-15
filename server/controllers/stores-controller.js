@@ -1,55 +1,60 @@
-const config = require("./../config");
-const { storesCollection } = require("./../firestore");
-const { geoDist, flatMap } = require("./../utils");
+const stores = require("./../data/stores.json");
 
-// Extraction of list of stores
-exports.listStores = async (req, res) => {
-  const reqProps = req.body;
+function geoDist(lat1, lon1, lat2, lon2) {
+  // script taken from: https://www.movable-type.co.uk/scripts/latlong.html
+  const R = 6371e3; // metres
+  let φ1 = (lat1 * Math.PI) / 180; // φ, λ in radians
+  let φ2 = (lat2 * Math.PI) / 180;
+  let Δφ = ((lat2 - lat1) * Math.PI) / 180;
+  let Δλ = ((lon2 - lon1) * Math.PI) / 180;
+
+  let a =
+    Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+    Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+  let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  let d = R * c; // in metres
+  return d;
+}
+
+exports.storesGet = async (req, res) => {
+  let reqProps = req.body;
   let retStores = [];
+  let limDist = 2000;
 
-  const limDist = reqProps["distance"] || 2000; // Limit search radius
-  const userLat = reqProps["latitude"];
-  const userLong = reqProps["longitude"];
+  if (reqProps["distance"]) {
+    // Limit search radius
+    limDist = reqProps["distance"];
+  }
 
   //TODO(#10) Implement searching with keywords
-  try {
-    if (userLat && userLong) {
-      const storesQuery = await storesCollection.get();
-      const stores = storesQuery.docs.map((doc) => doc.data());
-      for (let store of stores) {
-        const lat = store["latitude"];
-        const long = store["longitude"];
-        const curDist = geoDist(userLat, userLong, lat, long);
-        if (curDist < limDist) {
-          retStores.push(Object.assign({}, store, { distance: curDist }));
-        }
+
+  if (reqProps["latitude"] && reqProps["longitude"]) {
+    let userLat = reqProps["latitude"];
+    let userLong = reqProps["longitude"];
+    for (let i = 0; i < stores.length; ++i) {
+      let lat = stores[i]["latitude"];
+      let long = stores[i]["longitude"];
+      let curDist = geoDist(userLat, userLong, lat, long);
+      console.log("distance: " + curDist);
+      if (curDist < limDist) {
+        retStores.push(Object.assign({}, stores[i], { distance: curDist }));
       }
     }
-  } catch (err) {
-    console.error(err);
-  } finally {
-    res.json(retStores);
   }
+  res.json(retStores);
 };
 
-// Extraction of a single store details
-exports.getStore = async (req, res) => {
-  const reqProps = req.body;
+exports.storeGet = async (req, res) => {
+  let reqProps = req.body;
   let retStore = {};
-
-  const storeID = reqProps["store-id"];
-
-  try {
-    if (storeID) {
-      const storeQuery = await storesCollection
-        .where("store-id", "==", storeID)
-        .get();
-      const stores = storeQuery.docs.map((doc) => doc.data());
-      retStore = flatMap(stores, {});
+  if (reqProps["store-id"]) {
+    for (let i = 0; i < stores.length; ++i) {
+      if (stores[i]["store-id"] == reqProps["store-id"]) {
+        retStore = stores[i];
+        break;
+      }
     }
-  } catch (err) {
-    console.error(err);
-  } finally {
-    res.json(retStore);
   }
+  res.json(retStore);
 };
