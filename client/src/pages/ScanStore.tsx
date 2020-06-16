@@ -11,16 +11,31 @@ import {
   Paper,
   Typography,
 } from "@material-ui/core";
-import { spacing } from "@material-ui/system";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import EditIcon from "@material-ui/icons/Edit";
 import PaymentIcon from "@material-ui/icons/Payment";
 import AddIcon from "@material-ui/icons/Add";
-import { Item, emptyItem, CartItem, emptyCartItem } from "./../interfaces";
+import {
+  Item,
+  CartItem,
+  MediaResponse,
+  emptyMediaResponse,
+} from "./../interfaces";
 import { fetchJson } from "./../utils";
 import { TextInputField } from "./../components/Components";
-import { BARCODE_PLACEHOLDER, ITEM_LIST_API } from "../constants";
+import { BrowserMultiFormatReader } from "@zxing/library";
+import {
+  CART_API,
+  ITEM_LIST_API,
+  BARCODE_PLACEHOLDER,
+  microapps,
+  isDebug,
+} from "../constants";
+import SampleBarcode from "./../img/Sample_EAN8.png";
 declare const window: any;
+
+// Flag to toggle display of taken image (for debugging)
+const debugImg = true;
 
 function ScanStore() {
   // TODO (#27): Extract logic to get parameters as a function
@@ -31,12 +46,29 @@ function ScanStore() {
 
   const [cartItems, updateCart] = useState<CartItem[]>([]);
   const [showCart, setShowCart] = useState(false);
+  const [uploadImg, setUploadImg] = useState<MediaResponse>(
+    emptyMediaResponse()
+  );
+
+  const debugImgId = "testImgSrc";
+  const uploadImgId = "uploadImgSrc";
+
   const [curBarcode, setCurBarcode] = useState<string>("");
 
   // TODO (#56): Separate UI and control functions
   const addItem = async () => {
-    const barcode = curBarcode;
-    addItemToCart(barcode);
+    if (curBarcode === "") {
+      // If empty, use media API
+      const imgReq = {
+        allowedMimeTypes: ["image/jpeg"],
+        allowedSources: ["camera"], // Restrict to camera scanning only
+      };
+      const imgRes = await microapps.requestMedia(imgReq);
+      setUploadImg(imgRes);
+    } else {
+      const barcode = curBarcode;
+      addItemToCart(barcode);
+    }
   };
 
   const addItemToCart = async (barcode: string) => {
@@ -109,8 +141,40 @@ function ScanStore() {
       encodeURIComponent(JSON.stringify(cartItems));
   };
 
+  const processImageBarcode = async (img: HTMLImageElement) => {
+    const codeReader = new BrowserMultiFormatReader();
+    if (img != null) {
+      const result = await codeReader
+        .decodeFromImage(img)
+        .then((res: any) => res.text)
+        .catch((err: any) => {
+          console.log(err);
+          return "";
+        });
+      console.log("Processed image: " + result);
+      addItemToCart(result);
+      setCurBarcode(result);
+    } else {
+      console.log(`Cannot find element: ${uploadImgId}`);
+    }
+  };
+
+  const testBarcode = () => {
+    const img = document.getElementById(debugImgId) as HTMLImageElement;
+    processImageBarcode(img);
+  };
+
+  // When we change what image we uploaded, run extract barcode client-side
+  useEffect(() => {
+    if (uploadImg.mimeType) {
+      // Have something
+      const img = document.getElementById(uploadImgId) as HTMLImageElement;
+      processImageBarcode(img);
+    }
+  }, [uploadImg]);
+
   return (
-    <Container className="ScanStore">
+    <Container disableGutters={true} className="ScanStore">
       <Grid container spacing={1} direction="column" alignItems="stretch">
         <Grid item xs={12}>
           <Paper elevation={1}>
@@ -163,6 +227,29 @@ function ScanStore() {
                   </Grid>
                 )}
               </Box>
+            </Paper>
+          </Grid>
+        )}
+        <button onClick={testBarcode}>Test Barcode API</button>
+        <img
+          id={debugImgId}
+          hidden={true}
+          width="200"
+          height="200"
+          src={SampleBarcode}
+        />
+        {uploadImg.mimeType && (
+          <Grid item xs={12} justify="center">
+            <Paper elevation={2}>
+              <img
+                id={uploadImgId}
+                hidden={!debugImg}
+                width="200"
+                height="200"
+                src={
+                  "data:" + uploadImg.mimeType + ";base64," + uploadImg.bytes
+                }
+              />
             </Paper>
           </Grid>
         )}
