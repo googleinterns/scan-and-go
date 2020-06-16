@@ -57,7 +57,7 @@ function ScanStore() {
 
   // TODO (#56): Separate UI and control functions
   const addItem = async () => {
-    if (curBarcode === "") {
+    if (!curBarcode) {
       // If empty, use media API
       const imgReq = {
         allowedMimeTypes: ["image/jpeg"],
@@ -66,8 +66,7 @@ function ScanStore() {
       const imgRes = await microapps.requestMedia(imgReq);
       setUploadImg(imgRes);
     } else {
-      const barcode = curBarcode;
-      addItemToCart(barcode);
+      addItemToCart(curBarcode);
     }
   };
 
@@ -143,13 +142,10 @@ function ScanStore() {
 
   const processImageBarcode = async (img: HTMLImageElement) => {
     const codeReader = new BrowserMultiFormatReader();
-    if (img != null) {
+    if (img) {
       const result = await codeReader
         .decodeFromImage(img)
-        .then((res: any) => res.text)
-        .catch((err: any) => {
-          return "";
-        });
+        .then((res: any) => res.text);
       addItemToCart(result);
       setCurBarcode(result);
     }
