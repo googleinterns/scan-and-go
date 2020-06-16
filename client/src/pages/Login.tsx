@@ -18,8 +18,7 @@ function Login() {
 
   const updateUser = (text: string) => {
     const newIdentity = emptyIdentityToken();
-    newIdentity.sub = text;
-    setIdentity(newIdentity);
+    setIdentity(Object.assign({}, newIdentity, { sub: text }));
   };
 
   const login = () => {
