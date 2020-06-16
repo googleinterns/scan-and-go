@@ -3,7 +3,10 @@
 **/*.log
 *.sublime-project
 *.sublime-workspace
+**/__snapshots__/
 
 # Project specific exclusions
 code.list
 client/src/sample_order.json
+firebase-debug.log
+firestore-debug.log

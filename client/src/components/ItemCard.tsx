@@ -5,19 +5,17 @@ import { Typography, Paper, Grid, Divider } from "@material-ui/core";
 
 function ItemCard({
   cartItem,
-  idx,
   updateItemQuantity,
 }: {
   cartItem: CartItem;
-  idx: number;
-  updateItemQuantity: (idx: number, quantity: number) => void;
+  updateItemQuantity: (barcode: string, quantity: number) => void;
 }) {
   const increaseCounter = () => {
-    updateItemQuantity(idx, cartItem.quantity + 1);
+    updateItemQuantity(cartItem.item.barcode, cartItem.quantity + 1);
   };
 
   const decreaseCounter = () => {
-    updateItemQuantity(idx, cartItem.quantity - 1);
+    updateItemQuantity(cartItem.item.barcode, cartItem.quantity - 1);
   };
 
   return (

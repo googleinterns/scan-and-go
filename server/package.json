@@ -6,19 +6,31 @@
   "license": "MIT",
   "scripts": {
     "dev": "NODE_ENV=\"development\" ./node_modules/.bin/nodemon server.js --watch controllers/ --watch routers/",
-    "start": "NODE_ENV=\"production\" node server.js"
+    "start": "NODE_ENV=\"production\" node server.js",
+    "pretest": "curl -X DELETE \"http://localhost:8080/emulator/v1/projects/scan-and-go-for-gpay/databases/(default)/documents\"",
+    "test": "NODE_ENV=\"test\" jest",
+    "start_test": "NODE_ENV=\"test\" node server.js"
   },
   "eslintConfig": {
     "extends": "prettier"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ]
   },
   "dependencies": {
     "@google-cloud/firestore": "^3.8.5",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "helmet": "^3.22.0"
+    "helmet": "^3.22.0",
+    "jest": "^26.0.1",
+    "supertest": "^4.0.2"
   },
   "devDependencies": {
+    "@firebase/testing": "^0.20.1",
     "eslint": "^7.1.0",
     "eslint-config-prettier": "^6.11.0",
     "nodemon": "^2.0.4"
