@@ -35,7 +35,7 @@ function ScanStore() {
 
   // TODO (#56): Separate UI and control functions
   const addItem = async () => {
-    let barcode = curBarcode;
+    const barcode = curBarcode;
     addItemToCart(barcode);
   };
 
