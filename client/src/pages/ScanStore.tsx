@@ -148,14 +148,10 @@ function ScanStore() {
         .decodeFromImage(img)
         .then((res: any) => res.text)
         .catch((err: any) => {
-          console.log(err);
           return "";
         });
-      console.log("Processed image: " + result);
       addItemToCart(result);
       setCurBarcode(result);
-    } else {
-      console.log(`Cannot find element: ${uploadImgId}`);
     }
   };
 
