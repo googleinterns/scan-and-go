@@ -70,13 +70,13 @@ function StoreList() {
     };
   }) => {
     // Update location
-    grabLoc(); //blocking? race on userCoords update?
     const data = {
       distance: 10000,
       latitude: position.coords.latitude,
       longitude: position.coords.longitude,
     };
     const stores = await fetchJson("POST", data, STORE_LIST_API);
+    setUserCoords([position.coords.latitude, position.coords.longitude]);
     setStoreList(stores);
     setIsLoading(false);
   };
