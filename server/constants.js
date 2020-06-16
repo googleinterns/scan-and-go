@@ -1,0 +1,9 @@
+module.exports = {
+  HTTP_SUCCESS: 200,
+  HTTP_CREATE: 201,
+  HTTP_NOTFOUND: 404,
+  HTTP_INTERNALERROR: 500,
+  USERS_COLLECTION: "users",
+  ITEMS_COLLECTION: "items",
+  STORES_COLLECTION: "stores",
+};
