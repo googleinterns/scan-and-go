@@ -12,7 +12,7 @@ export const google = window.google;
 // On a normal site, the window.parent variable will
 // reference itself. However, within the microapps environment
 // window will be the iframe and window.parent will not be visible
-export const isWeb = window == window.parent;
+export const isWeb = window === window.parent;
 
 // API endpoints
 export const API = "/api/";
