@@ -24,7 +24,7 @@ for line in sys.stdin:
     code = [int(i) for i in line]
     if not len(code):   # Skip empty lines
         continue
-    if len(line) == 8 or len(line) == 13:   # Verify codes
+    if len(line) == EAN8_LEN or len(line) == EAN13_LEN:   # Verify codes
         computedChksum = generateChksum(code[:-1])
         if (code[-1] == computedChksum):
             print(intArrToString(code))
