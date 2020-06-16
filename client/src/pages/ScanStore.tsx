@@ -19,151 +19,92 @@ import AddIcon from "@material-ui/icons/Add";
 import { Item, emptyItem, CartItem, emptyCartItem } from "./../interfaces";
 import { fetchJson } from "./../utils";
 import { TextInputField } from "./../components/Components";
-import { CART_API, ITEMS_API, BARCODE_PLACEHOLDER } from "../constants";
+import { BARCODE_PLACEHOLDER, ITEMS_API } from "../constants";
 declare const window: any;
 
 function ScanStore() {
-  // Update URL params to find storeID
+  // TODO (#27): Extract logic to get parameters as a function
   const curUrl = window.location.search;
   const urlParams = new URLSearchParams(curUrl);
   const storeID = urlParams.get("id");
   const merchantID = urlParams.get("mid");
 
+  const [cartItems, updateCart] = useState<CartItem[]>([]);
   const [showCart, setShowCart] = useState(false);
-  const [shoppingList, setShoppingList] = useState<CartItem[]>([]);
-  //DEBUGGING Current barcode to 'scan'
   const [curBarcode, setCurBarcode] = useState<string>("");
 
-  //TODO: Look into `class ScanStore extends React.Component` syntax
-  //      in order to declare class-level instance variables (cache cart)
-  let cartItems: CartItem[] = [];
-  // Build barcode:idx mapping
-  let idxMap: { [key: string]: number } = {};
-
-  // wrapper function to fetch cart items and execute callback upon success
-  const fetchCart = async () => {
-    let data = {
-      "store-id": storeID,
-    };
-    const cart = await fetchJson(data, CART_API);
-    const items = await fetchCartItems(cart);
-    updateShoppingList(cartItems, items);
+  // TODO (#56): Separate UI and control functions
+  const addItem = async () => {
+    const barcode = curBarcode;
+    addItemToCart(barcode);
   };
 
-  const fetchCartItems = async (items: any) => {
-    // Empty cart contents
-    cartItems.length = 0;
-    // replace with current items
-    for (let i = 0; i < items.length; ++i) {
-      cartItems.push(items[i]);
-    }
-    // Should do batched fetch with list of barcodes in 1 request-response
-    const itemBarcodes = items.map((zippedItem: any) => zippedItem.barcode);
-    let data = {
-      //'merchant-id': merchantID,
-      "store-id": storeID,
-      items: itemBarcodes,
-    };
-    return fetchJson(data, ITEMS_API);
-  };
-
-  const updateShoppingList = (items: any, extractedItems: any) => {
-    const sList = items.map((zippedItem: any) => {
-      let cItem: CartItem = {
-        item: extractedItems[zippedItem.barcode],
-        quantity: zippedItem.quantity,
-      };
-      return cItem;
-    });
-    setShoppingList(sList);
-  };
-
-  const setDebugItem = (barcode: string) => {
-    setShoppingList(cartItems);
-    setCurBarcode(barcode);
-  };
-
-  const addItem = () => {
-    let barcodes: string[] = [curBarcode];
-    fetchItem(barcodes);
-  };
-
-  const fetchItem = async (barcodes: string[]) => {
-    let data = {
-      "merchant-id": merchantID,
-      barcode: barcodes,
-    };
-    const items = await fetchJson(data, ITEMS_API);
-    displayItems(items);
-  };
-
-  const displayItems = (extractedItems: Item[]) => {
-    for (let i = 0; i < extractedItems.length; ++i) {
-      if (idxMap[extractedItems[i].barcode] != undefined) {
-        cartItems[idxMap[extractedItems[i].barcode]].quantity += 1;
-      } else {
-        let newItem: CartItem = {
-          item: extractedItems[i],
-          quantity: 1,
-        };
-        cartItems.push(newItem);
-      }
-    }
-    setShoppingList(cartItems);
-  };
-
-  const updateShoppingListQuantity = (idx: number, quantity: number) => {
-    if (quantity <= 0) {
-      cartItems.splice(idx, 1);
+  const addItemToCart = async (barcode: string) => {
+    const existingItem = cartItems.find(
+      (cartItem) => cartItem.item.barcode == barcode
+    );
+    if (existingItem) {
+      updateItemQuantity(barcode, existingItem.quantity + 1);
     } else {
-      cartItems[idx].quantity = quantity;
+      updateNewItem(barcode);
     }
-    setShoppingList(cartItems);
+  };
+
+  const updateItemQuantity = (barcode: string, quantity: number) => {
+    if (quantity <= 0) {
+      updateCart(
+        cartItems.filter((cartItem) => cartItem.item.barcode !== barcode)
+      );
+    } else {
+      updateCart(
+        cartItems.map((cartItem) => {
+          if (cartItem.item.barcode === barcode) {
+            return Object.assign({}, cartItem, { quantity: quantity});
+          }
+          return cartItem;
+        })
+      );
+    }
+  };
+
+  const updateNewItem = async (barcode: string) => {
+    const data = {
+      "merchant-id": merchantID,
+      barcode: [barcode],
+    };
+    const [item]: Item[] = await fetchJson(data, ITEMS_API);
+    if (item) {
+      updateCart([...cartItems, {
+        item: item,
+        quantity: 1,
+      }]);
+    }
+    // TODO (#59): Notify user if barcode is invalid or item not found
   };
 
   const renderShoppingList = () => {
-    let UI_List = [];
-    for (let i = 0; i < shoppingList.length; ++i) {
-      UI_List.push(
-        <Grid key={"grid" + i} item xs={12}>
+    return cartItems.map((cartItem) => {
+      return (
+        <Grid key={cartItem.item.barcode} item xs={12}>
           <ItemCard
-            cartItem={shoppingList[i]}
-            idx={i}
-            updateItemQuantity={updateShoppingListQuantity}
+            cartItem={cartItem}
+            updateItemQuantity={updateItemQuantity}
           />
         </Grid>
       );
-    }
-    return UI_List;
+    });
   };
 
   const toggleCart = () => {
     setShowCart(!showCart);
   };
 
-  const updateIdxMapping = () => {
-    // Retrieve from State first
-    for (let i = 0; i < shoppingList.length; ++i) {
-      cartItems.push(shoppingList[i]);
-      const barcode: string = shoppingList[i].item.barcode;
-      idxMap[barcode] = i;
-    }
-  };
-
   const makePayment = () => {
+    //TODO(#48) This should be just an ID without exposing the contents of our Order
     window.location.href =
       "/receipt?id=TEST_ORDER&contents=" +
-      encodeURIComponent(JSON.stringify(shoppingList));
+      encodeURIComponent(JSON.stringify(cartItems));
   };
-
-  // After first rendering of UI, update CartItem
-  useEffect(() => {
-    updateIdxMapping();
-  }, [showCart]);
-
-  useEffect(() => {
-    updateIdxMapping();
-  }, [shoppingList]);
 
   return (
     <Container className="ScanStore">
@@ -178,17 +119,18 @@ function ScanStore() {
             <Paper elevation={1}>
               <Box p={1}>
                 <Grid item container direction="row" alignItems="center">
+                  {/* TODO (#60): Keep Cart or Shopping List, but not both */}
                   <Grid item xs={6}>
                     <h1>Shopping List:</h1>
                   </Grid>
                   <Grid item xs={6}>
                     <TextInputField
-                      text={BARCODE_PLACEHOLDER}
-                      setState={setDebugItem}
+                      text={curBarcode ? curBarcode : BARCODE_PLACEHOLDER}
+                      setState={setCurBarcode}
                     />
                   </Grid>
                 </Grid>
-                {shoppingList.length > 0 && (
+                {cartItems.length > 0 && (
                   <Grid
                     container
                     spacing={1}
@@ -222,6 +164,10 @@ function ScanStore() {
           </Grid>
         )}
       </Grid>
+      {showCart && [
+        <h3>Current Cart Contents:</h3>,
+        <Cart contents={cartItems} />,
+      ]}
       <Fab
         style={{ position: "fixed", bottom: "10px", left: "10px" }}
         color="primary"
@@ -229,26 +175,14 @@ function ScanStore() {
       >
         {showCart ? <EditIcon /> : <ShoppingCartIcon />}
       </Fab>
-      {showCart && [
-        <h3>Current Cart Contents:</h3>,
-        <Cart contents={shoppingList} />,
-        <Fab
-          style={{ position: "fixed", bottom: "10px", right: "10px" }}
-          color="secondary"
-          onClick={makePayment}
-        >
-          <PaymentIcon />
-        </Fab>,
-      ]}
-      {!showCart && (
-        <Fab
-          style={{ position: "fixed", bottom: "10px", right: "10px" }}
-          color="secondary"
-          onClick={addItem}
-        >
-          <AddIcon />
-        </Fab>
-      )}
+      <Fab
+        style={{ position: "fixed", bottom: "10px", right: "10px" }}
+        color="secondary"
+        onClick={showCart ? makePayment : addItem}
+      >
+        {showCart ? <PaymentIcon /> : <AddIcon />}
+      </Fab>
+      ,
     </Container>
   );
 }
