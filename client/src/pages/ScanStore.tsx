@@ -59,7 +59,7 @@ function ScanStore() {
       updateCart(
         cartItems.map((cartItem) => {
           if (cartItem.item.barcode === barcode) {
-            return Object.assign({}, cartItem, { quantity: quantity});
+            return Object.assign({}, cartItem, { quantity: quantity });
           }
           return cartItem;
         })
@@ -72,12 +72,15 @@ function ScanStore() {
       "merchant-id": merchantID,
       barcode: [barcode],
     };
-    const [item]: Item[] = await fetchJson(data, ITEM_LIST_API);
+    const [item]: Item[] = await fetchJson("POST", data, ITEM_LIST_API);
     if (item) {
-      updateCart([...cartItems, {
-        item: item,
-        quantity: 1,
-      }]);
+      updateCart([
+        ...cartItems,
+        {
+          item: item,
+          quantity: 1,
+        },
+      ]);
     }
     // TODO (#59): Notify user if barcode is invalid or item not found
   };
@@ -182,7 +185,6 @@ function ScanStore() {
       >
         {showCart ? <PaymentIcon /> : <AddIcon />}
       </Fab>
-      ,
     </Container>
   );
 }
