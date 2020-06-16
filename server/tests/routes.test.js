@@ -6,16 +6,6 @@ const TEST_ITEMS = require("./../data/items.json");
 const TEST_STORES = require("./../data/stores.json");
 
 describe("API POST Data", () => {
-  //it("should create a new user", async () => {
-  //  const FAKE_USER = {
-  //    "username": "hellokitty",
-  //    "sub": "supersecrethash"
-  //  }
-  //  const res = await request(app)
-  //    .post("/api/user/create")
-  //    .send(FAKE_USER);
-  //  expect(res.statusCode).toEqual(CONSTANTS.HTTP_CREATE);
-  //});
   it("should get TEST_USER details", async () => {
     const testUser = TEST_USERS[0];
     const res = await request(app).post("/api/user").send({
