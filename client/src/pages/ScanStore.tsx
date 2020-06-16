@@ -59,7 +59,7 @@ function ScanStore() {
       updateCart(
         cartItems.map((cartItem) => {
           if (cartItem.item.barcode === barcode) {
-            cartItem.quantity = quantity;
+            return Object.assign({}, cartItem, { quantity: quantity});
           }
           return cartItem;
         })
