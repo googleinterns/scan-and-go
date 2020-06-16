@@ -116,9 +116,7 @@ function StoreList() {
   // Get user identity details
   const loginUser = async () => {
     // Only run in iframe (on app)
-    if (isWeb) {
-      console.log("Only supported in GPay microapp");
-    } else {
+    if (!isWeb) {
       const request = { nonce: "Don't Hack me please" };
       microapps
         .getIdentity(request)
@@ -160,7 +158,7 @@ function StoreList() {
       } else {
         //TODO(#65) Render failure message
         if (isDebug) {
-          console.log("Unable to redirect, QR Code not scanned correctly");
+          console.error("Unable to redirect, QR Code not scanned correctly");
         }
       }
     }
