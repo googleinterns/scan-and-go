@@ -80,7 +80,7 @@ function Login() {
       {(!isWeb || isDebug) && (
         <Grid container spacing={5} direction="column" alignItems="center">
           <Grid item>
-            <Typography variant="h3">$canAndG0</Typography>
+            <Typography variant="h3">{TITLE_TEXT}</Typography>
           </Grid>
           <Grid item>
             <img
