@@ -13,7 +13,7 @@ import {
 } from "@material-ui/core";
 import {
   API,
-  USERS_ALL_API,
+  USER_LIST_API,
   DEFAULT_WELCOME_MSG,
   ID_PLACEHOLDER,
   DEFAULT_INPUT_TYPE,
@@ -39,7 +39,7 @@ function Home() {
       const data = {
         "user-id": userid,
       };
-      let msg = await fetchText(data, API);
+      let msg = await fetchText("POST", data, API);
       if (!msg) {
         msg = DEFAULT_WELCOME_MSG;
       }
@@ -51,7 +51,7 @@ function Home() {
 
   // Wrapper to issue fetch GET to /api/users/all
   const fetchUsers = async () => {
-    const users = await fetchJson(null, USERS_ALL_API);
+    const users = await fetchJson("GET", null, USER_LIST_API);
     setUsersList(users);
   };
 

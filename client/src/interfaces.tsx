@@ -13,12 +13,12 @@ export interface Item {
   "merchant-id": string; // Which merchant owns this item
 }
 
-export const emptyItem: Item = {
+export const emptyItem = (): Item => ({
   barcode: "",
   name: "",
   price: 0.0,
   "merchant-id": "",
-};
+});
 
 // CartItem describes an Item in user's Cart
 export interface CartItem {
@@ -26,10 +26,10 @@ export interface CartItem {
   quantity: number; // Number of Items added to Cart
 }
 
-export const emptyCartItem: CartItem = {
-  item: emptyItem,
+export const emptyCartItem = (): CartItem => ({
+  item: emptyItem(),
   quantity: 0,
-};
+});
 
 export interface Store {
   "store-id": string; // Unique store-id -> Can match GMaps place_id
@@ -40,14 +40,14 @@ export interface Store {
   longitude: number; // ''
 }
 
-export const emptyStore: Store = {
+export const emptyStore = (): Store => ({
   "store-id": "",
   "merchant-id": "",
   name: "",
   distance: 0.0,
   latitude: 0.0,
   longitude: 0.0,
-};
+});
 
 // This is supposedly what is returned to us from microapps.getIdentity()
 export interface IdentityToken {
@@ -58,13 +58,13 @@ export interface IdentityToken {
   exp: number; // Token validity expiry time
 }
 
-export const emptyIdentityToken: IdentityToken = {
+export const emptyIdentityToken = (): IdentityToken => ({
   iss: "",
   sub: "EMPTY",
   aud: "",
   iat: -1,
   exp: 0,
-};
+});
 
 // results json response from PlacesAPI call:
 // https://developers.google.com/places/web-service/search#PlaceSearchResults
@@ -83,3 +83,13 @@ export interface GMapPlace {
   place_id: string; // unique place_id for this entity we can use
   vicinity: string; // address field
 }
+
+export interface MediaResponse {
+  bytes: string;
+  mimeType: string;
+}
+
+export const emptyMediaResponse = (): MediaResponse => ({
+  bytes: "",
+  mimeType: "",
+});
