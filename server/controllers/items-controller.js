@@ -1,49 +1,22 @@
-const config = require("./../config");
-const { itemsCollection } = require("./../firestore");
-const { flatMap } = require("./../utils");
+const items = require("./../data/items.json");
 
-exports.listItems = async (req, res) => {
-  const reqProps = req.body;
+exports.itemsGet = async (req, res) => {
+  let reqProps = req.body;
   let retItems = [];
 
-  const queryMerchant = reqProps["merchant-id"];
-  const queryBarcodes = reqProps["barcode"];
-
-  try {
-    if (queryMerchant && queryBarcodes) {
-      //TODO(#58) We need to batch this into max 10 barcodes per query
-      const itemsQueryRef = await itemsCollection
-        .where("merchant-id", "==", queryMerchant)
-        .where("barcode", "in", queryBarcodes)
-        .get();
-      retItems = itemsQueryRef.docs.map((doc) => doc.data());
+  if (reqProps["merchant-id"] && reqProps["barcode"]) {
+    let queryMerchant = reqProps["merchant-id"];
+    let queryBarcodes = new Set(reqProps["barcode"]);
+    for (let i = 0; i < items.length; ++i) {
+      let merchant_id = items[i]["merchant-id"];
+      if (merchant_id != queryMerchant) {
+        continue;
+      }
+      let barcode = items[i]["barcode"];
+      if (queryBarcodes.has(barcode)) {
+        retItems.push(items[i]);
+      }
     }
-  } catch (err) {
-    console.error(err);
-  } finally {
-    res.json(retItems);
   }
-};
-
-exports.getItem = async (req, res) => {
-  const reqProps = req.body;
-  let retItem = {};
-
-  const queryMerchant = reqProps["merchant-id"];
-  const queryBarcode = reqProps["barcode"];
-
-  try {
-    if (queryMerchant && queryBarcode) {
-      const itemQueryRef = await itemsCollection
-        .where("merchant-id", "==", queryMerchant)
-        .where("barcode", "==", queryBarcode)
-        .get();
-      const items = itemQueryRef.docs.map((doc) => doc.data());
-      retItem = flatMap(items, {});
-    }
-  } catch (err) {
-    console.error(err);
-  } finally {
-    res.json(retItem);
-  }
+  res.json(retItems);
 };

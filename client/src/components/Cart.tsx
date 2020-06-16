@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Item, emptyItem, CartItem, emptyCartItem } from "./../interfaces";
+import { PRICE_FRACTION_DIGITS } from "../constants";
 import {
   Fab,
   Table,
@@ -15,7 +16,7 @@ function Cart({ contents }: { contents: CartItem[] }) {
     for (let i = 0; i < contents.length; ++i) {
       tot_price += contents[i].quantity * contents[i].item.price;
     }
-    return tot_price.toFixed(2);
+    return tot_price.toFixed(PRICE_FRACTION_DIGITS);
   };
 
   return (
@@ -35,7 +36,9 @@ function Cart({ contents }: { contents: CartItem[] }) {
                 <TableCell>{curItem.item.name}</TableCell>
                 <TableCell>{curItem.quantity}</TableCell>
                 <TableCell>
-                  {(curItem.quantity * curItem.item.price).toFixed(2)}
+                  {(curItem.quantity * curItem.item.price).toFixed(
+                    PRICE_FRACTION_DIGITS
+                  )}
                 </TableCell>
               </TableRow>
             ))}

@@ -16,20 +16,11 @@ import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import EditIcon from "@material-ui/icons/Edit";
 import PaymentIcon from "@material-ui/icons/Payment";
 import AddIcon from "@material-ui/icons/Add";
-import {
-  Item,
-  CartItem,
-  MediaResponse,
-  emptyMediaResponse,
-} from "./../interfaces";
+import { Item, emptyItem, CartItem, emptyCartItem } from "./../interfaces";
 import { fetchJson } from "./../utils";
 import { TextInputField } from "./../components/Components";
-import { BrowserMultiFormatReader } from "@zxing/library";
-import SampleBarcode from "./../img/Sample_EAN8.png";
+import { CART_API, ITEMS_API, BARCODE_PLACEHOLDER } from "../constants";
 declare const window: any;
-
-//Yiheng: For whether we should display our uploaded image for debugging
-const debugImg = true;
 
 function ScanStore() {
   // TODO (#27): Extract logic to get parameters as a function
@@ -41,19 +32,17 @@ function ScanStore() {
   const [cartItems, updateCart] = useState<CartItem[]>([]);
   const [showCart, setShowCart] = useState(false);
   const [curBarcode, setCurBarcode] = useState<string>("");
-  const [uploadImg, setUploadImg] = useState<MediaResponse>(emptyMediaResponse);
 
   // TODO (#56): Separate UI and control functions
   const addItem = async () => {
     let barcode = curBarcode;
-    if (barcode === "") {
-      barcode = await getBarcodeByImage();
-    } 
     addItemToCart(barcode);
   };
 
   const addItemToCart = async (barcode: string) => {
-    const existingItem = cartItems.find(cartItem => cartItem.item.barcode == barcode);
+    const existingItem = cartItems.find(
+      (cartItem) => cartItem.item.barcode == barcode
+    );
     if (existingItem) {
       updateItemQuantity(barcode, existingItem.quantity + 1);
     } else {
@@ -63,41 +52,47 @@ function ScanStore() {
 
   const updateItemQuantity = (barcode: string, quantity: number) => {
     if (quantity <= 0) {
-      updateCart(cartItems.filter(cartItem => cartItem.item.barcode !== barcode));
+      updateCart(
+        cartItems.filter((cartItem) => cartItem.item.barcode !== barcode)
+      );
     } else {
-      updateCart(cartItems.map(cartItem => {
-        if (cartItem.item.barcode === barcode) {
-          cartItem.quantity = quantity;
-        }
-        return cartItem;
-      }));
+      updateCart(
+        cartItems.map((cartItem) => {
+          if (cartItem.item.barcode === barcode) {
+            cartItem.quantity = quantity;
+          }
+          return cartItem;
+        })
+      );
     }
   };
 
   const updateNewItem = async (barcode: string) => {
     const data = {
       "merchant-id": merchantID,
-      barcode: [barcode]
+      barcode: [barcode],
     };
-    const [ item ]: Item[] = await fetchJson("POST", data, "/api/item/list");
+    const [item]: Item[] = await fetchJson("POST", data, "/api/item/list");
     if (item) {
       const cartItem: CartItem = {
         item: item,
-        quantity: 1
-      }
-      updateCart(cartItems => [...cartItems, cartItem]);
+        quantity: 1,
+      };
+      updateCart((cartItems) => [...cartItems, cartItem]);
     }
     // TODO (#59): Notify user if barcode is invalid or item not found
-  }
+  };
 
   const renderShoppingList = () => {
-    return cartItems.map(cartItem => {
-      return <Grid key={cartItem.item.barcode} item xs={12}>
-        <ItemCard
-          cartItem={cartItem}
-          updateItemQuantity={updateItemQuantity}
-        />
-      </Grid>
+    return cartItems.map((cartItem) => {
+      return (
+        <Grid key={cartItem.item.barcode} item xs={12}>
+          <ItemCard
+            cartItem={cartItem}
+            updateItemQuantity={updateItemQuantity}
+          />
+        </Grid>
+      );
     });
   };
 
@@ -106,50 +101,14 @@ function ScanStore() {
   };
 
   const makePayment = () => {
-    //Yiheng: This should be just an ID without exposing the contents of our Order
+    //TODO(#48) This should be just an ID without exposing the contents of our Order
     window.location.href =
       "/receipt?id=TEST_ORDER&contents=" +
       encodeURIComponent(JSON.stringify(cartItems));
   };
 
-  const getBarcodeByImage = async () => {
-    let barcode = "";
-    const imgReq = {
-      allowedMimeTypes: ["image/jpeg"],
-      allowedSources: ["camera"], // Restrict to camera scanning only
-    };
-    const imgRes = await window.microapps
-      .requestMedia(imgReq)
-      .then((res: any) => res);
-    setUploadImg(imgRes);
-    if (imgRes.mimeType) {
-      const img = document.getElementById("uploadImgSrc") as HTMLImageElement;
-      barcode = await processImageBarcode(img);
-    }
-    return barcode;
-  }
-
-  const processImageBarcode = async (img: HTMLImageElement) => {
-    const codeReader = new BrowserMultiFormatReader();
-    let barcode = "";
-    if (img) {
-      barcode = await codeReader
-        .decodeFromImage(img)
-        .then((res: any) => res)
-        .catch((err: any) => {
-          return "";
-        });
-    } 
-    return barcode;
-  };
-
-  const testBarcode = () => {
-    const img = document.getElementById("testImgSrc") as HTMLImageElement;
-    processImageBarcode(img);
-  };
-
   return (
-    <Container disableGutters={true} className="ScanStore">
+    <Container className="ScanStore">
       <Grid container spacing={1} direction="column" alignItems="stretch">
         <Grid item xs={12}>
           <Paper elevation={1}>
@@ -167,8 +126,7 @@ function ScanStore() {
                   </Grid>
                   <Grid item xs={6}>
                     <TextInputField
-                      // TODO (#23): create constants file with default values
-                      text={curBarcode ? curBarcode : "...barcode"}
+                      text={curBarcode ? curBarcode : "BARCODE_PLACEHOLDER"}
                       setState={setCurBarcode}
                     />
                   </Grid>
@@ -206,29 +164,6 @@ function ScanStore() {
             </Paper>
           </Grid>
         )}
-        <button onClick={testBarcode}>Test Barcode API</button>
-        <img
-          id="testImgSrc"
-          hidden={true}
-          width="200"
-          height="200"
-          src={SampleBarcode}
-        />
-        {uploadImg.mimeType && (
-          <Grid item xs={12} justify="center">
-            <Paper elevation={2}>
-              <img
-                id="uploadImgSrc"
-                hidden={!debugImg}
-                width="200"
-                height="200"
-                src={
-                  "data:" + uploadImg.mimeType + ";base64," + uploadImg.bytes
-                }
-              />
-            </Paper>
-          </Grid>
-        )}
       </Grid>
       {showCart && [
         <h3>Current Cart Contents:</h3>,
@@ -247,7 +182,8 @@ function ScanStore() {
         onClick={showCart ? makePayment : addItem}
       >
         {showCart ? <PaymentIcon /> : <AddIcon />}
-      </Fab>,
+      </Fab>
+      ,
     </Container>
   );
 }

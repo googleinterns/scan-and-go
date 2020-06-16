@@ -11,6 +11,13 @@ import {
   TableRow,
   TableCell,
 } from "@material-ui/core";
+import {
+  API,
+  USERS_ALL_API,
+  DEFAULT_WELCOME_MSG,
+  ID_PLACEHOLDER,
+  DEFAULT_INPUT_TYPE,
+} from "../constants";
 
 // Testing code, will be removed soon
 interface UserUI {
@@ -24,7 +31,7 @@ function Home() {
   const [usersList, setUsersList] = useState<UserUI[]>([]);
 
   //DEBUG Show UI for user retrieval debugging
-  const debug_user = true;
+  const debug_user = false;
 
   useEffect(() => {
     // fetch POST welcome message
@@ -32,9 +39,9 @@ function Home() {
       const data = {
         "user-id": userid,
       };
-      let msg = await fetchText("POST", data, "/api/");
-      if (msg == null) {
-        msg = "hello";
+      let msg = await fetchText(data, API);
+      if (!msg) {
+        msg = DEFAULT_WELCOME_MSG;
       }
       setWelMsg(msg);
     };
@@ -44,12 +51,25 @@ function Home() {
 
   // Wrapper to issue fetch GET to /api/users/all
   const fetchUsers = async () => {
-    const users = await fetchJson("GET", null, "/api/user/list");
+    const users = await fetchJson(null, USERS_ALL_API);
     setUsersList(users);
   };
 
+  function TextInputField(props: any) {
+    const onTextChange = (e: any) => {
+      setUserid(e.target.value);
+    };
+    return (
+      <input
+        type={DEFAULT_INPUT_TYPE}
+        placeholder={userid ? userid : ID_PLACEHOLDER}
+        onBlur={onTextChange}
+      />
+    );
+  }
+
   return (
-    <Container disableGutters={true} className="Home">
+    <Container className="Home">
       {debug_user && [
         <p>{welMsg}</p>,
         <TextInputField text={userid} setState={setUserid} />,
