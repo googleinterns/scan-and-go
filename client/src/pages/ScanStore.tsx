@@ -19,7 +19,7 @@ import AddIcon from "@material-ui/icons/Add";
 import { Item, emptyItem, CartItem, emptyCartItem } from "./../interfaces";
 import { fetchJson } from "./../utils";
 import { TextInputField } from "./../components/Components";
-import { BARCODE_PLACEHOLDER, ITEMS_API } from "../constants";
+import { BARCODE_PLACEHOLDER, ITEM_LIST_API } from "../constants";
 declare const window: any;
 
 function ScanStore() {
@@ -72,7 +72,7 @@ function ScanStore() {
       "merchant-id": merchantID,
       barcode: [barcode],
     };
-    const [item]: Item[] = await fetchJson(data, ITEMS_API);
+    const [item]: Item[] = await fetchJson(data, ITEM_LIST_API);
     if (item) {
       updateCart([...cartItems, {
         item: item,
