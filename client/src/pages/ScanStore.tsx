@@ -74,11 +74,10 @@ function ScanStore() {
     };
     const [item]: Item[] = await fetchJson(data, ITEMS_API);
     if (item) {
-      const cartItem: CartItem = {
+      updateCart([...cartItems, {
         item: item,
         quantity: 1,
-      };
-      updateCart((cartItems) => [...cartItems, cartItem]);
+      }]);
     }
     // TODO (#59): Notify user if barcode is invalid or item not found
   };
