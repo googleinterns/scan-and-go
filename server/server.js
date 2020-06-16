@@ -2,13 +2,13 @@ const express = require("express");
 const compression = require("compression");
 const helmet = require("helmet");
 const cors = require("cors");
-const config = require("./config");
 const apiRouter = require("./routers/api-router");
+const config = require("./config");
+
+const app = express();
 
 // Development environment is set up to look for port 3143
 const PORT = process.env.PORT || config.DEV_PORT;
-
-const app = express();
 
 // Enable cross-domain requests from our frontend server
 app.use(
@@ -36,6 +36,9 @@ app.use((err, req, res, next) => {
 // Compresses responses
 app.use(compression());
 
-app.listen(PORT, function () {
+const server = app.listen(PORT, function () {
   console.log(`Server running on: ${PORT}`);
 });
+
+exports.app = app;
+exports.server = server;
