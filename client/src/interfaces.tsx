@@ -83,13 +83,3 @@ export interface GMapPlace {
   place_id: string; // unique place_id for this entity we can use
   vicinity: string; // address field
 }
-
-export interface MediaResponse {
-  bytes: string;
-  mimeType: string;
-}
-
-export const emptyMediaResponse = (): MediaResponse => ({
-  bytes: "",
-  mimeType: "",
-});

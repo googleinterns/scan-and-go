@@ -18,7 +18,7 @@ function Receipt() {
 
   return (
     <div className="Receipt">
-      <a href="/home">back</a>
+      <a href="/">back</a>
       <p>Order [{orderID}] Confimed!</p>
       <h3>Receipt:</h3>
       <Cart contents={contents} />

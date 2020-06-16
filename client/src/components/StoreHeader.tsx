@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Store, emptyStore } from "./../interfaces";
 import { fetchJson } from "./../utils";
+import { STORE_API } from "../constants";
 
 function StoreHeader({ storeId }: { storeId: string | null }) {
   const [curStore, setCurStore] = useState<Store>(emptyStore);
@@ -10,7 +11,7 @@ function StoreHeader({ storeId }: { storeId: string | null }) {
     let data = {
       "store-id": storeId,
     };
-    const stores = await fetchJson("POST", data, "/api/store");
+    const stores = await fetchJson(data, STORE_API);
     setCurStore(stores);
   };
 
@@ -20,7 +21,7 @@ function StoreHeader({ storeId }: { storeId: string | null }) {
 
   return (
     <div className="StoreHeader">
-      <a href="/home">back</a>
+      <a href="/">back</a>
       <h3>
         [{curStore.latitude},{curStore.longitude}]
       </h3>
