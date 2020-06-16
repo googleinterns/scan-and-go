@@ -27,3 +27,30 @@ With this, we will deploy client front-end react app to default service and back
 ### Routing (_initial setup only_)
 
 On project root directory, run `gcloud app deploy dispatch.yaml` to ensure we re-route all requests to `*/api/*` to our api appengine service which is running our express server.
+
+## Testing Framework
+
+Both the `/client` and `/server` NodeJS projects are configured to run test suites with Jest.
+
+### Server Testing
+
+In addition to Jest, the server requires **supertest** and **@firebase/testing** together with an emulated Cloud Firestore running on our local development environment.
+
+The firebase CLI to run our emulator can be easily installed with `yarn global add firebase-tools` or `npm install -g firebase-tools`. Afterwhich, we require a valid Java Runtime Environment installed to run the Firebase emulator. It is suggested to install `openjdk-11-jdk` on linux machines with `sudo apt-get install default-jdk`.
+
+Finally, we can start our emulator prior to running any tests with:
+
+```
+firebase emulators:start --only firestore
+```
+
+And test with `yarn test`. In `/server/package.json`, we define a pretest script to wipe our emulated database before each run of test to ensure we clean.
+
+**Server Test Steps:**
+
+1. `firebase emulators:start --only firestore`
+2. `yarn test`
+   - Automatically runs `yarn pretest` first: `curl -X DELETE "http://localhost:8080/emulator/v1/projects/scan-and-go-for-gpay/databases/(default)/documents"`
+   - `NODE_ENV=\"test\" jest`
+
+**Note:** Our `firestore.js` module automatically detects which handle to grab based on the environment variable: `NODE_END`. When this is `"test"`, we load up the `emulatedFirestore.js` module rather than use the live Firestore variable (connecting to actual Cloud Firestore DB).
