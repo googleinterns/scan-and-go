@@ -118,14 +118,9 @@ function StoreList() {
     // Only run in iframe (on app)
     if (!isWeb) {
       const request = { nonce: "Don't Hack me please" };
-      microapps
-        .getIdentity(request)
-        .then((response: any) => {
-          setIdentity(extractIdentityToken(response));
-        })
-        .catch((error: any) => {
-          console.error("An error occurred: ", error);
-        });
+      microapps.getIdentity(request).then((response: any) => {
+        setIdentity(extractIdentityToken(response));
+      });
     }
   };
 
@@ -149,17 +144,11 @@ function StoreList() {
     if (img) {
       const result = await codeReader
         .decodeFromImage(img)
-        .then((res: any) => res.text)
-        .catch((err: any) => {
-          console.error(err);
-        });
+        .then((res: any) => res.text);
       if (result) {
         window.location.href = "/store?" + result;
       } else {
         //TODO(#65) Render failure message
-        if (isDebug) {
-          console.error("Unable to redirect, QR Code not scanned correctly");
-        }
       }
     }
   };
