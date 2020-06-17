@@ -217,7 +217,9 @@ function ScanStore() {
             </Paper>
           </Grid>
         )}
-        <button onClick={testBarcode}>Test Barcode API</button>
+        <button id="testScanBtn" onClick={testBarcode}>
+          Test Barcode API
+        </button>
         <img
           id={debugImgId}
           hidden={true}
