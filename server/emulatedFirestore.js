@@ -16,10 +16,12 @@ const setupSimulatedDB = async () => {
   const TEST_USERS = require("./data/users.json");
   const TEST_ITEMS = require("./data/items.json");
   const TEST_STORES = require("./data/stores.json");
+  const TEST_ORDERS = require("./data/orders.json");
   const {
     USERS_COLLECTION,
     ITEMS_COLLECTION,
     STORES_COLLECTION,
+    ORDERS_COLLECTION,
   } = require("./constants");
   console.log("setting up emulation firestore");
 
@@ -32,6 +34,9 @@ const setupSimulatedDB = async () => {
   }
   for (let store of TEST_STORES) {
     await firestore.collection(STORES_COLLECTION).add(store);
+  }
+  for (let order of TEST_ORDERS) {
+    await firestore.collection(ORDERS_COLLECTION).add(order);
   }
 };
 

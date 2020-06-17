@@ -1,0 +1,17 @@
+[
+  {
+    "merchant-id": "WPANCUD",
+    "order-id": "TEST_ORDER_1",
+    "user-id": "93IRJIDF01LDKS0"
+  },
+  {
+    "merchant-id": "WPANCUD",
+    "order-id": "TEST_ORDER_2",
+    "user-id": "93IRJIDF01LDKS0"
+  },
+  {
+    "merchant-id": "WPANCUD",
+    "order-id": "TEST_ORDER_3",
+    "user-id": "82EHFS0DJFIODS0"
+  }
+]
