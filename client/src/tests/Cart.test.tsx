@@ -14,7 +14,7 @@ it("Cart renders correctly when empty", () => {
   expect(tree).toMatchSnapshot();
 });
 
-it("Cart renders correctly with one item", () => {
+it("Cart renders correctly with multiple items", () => {
   const contents: CartItem[] = [
     {
       item: {
@@ -25,12 +25,21 @@ it("Cart renders correctly with one item", () => {
       },
       quantity: 2,
     },
+    {
+      item: {
+        name: "milk",
+        price: 5.6,
+        "merchant-id": "WPANCUD",
+        barcode: "93202411",
+      },
+      quantity: 1,
+    },
   ];
   const wrapper = Enzyme.shallow(<Cart contents={contents} />);
   const rows = wrapper.find(TableBody).find(TableRow);
-  expect(rows).toHaveLength(2);
-  const itemPrice = rows.last().find(TableCell).last();
-  expect(itemPrice.text()).toEqual("6.40");
+  expect(rows).toHaveLength(3);
+  const cheesePrice = rows.first().find(TableCell).last();
+  expect(cheesePrice.text()).toEqual("6.40");
   const totalPrice = rows.last().find(TableCell).last();
-  expect(totalPrice.text()).toEqual("6.40");
+  expect(totalPrice.text()).toEqual("12.00");
 });
