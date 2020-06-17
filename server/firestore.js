@@ -16,10 +16,12 @@ const firestore =
 const usersCollection = firestore.collection("users");
 const itemsCollection = firestore.collection("items");
 const storesCollection = firestore.collection("stores");
+const ordersCollection = firestore.collection("orders");
 
 module.exports = {
   firestore,
   usersCollection,
   itemsCollection,
   storesCollection,
+  ordersCollection,
 };

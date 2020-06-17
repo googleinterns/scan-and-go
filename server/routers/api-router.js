@@ -3,6 +3,7 @@ const apiController = require("./../controllers/api-controller");
 const usersController = require("./../controllers/users-controller");
 const itemsController = require("./../controllers/items-controller");
 const storesController = require("./../controllers/stores-controller");
+const ordersController = require("./../controllers/orders-controller");
 const router = express.Router();
 
 // Debugging Endpoints
@@ -19,5 +20,9 @@ router.post("/user", usersController.getUser);
 // Items API
 router.post("/item", itemsController.getItem);
 router.post("/item/list", itemsController.listItems); //Batch Operation
+
+// Order API
+router.post("/order", ordersController.addOrder);
+router.post("/order/list", ordersController.listOrders); //Batch Operation
 
 module.exports = router;
