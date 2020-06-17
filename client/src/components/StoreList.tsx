@@ -17,7 +17,6 @@ import {
   microapps,
   google,
   isWeb,
-  isDebug,
 } from "../constants";
 import Divider from "@material-ui/core/Divider";
 import { BrowserMultiFormatReader } from "@zxing/library";
@@ -105,7 +104,7 @@ function StoreList() {
 
   // Digest PlacesAPI results
   const getNearbyPlacesCallback = (places: any, status: any) => {
-    if (status == google.maps.places.PlacesServiceStatus.OK) {
+    if (status === google.maps.places.PlacesServiceStatus.OK) {
       setNearbyPlaces(places);
     } else {
       alert("PlacesAPI failure to return");

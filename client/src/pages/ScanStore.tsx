@@ -24,13 +24,7 @@ import {
 import { fetchJson } from "./../utils";
 import { TextInputField } from "./../components/Components";
 import { BrowserMultiFormatReader } from "@zxing/library";
-import {
-  CART_API,
-  ITEM_LIST_API,
-  BARCODE_PLACEHOLDER,
-  microapps,
-  isDebug,
-} from "../constants";
+import { ITEM_LIST_API, BARCODE_PLACEHOLDER, microapps } from "../constants";
 import SampleBarcode from "./../img/Sample_EAN8.png";
 declare const window: any;
 
@@ -72,7 +66,7 @@ function ScanStore() {
 
   const addItemToCart = async (barcode: string) => {
     const existingItem = cartItems.find(
-      (cartItem) => cartItem.item.barcode == barcode
+      (cartItem) => cartItem.item.barcode === barcode
     );
     if (existingItem) {
       updateItemQuantity(barcode, existingItem.quantity + 1);

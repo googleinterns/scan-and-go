@@ -37,7 +37,7 @@ function Login() {
   };
 
   useEffect(() => {
-    if (identity.sub != "EMPTY" && identity.sub != "") {
+    if (identity.sub !== "EMPTY" && identity.sub !== "") {
       window.location.href = "/home";
     }
   }, [identity]);
