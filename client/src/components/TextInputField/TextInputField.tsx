@@ -3,13 +3,13 @@ import { Input } from "@material-ui/core";
 import { EMPTY_PLACEHOLDER } from "src/constants";
 
 function TextInputField({
-  elementId,
+  id,
   text,
   setState,
   type,
   fullWidth,
 }: {
-  elementId?: string;
+  id?: string;
   text: string;
   setState?: (value: string) => void;
   type?: string;
@@ -25,7 +25,7 @@ function TextInputField({
 
   return (
     <Input
-      id={elementId ? elementId : ""}
+      id={id ? id : undefined}
       type={type ? type : DEFAULT_TYPE}
       fullWidth={fullWidth}
       placeholder={text ? text : EMPTY_PLACEHOLDER}
