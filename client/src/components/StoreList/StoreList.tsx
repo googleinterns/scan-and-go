@@ -6,7 +6,7 @@ import {
   GMapPlace,
   MediaResponse,
   emptyMediaResponse,
-} from "./../interfaces";
+} from "src/interfaces";
 import { fetchJson, extractIdentityToken } from "src/utils";
 import {
   STORE_LIST_API,
