@@ -23,6 +23,6 @@ router.post("/item/list", itemsController.listItems); //Batch Operation
 
 // Order API
 router.post("/order", ordersController.addOrder);
-router.post("/order/list", ordersController.listOrders); //Batch Operation
+router.get("/order/list/:userId", ordersController.listOrders);
 
 module.exports = router;

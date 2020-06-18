@@ -1,8 +1,17 @@
 const { ordersCollection } = require("./../firestore");
 
+/**
+ * Adds an order to the orders collection.
+ * Returns the order ID if successful, and empty string
+ * otherwise.
+ *
+ * @param {Object} req - The request.
+ * @param {Object} res - The response.
+ * @param {Object} req.body - The JSON payload.
+ */
 exports.addOrder = async (req, res) => {
   const reqProps = req.body;
-  let docId = "";
+  let retId = "";
 
   const merchantId = reqProps["merchant-id"];
   const orderId = reqProps["order-id"];
@@ -10,28 +19,35 @@ exports.addOrder = async (req, res) => {
 
   try {
     if (merchantId && orderId && userId) {
-      const addDoc = ordersCollection
+      await ordersCollection
         .add({
           "merchant-id": merchantId,
           "order-id": orderId,
           "user-id": userId,
         })
-        .then((ref) => {
-          docId = ref.id;
+        .then(() => {
+          retId = orderId;
         });
     }
   } catch (err) {
     console.error(err);
   } finally {
-    res.send(docId);
+    res.send(retId);
   }
 };
 
+/**
+ * Returns a list of orders associated with a user.
+ *
+ * @param {Object} req - The request.
+ * @param {Object} res - The response.
+ * @param {String} req.query.userId - The user id query.
+ */
 exports.listOrders = async (req, res) => {
-  const reqProps = req.body;
+  const reqQuery = req.query;
   let orders = [];
 
-  const userId = reqProps["user-id"];
+  const userId = reqQuery.userId;
 
   try {
     if (userId) {

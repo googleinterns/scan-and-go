@@ -26,16 +26,16 @@ const setupSimulatedDB = async () => {
   console.log("setting up emulation firestore");
 
   // Add our dummy data into emulated firestore
-  for (let user of TEST_USERS) {
+  for (const user of TEST_USERS) {
     await firestore.collection(USERS_COLLECTION).add(user);
   }
-  for (let item of TEST_ITEMS) {
+  for (const item of TEST_ITEMS) {
     await firestore.collection(ITEMS_COLLECTION).add(item);
   }
-  for (let store of TEST_STORES) {
+  for (const store of TEST_STORES) {
     await firestore.collection(STORES_COLLECTION).add(store);
   }
-  for (let order of TEST_ORDERS) {
+  for (const order of TEST_ORDERS) {
     await firestore.collection(ORDERS_COLLECTION).add(order);
   }
 };

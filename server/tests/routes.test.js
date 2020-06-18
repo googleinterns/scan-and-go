@@ -79,15 +79,17 @@ describe("API POST Data", () => {
       "user-id": "TEST_USER",
     });
     expect(res.statusCode).toEqual(CONSTANTS.HTTP_SUCCESS);
+    expect(res.text).toEqual("TEST_ORDER");
   });
+});
+
+describe("API GET Data", () => {
   it("should get TEST_USER orders", async () => {
     const testUserId = TEST_USERS[0]["user-id"];
     const expectedOrders = TEST_ORDERS.filter(
       (order) => order["user-id"] === testUserId
     );
-    const res = await request(app).post("/api/order/list").send({
-      "user-id": testUserId,
-    });
+    const res = await request(app).get(`/api/order/list/${testUserId}`);
     expect(res.body).toHaveLength(expectedOrders.length);
     expect(res.body.every((order) => order["user-id"] === testUserId)).toBe(
       true
