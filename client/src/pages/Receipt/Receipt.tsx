@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import Cart from "./../components/Cart";
-import { CartItem } from "./../interfaces";
+import Cart from "src/components/Cart";
+import { CartItem } from "src/interfaces";
 declare const window: any;
 
 function Receipt() {

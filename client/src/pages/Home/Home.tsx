@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import StoreList from "./../components/StoreList";
-import { fetchJson, fetchText } from "./../utils";
-import { TextInputField } from "./../components/Components";
+import StoreList from "components/StoreList";
+import TextInputField from "components/TextInputField";
+import { fetchJson, fetchText } from "utils";
 import {
   Container,
   Table,
@@ -10,7 +10,8 @@ import {
   TableRow,
   TableCell,
 } from "@material-ui/core";
-import { API, USER_LIST_API, DEFAULT_WELCOME_MSG, isDebug } from "../constants";
+import { API, USER_LIST_API, DEFAULT_WELCOME_MSG } from "constants";
+import { isDebug } from "config";
 
 // Testing code, will be removed soon
 interface UserUI {

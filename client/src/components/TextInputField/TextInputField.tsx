@@ -1,6 +1,6 @@
 import React from "react";
 import { Input } from "@material-ui/core";
-import { EMPTY_PLACEHOLDER } from "../constants";
+import { EMPTY_PLACEHOLDER } from "src/constants";
 
 export function TextInputField({
   elementId,
