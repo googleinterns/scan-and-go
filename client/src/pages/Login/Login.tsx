@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { TextInputField } from "./../components/Components";
+import TextInputField from "src/components/TextInputField";
 import { Container, Grid, Typography, Button } from "@material-ui/core";
-import { IdentityToken, emptyIdentityToken } from "./../interfaces";
-import { extractIdentityToken } from "./../utils";
-import { TITLE_TEXT, microapps, isWeb, isDebug } from "./../constants/index";
-import Logo from "./../img/Logo.png";
-import "./../css/Login.css";
+import { IdentityToken, emptyIdentityToken } from "src/interfaces";
+import { extractIdentityToken } from "src/utils";
+import { TITLE_TEXT } from "src/constants";
+import { microapps, isWeb, isDebug } from "src/config";
+import Logo from "src/img/Logo.png";
+import "src/css/Login.css";
 declare const window: any;
 
 function Login() {
