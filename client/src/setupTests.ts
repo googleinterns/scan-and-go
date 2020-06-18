@@ -3,3 +3,24 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import "@testing-library/jest-dom/extend-expect";
+global.microapps = {
+  getIdentity: (request: any) =>
+    new Promise((resolve, reject) => {
+      const fakeIdentity = {
+        iss: "",
+        sub: "faked API Identity",
+        aud: "",
+        iat: -1,
+        exp: 0,
+      };
+      const fakeEncodedResponse =
+        btoa(JSON.stringify({})) + "." + btoa(JSON.stringify(fakeIdentity));
+      resolve(fakeEncodedResponse);
+    }),
+  requestMedia: () => {
+    console.log("Getting Media");
+  },
+  getLocation: () => {
+    console.log("Getting Location");
+  },
+};
