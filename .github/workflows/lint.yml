@@ -25,3 +25,4 @@ jobs:
           github_token: ${{ secrets.github_token }}
           # Enable linters
           prettier: true
+          prettier_extensions: js,jsx,ts,tsx,json,css,scss,md
