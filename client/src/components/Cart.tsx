@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { CartItem } from "./../interfaces";
-import { PRICE_FRACTION_DIGITS } from "../constants";
 import {
   Table,
   TableBody,
@@ -8,23 +7,9 @@ import {
   TableHead,
   TableRow,
 } from "@material-ui/core";
+import { getSubtotalPrice, getTotalPrice } from "../actions/Cart.actions";
 
 function Cart({ contents }: { contents: CartItem[] }) {
-  // TODO (#63): Separate UI and logic
-  const getTotalPrice = () => {
-    let tot_price = 0.0;
-    for (let cartItem of contents) {
-      tot_price += cartItem.quantity * cartItem.item.price;
-    }
-    return tot_price.toFixed(PRICE_FRACTION_DIGITS);
-  };
-
-  const getSubtotalPrice = (cartItem: CartItem) => {
-    return (cartItem.quantity * cartItem.item.price).toFixed(
-      PRICE_FRACTION_DIGITS
-    );
-  };
-
   return (
     <div className="Cart">
       {contents.length > 0 && (
@@ -47,7 +32,7 @@ function Cart({ contents }: { contents: CartItem[] }) {
             <TableRow key="total">
               <TableCell>Total Price:</TableCell>
               <TableCell></TableCell>
-              <TableCell>{getTotalPrice()}</TableCell>
+              <TableCell>{getTotalPrice(contents)}</TableCell>
             </TableRow>
           </TableBody>
         </Table>
