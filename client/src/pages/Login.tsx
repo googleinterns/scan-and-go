@@ -38,7 +38,7 @@ function Login() {
 
   useEffect(() => {
     if (identity.sub !== "EMPTY" && identity.sub !== "") {
-      window.location.href = "/home";
+      window.location.assign("/home");
     }
   }, [identity]);
 
@@ -61,6 +61,7 @@ function Login() {
           </Grid>
           <Grid item>
             <TextInputField
+              elementId="username"
               text="Username"
               fullWidth={true}
               setState={updateUser}
