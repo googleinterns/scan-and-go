@@ -5,8 +5,8 @@ import Enzyme from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
 import Login from "./Login";
 import { Input } from "@material-ui/core";
-import * as config from "./../config";
-import { isWeb, microapps } from "./../config";
+import * as config from "src/config";
+import { isWeb, microapps } from "src/config";
 
 Enzyme.configure({ adapter: new Adapter() });
 
