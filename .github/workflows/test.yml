@@ -49,9 +49,5 @@ jobs:
         working-directory: server
 
       - name: Start Firestore emulator
-        run: ./node_modules/.bin/firebase emulators:start --only firestore &
-        working-directory: server
-
-      - name: Run Test
-        run: yarn test
+        run: ./node_modules/.bin/firebase emulators:exec "yarn test" --only firestore
         working-directory: server
