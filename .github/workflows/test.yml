@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - serverTest
   pull_request:
     branches:
       - master
@@ -48,6 +47,6 @@ jobs:
         run: yarn
         working-directory: server
 
-      - name: Start Firestore emulator
+      - name: Test with Firestore emulator
         run: ./node_modules/.bin/firebase emulators:exec "yarn test" --only firestore
         working-directory: server
