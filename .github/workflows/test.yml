@@ -21,7 +21,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 10
 
       - name: Install Node.js dependencies
         run: yarn
@@ -42,7 +42,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 10
 
       - name: Install Node.js dependencies
         run: yarn
