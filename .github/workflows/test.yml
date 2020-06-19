@@ -1,0 +1,30 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - serverTest
+
+jobs:
+  run-serverTest:
+    name: Run Tests for Server
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: Install Node.js dependencies
+        run: yarn install
+        with:
+          source_dir: ./server
+
+      - name: Run Test
+        run: yarn test
+        with:
+          source_dir: ./server
