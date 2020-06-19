@@ -3,11 +3,11 @@ name: Test
 on:
   push:
     branches:
-      - serverTest
+      - clientTest
 
 jobs:
-  run-serverTest:
-    name: Run Tests for Server
+  run-clientTest:
+    name: Run Tests for Client
     runs-on: ubuntu-latest
 
     steps:
@@ -20,11 +20,11 @@ jobs:
           node-version: 12
 
       - name: Install Node.js dependencies
-        run: yarn install
+        run: yarn
         with:
           source_dir: ./server
 
       - name: Run Test
         run: yarn test
         with:
-          source_dir: ./server
+          source_dir: ./client
