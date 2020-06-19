@@ -24,7 +24,8 @@ import {
 import { fetchJson } from "./../utils";
 import { TextInputField } from "./../components/Components";
 import { BrowserMultiFormatReader } from "@zxing/library";
-import { ITEM_LIST_API, BARCODE_PLACEHOLDER, microapps } from "../constants";
+import { ITEM_LIST_API, BARCODE_PLACEHOLDER } from "../constants";
+import { microapps } from "../config";
 import SampleBarcode from "./../img/Sample_EAN8.png";
 declare const window: any;
 
@@ -216,7 +217,9 @@ function ScanStore() {
             </Paper>
           </Grid>
         )}
-        <button onClick={testBarcode}>Test Barcode API</button>
+        <button id="testScanBtn" onClick={testBarcode}>
+          Test Barcode API
+        </button>
         <img
           id={debugImgId}
           hidden={true}
