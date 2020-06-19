@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import StoreHeader from "./../components/StoreHeader";
-import ItemCard from "./../components/ItemCard";
-import Cart from "./../components/Cart";
+import StoreHeader from "src/components/StoreHeader";
+import ItemCard from "src/components/ItemCard";
+import Cart from "src/components/Cart";
+import TextInputField from "src/components/TextInputField";
 import {
   Fab,
   Box,
@@ -20,13 +21,12 @@ import {
   CartItem,
   MediaResponse,
   emptyMediaResponse,
-} from "./../interfaces";
-import { fetchJson } from "./../utils";
-import { TextInputField } from "./../components/Components";
+} from "src/interfaces";
+import { fetchJson } from "src/utils";
 import { BrowserMultiFormatReader } from "@zxing/library";
-import { ITEM_LIST_API, BARCODE_PLACEHOLDER } from "../constants";
-import { microapps } from "../config";
-import SampleBarcode from "./../img/Sample_EAN8.png";
+import { ITEM_LIST_API, BARCODE_PLACEHOLDER } from "src/constants";
+import { microapps } from "src/config";
+import SampleBarcode from "src/img/Sample_EAN8.png";
 declare const window: any;
 
 // Flag to toggle display of taken image (for debugging)

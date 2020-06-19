@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { CartItem } from "./../interfaces";
-import { PRICE_FRACTION_DIGITS } from "../constants";
+import { CartItem } from "src/interfaces";
+import { PRICE_FRACTION_DIGITS } from "src/constants";
 import { Typography, Paper, Grid, Divider } from "@material-ui/core";
 
 function ItemCard({

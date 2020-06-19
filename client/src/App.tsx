@@ -1,10 +1,10 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
-import Login from "./pages/Login";
-import Home from "./pages/Home";
-import ScanStore from "./pages/ScanStore";
-import Receipt from "./pages/Receipt";
-import NotFound from "./pages/NotFound";
+import Login from "src/pages/Login";
+import Home from "src/pages/Home";
+import ScanStore from "src/pages/ScanStore";
+import Receipt from "src/pages/Receipt";
+import NotFound from "src/pages/NotFound";
 
 function App() {
   return (
