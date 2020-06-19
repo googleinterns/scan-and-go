@@ -3,11 +3,11 @@ name: Test
 on:
   push:
     branches:
-      master
-      serverTest
+      - master
+      - serverTest
   pull_request:
     branches:
-      master
+      - master
 
 jobs:
   run-client-tests:
@@ -30,6 +30,7 @@ jobs:
       - name: Run Test
         run: yarn test
         working-directory: client
+
   run-server-tests:
     name: Run Tests for Server
     runs-on: ubuntu-latest
