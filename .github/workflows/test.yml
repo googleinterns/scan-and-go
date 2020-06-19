@@ -4,6 +4,7 @@ on:
   push:
     branches:
       master
+      serverTest
   pull_request:
     branches:
       master
@@ -29,3 +30,27 @@ jobs:
       - name: Run Test
         run: yarn test
         working-directory: client
+  run-server-tests:
+    name: Run Tests for Server
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: Install Node.js dependencies
+        run: yarn
+        working-directory: server
+
+      - name: Start Firestore emulator
+        run: ./node_modules/.bin/firebase emulators:start --only firestore
+        working-directory: server
+
+      - name: Run Test
+        run: yarn test
+        working-directory: server
