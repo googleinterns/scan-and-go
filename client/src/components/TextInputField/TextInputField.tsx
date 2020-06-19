@@ -1,8 +1,8 @@
 import React from "react";
 import { Input } from "@material-ui/core";
-import { EMPTY_PLACEHOLDER } from "../constants";
+import { EMPTY_PLACEHOLDER } from "src/constants";
 
-export function TextInputField({
+function TextInputField({
   id,
   text,
   setState,
@@ -33,3 +33,5 @@ export function TextInputField({
     />
   );
 }
+
+export default TextInputField;

@@ -2,10 +2,10 @@ import React from "react";
 import renderer from "react-test-renderer";
 import Enzyme from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
-import Cart from "../components/Cart";
-import { CartItem } from "../interfaces";
+import Cart from "./Cart";
+import { CartItem } from "src/interfaces";
 import { TableBody, TableRow, TableCell } from "@material-ui/core";
-import { PRICE_FRACTION_DIGITS } from "../constants";
+import { PRICE_FRACTION_DIGITS } from "src/constants";
 
 Enzyme.configure({ adapter: new Adapter() });
 

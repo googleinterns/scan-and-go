@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Store, emptyStore } from "./../interfaces";
-import { fetchJson } from "./../utils";
-import { STORE_API } from "../constants";
+import { Store, emptyStore } from "src/interfaces";
+import { fetchJson } from "src/utils";
+import { STORE_API } from "src/constants";
 
 function StoreHeader({ storeId }: { storeId: string | null }) {
   const [curStore, setCurStore] = useState<Store>(emptyStore());

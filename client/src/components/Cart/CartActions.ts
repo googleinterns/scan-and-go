@@ -1,5 +1,5 @@
-import { CartItem } from "./../interfaces";
-import { PRICE_FRACTION_DIGITS } from "../constants";
+import { CartItem } from "src/interfaces";
+import { PRICE_FRACTION_DIGITS } from "src/constants";
 
 export const getTotalPrice = (cartItems: CartItem[]) => {
   let totPrice = 0.0;

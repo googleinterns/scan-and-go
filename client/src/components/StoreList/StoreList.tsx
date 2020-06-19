@@ -6,19 +6,19 @@ import {
   GMapPlace,
   MediaResponse,
   emptyMediaResponse,
-} from "./../interfaces";
-import { fetchJson, extractIdentityToken } from "./../utils";
+} from "src/interfaces";
+import { fetchJson, extractIdentityToken } from "src/utils";
 import {
   STORE_LIST_API,
   PLACES_RADIUS_METERS,
   PLACES_TYPES,
   TEST_STORE_ID,
   TEST_STORE_MERCHANT_ID,
-} from "../constants";
-import { microapps, google, isWeb } from "../config";
+} from "src/constants";
+import { microapps, google, isWeb } from "src/config";
 import Divider from "@material-ui/core/Divider";
 import { BrowserMultiFormatReader } from "@zxing/library";
-import SampleStoreQR from "./../img/Sample_StoreQR.png";
+import SampleStoreQR from "src/img/Sample_StoreQR.png";
 declare const window: any;
 
 function StoreList() {

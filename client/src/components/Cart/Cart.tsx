@@ -1,5 +1,5 @@
 import React from "react";
-import { CartItem } from "./../interfaces";
+import { CartItem } from "src/interfaces";
 import {
   Table,
   TableBody,
@@ -7,7 +7,7 @@ import {
   TableHead,
   TableRow,
 } from "@material-ui/core";
-import { getSubtotalPrice, getTotalPrice } from "../actions/Cart.actions";
+import { getSubtotalPrice, getTotalPrice } from "./CartActions";
 
 function Cart({ contents }: { contents: CartItem[] }) {
   return (
