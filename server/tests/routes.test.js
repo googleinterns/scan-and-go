@@ -1,10 +1,10 @@
 const request = require("supertest");
 const { app, server } = require("./../server");
-const CONSTANTS = require("./../constants");
 const TEST_USERS = require("./../data/users.json");
 const TEST_ITEMS = require("./../data/items.json");
 const TEST_STORES = require("./../data/stores.json");
 const TEST_ORDERS = require("./../data/orders.json");
+const CONSTANTS = require("./../constants");
 
 describe("API POST Data", () => {
   it("should get TEST_USER details", async () => {
