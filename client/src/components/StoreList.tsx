@@ -14,10 +14,8 @@ import {
   PLACES_TYPES,
   TEST_STORE_ID,
   TEST_STORE_MERCHANT_ID,
-  microapps,
-  google,
-  isWeb,
 } from "../constants";
+import { microapps, google, isWeb } from "../config";
 import Divider from "@material-ui/core/Divider";
 import { BrowserMultiFormatReader } from "@zxing/library";
 import SampleStoreQR from "./../img/Sample_StoreQR.png";
