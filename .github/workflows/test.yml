@@ -21,10 +21,8 @@ jobs:
 
       - name: Install Node.js dependencies
         run: yarn
-        with:
-          source_dir: ./server
+        working-directory: client
 
       - name: Run Test
         run: yarn test
-        with:
-          source_dir: ./client
+        working-directory: client
