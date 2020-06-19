@@ -31,7 +31,7 @@
     "dev": "react-scripts start",
     "start": "serve -s build -l 80",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jest-environment-jsdom-sixteen",
+    "test": "react-scripts test -u --env=jest-environment-jsdom-sixteen",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
