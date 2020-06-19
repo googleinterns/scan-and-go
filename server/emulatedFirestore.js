@@ -26,33 +26,21 @@ const setupSimulatedDB = async () => {
   console.log("setting up emulation firestore");
 
   // Add our dummy data into emulated firestore
-  const curUsers = await firestore.collection(USERS_COLLECTION).get();
-  if (true || !curUsers.docs.length) {
-    console.log("Populating USER entries");
-    for (const user of TEST_USERS) {
-      await firestore.collection(USERS_COLLECTION).add(user);
-    }
+  console.log("Populating USER entries");
+  for (const user of TEST_USERS) {
+    await firestore.collection(USERS_COLLECTION).add(user);
   }
-  const curItems = await firestore.collection(ITEMS_COLLECTION).get();
-  if (true || !curItems.docs.length) {
-    console.log("Populating ITEM entries");
-    for (const item of TEST_ITEMS) {
-      await firestore.collection(ITEMS_COLLECTION).add(item);
-    }
+  console.log("Populating ITEM entries");
+  for (const item of TEST_ITEMS) {
+    await firestore.collection(ITEMS_COLLECTION).add(item);
   }
-  const curStores = await firestore.collection(STORES_COLLECTION).get();
-  if (true || !curStores.docs.length) {
-    console.log("Populating STORE entries");
-    for (const store of TEST_STORES) {
-      await firestore.collection(STORES_COLLECTION).add(store);
-    }
+  console.log("Populating STORE entries");
+  for (const store of TEST_STORES) {
+    await firestore.collection(STORES_COLLECTION).add(store);
   }
-  const curOrders = await firestore.collection(ORDERS_COLLECTION).get();
-  if (true || !curOrders.docs.length) {
-    console.log("Populating ORDER entries");
-    for (const order of TEST_ORDERS) {
-      await firestore.collection(ORDERS_COLLECTION).add(order);
-    }
+  console.log("Populating ORDER entries");
+  for (const order of TEST_ORDERS) {
+    await firestore.collection(ORDERS_COLLECTION).add(order);
   }
 };
 
