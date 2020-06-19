@@ -1,5 +1,6 @@
 const request = require("supertest");
 const { app, server } = require("./../server");
+const { ordersCollection } = require("./../firestore");
 const TEST_USERS = require("./../data/users.json");
 const TEST_ITEMS = require("./../data/items.json");
 const TEST_STORES = require("./../data/stores.json");
@@ -80,6 +81,11 @@ describe("API POST Data", () => {
     });
     expect(res.statusCode).toEqual(CONSTANTS.HTTP_SUCCESS);
     expect(res.text).toEqual("TEST_ORDER");
+    // Be nice and delete this order to avoid side effects
+    const addedOrders = await ordersCollection
+      .where("order-id", "==", "TEST_ORDER")
+      .get();
+    addedOrders.docs.map((doc) => doc.ref.delete());
   });
 });
 

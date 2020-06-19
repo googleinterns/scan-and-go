@@ -3,10 +3,10 @@ name: Test
 on:
   push:
     branches:
-      master
+      - master
   pull_request:
     branches:
-      master
+      - master
 
 jobs:
   run-client-tests:
@@ -20,7 +20,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 10
 
       - name: Install Node.js dependencies
         run: yarn
@@ -29,3 +29,24 @@ jobs:
       - name: Run Test
         run: yarn test
         working-directory: client
+
+  run-server-tests:
+    name: Run Tests for Server
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10
+
+      - name: Install Node.js dependencies
+        run: yarn
+        working-directory: server
+
+      - name: Test with Firestore emulator
+        run: ./node_modules/.bin/firebase emulators:exec "yarn test" --only firestore
+        working-directory: server
