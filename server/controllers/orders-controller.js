@@ -41,10 +41,10 @@ exports.addOrder = async (req, res) => {
  *
  * @param {Object} req - The request.
  * @param {Object} res - The response.
- * @param {String} req.query.userId - The user id query.
+ * @param {String} req.params.userId - The user id query passed as /api/order/list/<userId>
  */
 exports.listOrders = async (req, res) => {
-  const reqQuery = req.query;
+  const reqQuery = req.params;
   let orders = [];
 
   const userId = reqQuery.userId;
