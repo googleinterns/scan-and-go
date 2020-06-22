@@ -7,7 +7,8 @@ import { Input } from "@material-ui/core";
 
 Enzyme.configure({ adapter: new Adapter() });
 
-it("TextInputField renders correctly", () => {
+describe("TextInputField Component Tests", () => {
+  const TEST_STRING: string = "Hello";
   let state: string = "";
   const props = {
     text: "",
@@ -15,20 +16,16 @@ it("TextInputField renders correctly", () => {
       state = value;
     },
   };
-  const tree = renderer.create(<TextInputField {...props} />).toJSON();
-  expect(tree).toMatchSnapshot();
-});
 
-it("TextInputField fires callback when input is blurred", () => {
-  let state: string = "";
-  const props = {
-    text: "",
-    setState: (value: string) => {
-      state = value;
-    },
-  };
-  const wrapper = Enzyme.shallow(<TextInputField {...props} />);
-  const input = wrapper.find(Input);
-  input.simulate("blur", { target: { value: "Hello" } });
-  expect(state.match("Hello"));
+  it("TextInputField renders correctly", () => {
+    const tree = renderer.create(<TextInputField {...props} />).toJSON();
+    expect(tree).toMatchSnapshot();
+  });
+
+  it("TextInputField fires callback when input is blurred", () => {
+    const wrapper = Enzyme.shallow(<TextInputField {...props} />);
+    const input = wrapper.find(Input);
+    input.simulate("blur", { target: { value: TEST_STRING } });
+    expect(state.match(TEST_STRING));
+  });
 });
