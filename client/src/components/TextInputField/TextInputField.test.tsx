@@ -8,6 +8,7 @@ import { Input } from "@material-ui/core";
 Enzyme.configure({ adapter: new Adapter() });
 
 describe("TextInputField Component Tests", () => {
+  const TEST_STRING: string = "Hello";
   let state: string = "";
   const props = {
     text: "",
@@ -24,7 +25,7 @@ describe("TextInputField Component Tests", () => {
   it("TextInputField fires callback when input is blurred", () => {
     const wrapper = Enzyme.shallow(<TextInputField {...props} />);
     const input = wrapper.find(Input);
-    input.simulate("blur", { target: { value: "Hello" } });
-    expect(state.match("Hello"));
+    input.simulate("blur", { target: { value: TEST_STRING } });
+    expect(state.match(TEST_STRING));
   });
 });
