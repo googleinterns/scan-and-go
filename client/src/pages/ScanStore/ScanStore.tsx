@@ -19,12 +19,15 @@ import AddIcon from "@material-ui/icons/Add";
 import {
   Item,
   CartItem,
+  Store,
+  emptyStore,
   MediaResponse,
   emptyMediaResponse,
 } from "src/interfaces";
-import { fetchJson } from "src/utils";
+import { urlGetParam, fetchJson } from "src/utils";
+import { getStoreInfo } from "src/pages/Actions";
 import { BrowserMultiFormatReader } from "@zxing/library";
-import { ITEM_LIST_API, BARCODE_PLACEHOLDER } from "src/constants";
+import { HOME_PAGE, ITEM_LIST_API, BARCODE_PLACEHOLDER } from "src/constants";
 import { microapps } from "src/config";
 import SampleBarcode from "src/img/Sample_EAN8.png";
 declare const window: any;
@@ -33,12 +36,10 @@ declare const window: any;
 const debugImg = true;
 
 function ScanStore() {
-  // TODO (#27): Extract logic to get parameters as a function
-  const curUrl = window.location.search;
-  const urlParams = new URLSearchParams(curUrl);
-  const storeID = urlParams.get("id");
-  const merchantID = urlParams.get("mid");
+  const storeID = urlGetParam("id");
+  const merchantID = urlGetParam("mid");
 
+  const [curStore, setCurStore] = useState<Store>(emptyStore());
   const [cartItems, updateCart] = useState<CartItem[]>([]);
   const [showCart, setShowCart] = useState(false);
   const [uploadImg, setUploadImg] = useState<MediaResponse>(
@@ -151,6 +152,13 @@ function ScanStore() {
     processImageBarcode(img);
   };
 
+  // Upon entering page, grab store details
+  useEffect(() => {
+    if (storeID) {
+      getStoreInfo(storeID).then((res) => setCurStore(res));
+    }
+  }, []);
+
   // When we change what image we uploaded, run extract barcode client-side
   useEffect(() => {
     if (uploadImg.mimeType) {
@@ -165,7 +173,7 @@ function ScanStore() {
       <Grid container spacing={1} direction="column" alignItems="stretch">
         <Grid item xs={12}>
           <Paper elevation={1}>
-            <StoreHeader storeId={storeID} />
+            <StoreHeader store={curStore} link={HOME_PAGE} />
           </Paper>
         </Grid>
         {!showCart && (

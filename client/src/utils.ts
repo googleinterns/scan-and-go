@@ -67,3 +67,20 @@ export const extractIdentityToken = (response: any) => {
   // [1] identity Token JSON object we require
   return JSON.parse(atob(response.split(".")[1]));
 };
+
+// Grab url parameter
+export const urlGetParam = (param: string): string | null => {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(param);
+};
+
+// Decode json from encoded url parameter
+export const urlGetJson = (param: string) => {
+  const rawEncoded = urlGetParam(param);
+  if (rawEncoded) {
+    const decodedJsonString = decodeURIComponent(rawEncoded);
+    if (decodedJsonString) {
+      return JSON.parse(decodedJsonString);
+    }
+  }
+};

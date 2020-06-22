@@ -10,11 +10,6 @@ import { isWeb, microapps } from "src/config";
 
 Enzyme.configure({ adapter: new Adapter() });
 
-Object.defineProperty(window, "location", {
-  writable: true,
-  value: { assign: jest.fn() },
-});
-
 describe("Test on Web UI", () => {
   const origIsWeb = config.isWeb;
 

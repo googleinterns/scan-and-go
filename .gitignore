@@ -4,6 +4,7 @@
 *.sublime-project
 *.sublime-workspace
 **/__snapshots__/
+**/*.swp
 
 # Project specific exclusions
 code.list
