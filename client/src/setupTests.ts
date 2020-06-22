@@ -1,8 +1,4 @@
-// jest-dom adds custom jest matchers for asserting on DOM nodes.
-// allows you to do things like:
-// expect(element).toHaveTextContent(/react/i)
-// learn more: https://github.com/testing-library/jest-dom
-import "@testing-library/jest-dom/extend-expect";
+// Mocking GPay Microapps API
 global.microapps = {
   getIdentity: (request: any) =>
     new Promise((resolve, reject) => {
@@ -24,3 +20,9 @@ global.microapps = {
     //TODO(#97) Implement mocked location API
   },
 };
+
+// Capturing window.location.assign function
+Object.defineProperty(window, "location", {
+  writable: true,
+  value: { assign: jest.fn() },
+});

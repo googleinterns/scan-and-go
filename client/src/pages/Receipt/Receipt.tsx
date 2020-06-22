@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Cart from "src/components/Cart";
 import { CartItem } from "src/interfaces";
+import { urlGetParam } from "src/utils";
 declare const window: any;
 
 function Receipt() {
   // Update URL params to find storeID
-  const curUrl = window.location.search;
-  const urlParams = new URLSearchParams(curUrl);
-  const urlRawContents = urlParams.get("contents");
-  const orderID = urlParams.get("id");
+  const urlRawContents = urlGetParam("contents");
+  const orderID = urlGetParam("id");
   let contents: CartItem[] = [];
   if (urlRawContents != null) {
     let contentsString = decodeURIComponent(urlRawContents);
