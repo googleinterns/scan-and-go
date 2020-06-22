@@ -27,7 +27,7 @@ import {
 import { urlGetParam, fetchJson } from "src/utils";
 import { getStoreInfo } from "src/pages/Actions";
 import { BrowserMultiFormatReader } from "@zxing/library";
-import { ITEM_LIST_API, BARCODE_PLACEHOLDER } from "src/constants";
+import { HOME_PAGE, ITEM_LIST_API, BARCODE_PLACEHOLDER } from "src/constants";
 import { microapps } from "src/config";
 import SampleBarcode from "src/img/Sample_EAN8.png";
 declare const window: any;
@@ -173,7 +173,7 @@ function ScanStore() {
       <Grid container spacing={1} direction="column" alignItems="stretch">
         <Grid item xs={12}>
           <Paper elevation={1}>
-            <StoreHeader store={curStore} link="/home" />
+            <StoreHeader store={curStore} link={HOME_PAGE} />
           </Paper>
         </Grid>
         {!showCart && (
