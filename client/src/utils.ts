@@ -73,3 +73,14 @@ export const urlGetParam = (param: string): string | null => {
   const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get(param);
 };
+
+// Decode json from encoded url parameter
+export const urlGetJson = (param: string) => {
+  const rawEncoded = urlGetParam(param);
+  if (rawEncoded) {
+    const decodedJsonString = decodeURIComponent(rawEncoded);
+    if (decodedJsonString) {
+      return JSON.parse(decodedJsonString);
+    }
+  }
+};
