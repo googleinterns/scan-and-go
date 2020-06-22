@@ -146,8 +146,6 @@ function ScanStore() {
         contents: cartItems,
       },
     });
-    //"/receipt?id=TEST_ORDER&contents=" +
-    //  encodeURIComponent(JSON.stringify(cartItems)));
   };
 
   const processImageBarcode = async (img: HTMLImageElement) => {
