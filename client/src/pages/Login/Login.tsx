@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import TextInputField from "src/components/TextInputField";
 import { Container, Grid, Typography, Button } from "@material-ui/core";
 import { IdentityToken, emptyIdentityToken } from "src/interfaces";
 import { extractIdentityToken } from "src/utils";
-import { TITLE_TEXT } from "src/constants";
+import { HOME_PAGE, TITLE_TEXT } from "src/constants";
 import { microapps, isWeb, isDebug } from "src/config";
 import Logo from "src/img/Logo.png";
 import "src/css/Login.css";
@@ -11,6 +12,8 @@ declare const window: any;
 
 function Login() {
   const logoSpinnerSpeed = 3;
+
+  const history = useHistory();
 
   // Flag for us to manually run login on mobile
   const [loginError, setLoginError] = useState(false);
@@ -39,7 +42,7 @@ function Login() {
 
   useEffect(() => {
     if (identity.sub !== "EMPTY" && identity.sub !== "") {
-      window.location.assign("/home");
+      history.push(HOME_PAGE);
     }
   }, [identity]);
 
