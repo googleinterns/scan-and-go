@@ -8,7 +8,8 @@ import { CartItem, emptyCartItem } from "src/interfaces";
 Enzyme.configure({ adapter: new Adapter() });
 
 describe("ItemCard Component Tests", () => {
-  let num: number = 1;
+  const INIT_QUANTITY: number = 1;
+  let num: number = INIT_QUANTITY;
   const testCartItem: CartItem = emptyCartItem();
   testCartItem.item = {
     barcode: "12345",
@@ -25,7 +26,7 @@ describe("ItemCard Component Tests", () => {
 
   // Fresh reset dummy values for testCartItem
   beforeEach(() => {
-    testCartItem.quantity = 1;
+    testCartItem.quantity = INIT_QUANTITY;
   });
 
   it("ItemCard renders correctly", () => {
