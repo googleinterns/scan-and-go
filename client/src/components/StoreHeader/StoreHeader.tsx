@@ -1,4 +1,5 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 import { Store } from "src/interfaces";
 import { DEFAULT_BACK_BTN_TEXT } from "src/constants";
 
@@ -11,9 +12,11 @@ function StoreHeader({
   link?: string | null;
   linkText?: string | null;
 }) {
+  const history = useHistory();
+
   const headerLink = () => {
     if (link) {
-      window.location.assign(link);
+      history.push(link);
     }
   };
 

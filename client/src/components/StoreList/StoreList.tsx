@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import {
   Store,
   IdentityToken,
@@ -9,6 +10,7 @@ import {
 } from "src/interfaces";
 import { fetchJson, extractIdentityToken } from "src/utils";
 import {
+  SCANSTORE_PAGE,
   STORE_LIST_API,
   PLACES_RADIUS_METERS,
   PLACES_TYPES,
@@ -22,6 +24,8 @@ import SampleStoreQR from "src/img/Sample_StoreQR.png";
 declare const window: any;
 
 function StoreList() {
+  const history = useHistory();
+
   const [userCoords, setUserCoords] = useState<[number, number]>([0.0, 0.0]);
   const [storeList, setStoreList] = useState<Store[]>([]);
   const [identity, setIdentity] = useState<IdentityToken>(emptyIdentityToken());
@@ -143,7 +147,7 @@ function StoreList() {
         .decodeFromImage(img)
         .then((res: any) => res.text);
       if (result) {
-        window.location.href = "/store?" + result;
+        history.push(SCANSTORE_PAGE + "?" + result);
       } else {
         //TODO(#65) Render failure message
       }
