@@ -49,13 +49,17 @@ function ItemCard({
           alignItems="center"
         >
           <Grid item xs={12}>
-            <button onClick={increaseCounter}>Plus</button>
+            <button id="inc" onClick={increaseCounter}>
+              Plus
+            </button>
           </Grid>
           <Grid item xs={12}>
             <p>{cartItem.quantity}</p>
           </Grid>
           <Grid item xs={12}>
-            <button onClick={decreaseCounter}>Minus</button>
+            <button id="dec" onClick={decreaseCounter}>
+              Minus
+            </button>
           </Grid>
         </Grid>
       </Grid>
