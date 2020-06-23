@@ -26,11 +26,14 @@ import { BrowserMultiFormatReader } from "@zxing/library";
 import SampleStoreQR from "src/img/Sample_StoreQR.png";
 declare const window: any;
 
-function DebugBar() {
+function DebugBar({
+  storesCallback,
+}: {
+  storesCallback: (stores: Store[]) => void;
+}) {
   const history = useHistory();
 
   const [userCoords, setUserCoords] = useState<[number, number]>([0.0, 0.0]);
-  const [storeList, setStoreList] = useState<Store[]>([]);
   const [identity, setIdentity] = useState<IdentityToken>(emptyIdentityToken());
   const [nearbyPlaces, setNearbyPlaces] = useState<GMapPlace[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -91,7 +94,7 @@ function DebugBar() {
     };
     const stores = await fetchJson("POST", data, STORE_LIST_API);
     setUserCoords([position.coords.latitude, position.coords.longitude]);
-    setStoreList(stores);
+    storesCallback(stores);
     setIsLoading(false);
   };
 
@@ -188,7 +191,6 @@ function DebugBar() {
         {userCoords[1].toFixed(GEO_PRECISION_DIGITS)}] | {identity.sub} [
         {isLoading ? "Loading..." : ""}]
       </h3>
-      <StoreList stores={storeList} />
     </div>
   );
 }
