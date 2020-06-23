@@ -32,7 +32,7 @@ function Home(props: any) {
     <Container disableGutters={false} className="Home">
       {isDebug && <TextInputField text={userid} setState={setUserid} />}
       <UserHeader user={curUser} />
-      <DebugBar />
+      {isDebug && <DebugBar storesCallback={setStores} />}
       <StoreList stores={stores} />
     </Container>
   );
