@@ -1,3 +1,5 @@
+import { DAY_PERIOD } from "src/constants";
+
 // Get json from response
 const getJson = (res: any) => {
   if (res.ok) {
@@ -60,7 +62,7 @@ export const fetchText = async (reqType: string, data: any, url: string) => {
 };
 
 // Extract Identity Token from getIdentity() call response
-export const extractIdentityToken = (response: any) => {
+export const extractIdentityToken = (response: string) => {
   // Token response is base64 encoded from getIdentity() API call
   // Furthermore, it is split into period-separated sections
   // [0] describes the encryption scheme used
@@ -82,5 +84,28 @@ export const urlGetJson = (param: string) => {
     if (decodedJsonString) {
       return JSON.parse(decodedJsonString);
     }
+  }
+};
+
+// Grab the current period of day for user
+export const getDayPeriod = () => {
+  const NIGHT_LIM = 5;
+  const MORNING_LIM = 11;
+  const NOON_LIM = 13;
+  const AFTERNOON_LIM = 18;
+  const EVENING_LIM = 22;
+  const curHour = new Date().getHours();
+  if (curHour < NIGHT_LIM) {
+    return DAY_PERIOD.NIGHT;
+  } else if (curHour < MORNING_LIM) {
+    return DAY_PERIOD.MORNING;
+  } else if (curHour < NOON_LIM) {
+    return DAY_PERIOD.NOON;
+  } else if (curHour < AFTERNOON_LIM) {
+    return DAY_PERIOD.AFTERNOON;
+  } else if (curHour < EVENING_LIM) {
+    return DAY_PERIOD.EVENING;
+  } else {
+    return DAY_PERIOD.NIGHT;
   }
 };
