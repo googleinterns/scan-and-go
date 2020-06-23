@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import StoreHeader from "src/components/StoreHeader";
 import ItemCard from "src/components/ItemCard";
 import Cart from "src/components/Cart";
@@ -27,7 +28,12 @@ import {
 import { urlGetParam, fetchJson } from "src/utils";
 import { getStoreInfo } from "src/pages/Actions";
 import { BrowserMultiFormatReader } from "@zxing/library";
-import { HOME_PAGE, ITEM_LIST_API, BARCODE_PLACEHOLDER } from "src/constants";
+import {
+  HOME_PAGE,
+  RECEIPT_PAGE,
+  ITEM_LIST_API,
+  BARCODE_PLACEHOLDER,
+} from "src/constants";
 import { microapps } from "src/config";
 import SampleBarcode from "src/img/Sample_EAN8.png";
 declare const window: any;
@@ -38,6 +44,8 @@ const debugImg = true;
 function ScanStore() {
   const storeID = urlGetParam("id");
   const merchantID = urlGetParam("mid");
+
+  const history = useHistory();
 
   const [curStore, setCurStore] = useState<Store>(emptyStore());
   const [cartItems, updateCart] = useState<CartItem[]>([]);
@@ -131,9 +139,13 @@ function ScanStore() {
 
   const makePayment = () => {
     //TODO(#48) This should be just an ID without exposing the contents of our Order
-    window.location.href =
-      "/receipt?id=TEST_ORDER&contents=" +
-      encodeURIComponent(JSON.stringify(cartItems));
+    history.push({
+      pathname: RECEIPT_PAGE,
+      search: "?id=TEST_ORDER", // Temporary placeholder
+      state: {
+        contents: cartItems,
+      },
+    });
   };
 
   const processImageBarcode = async (img: HTMLImageElement) => {

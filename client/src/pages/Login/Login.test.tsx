@@ -31,7 +31,7 @@ describe("Test on Web UI", () => {
     const mountedWrapper = Enzyme.mount(<Login />);
     const input = mountedWrapper.find("#username").last();
     input.simulate("blur", { target: { value: validUser } });
-    expect(window.location.assign).toBeCalledWith("/home");
+    expect(global.mockRedirectPush).toBeCalledWith("/home");
   });
 });
 
@@ -62,6 +62,8 @@ describe("Simulate test within GPay Env", () => {
     expect(microappsIdentityAPI).toHaveBeenCalledTimes(1);
     // After Login is called and we sent over a valid identity
     // we should expect a url redirect
-    await waitFor(() => expect(window.location.assign).toBeCalledWith("/home"));
+    await waitFor(() =>
+      expect(global.mockRedirectPush).toBeCalledWith("/home")
+    );
   });
 });

@@ -21,8 +21,12 @@ global.microapps = {
   },
 };
 
-// Capturing window.location.assign function
-Object.defineProperty(window, "location", {
-  writable: true,
-  value: { assign: jest.fn() },
-});
+// Capture react-router-dom useHistory hook
+// push function for url redirects
+global.mockRedirectPush = jest.fn();
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useHistory: () => ({
+    push: global.mockRedirectPush,
+  }),
+}));

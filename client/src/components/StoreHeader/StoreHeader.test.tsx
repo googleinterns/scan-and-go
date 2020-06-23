@@ -28,6 +28,6 @@ describe("StoreHeader Component Tests", () => {
     const wrapper = Enzyme.shallow(<StoreHeader {...props} />);
     const backBtn = wrapper.find("#back").last();
     backBtn.simulate("click");
-    expect(window.location.assign).toBeCalledWith(props.link);
+    expect(global.mockRedirectPush).toBeCalledWith(props.link);
   });
 });
