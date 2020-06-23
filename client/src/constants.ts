@@ -26,8 +26,17 @@ export const DEFAULT_WELCOME_MSG = "hello";
 export const DEFAULT_USERNAME = "commander";
 export const DEFAULT_BACK_BTN_TEXT = "back";
 export const PRICE_FRACTION_DIGITS = 2;
+export const GEO_PRECISION_DIGITS = 7;
 export const PLACES_RADIUS_METERS = "5000";
 export const PLACES_TYPES = ["restaurant"];
 // Test variables
 export const TEST_STORE_ID = "WPANCUD-1";
 export const TEST_STORE_MERCHANT_ID = "WPANCUD";
+// Enums
+export enum DAY_PERIOD {
+  MORNING = "Morning",
+  NOON = "Noon",
+  AFTERNOON = "Afternoon",
+  EVENING = "Evening",
+  NIGHT = "Night",
+}
