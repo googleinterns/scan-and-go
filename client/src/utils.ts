@@ -22,7 +22,9 @@ const getText = (res: any) => {
   }
 };
 
-// Alert us to any errors in fetch
+// Log to error any errors in fetch instead of alerts
+// which will not show up when debugging in microapps env
+// and is highly disruptive for user-flow on web
 const catchErr = (err: any) => {
   console.error("Error: " + err);
 };
