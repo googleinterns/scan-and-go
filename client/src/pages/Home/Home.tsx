@@ -1,79 +1,41 @@
 import React, { useEffect, useState } from "react";
+import { withRouter } from "react-router-dom";
 import StoreList from "src/components/StoreList";
 import TextInputField from "src/components/TextInputField";
-import { fetchJson, fetchText } from "src/utils";
-import {
-  Container,
-  Table,
-  TableBody,
-  TableHead,
-  TableRow,
-  TableCell,
-} from "@material-ui/core";
-import { API, USER_LIST_API, DEFAULT_WELCOME_MSG } from "src/constants";
+import UserHeader from "src/components/UserHeader";
+import DebugBar from "./DebugBar";
+import { User, emptyUser, Store } from "src/interfaces";
+import { getUserInfo } from "src/pages/Actions";
+import { Container } from "@material-ui/core";
 import { isDebug } from "src/config";
 
-// Testing code, will be removed soon
-interface UserUI {
-  "user-id": string;
-  name: string;
-}
-
-function Home() {
-  const [welMsg, setWelMsg] = useState("");
+function Home(props: any) {
   const [userid, setUserid] = useState("");
-  const [usersList, setUsersList] = useState<UserUI[]>([]);
+  const [curUser, setCurUser] = useState<User>(emptyUser());
+  const [stores, setStores] = useState<Store[]>([]);
 
   useEffect(() => {
-    // fetch POST welcome message
-    const fetchMsg = async () => {
-      const data = {
-        "user-id": userid,
-      };
-      let msg = await fetchText("POST", data, API);
-      if (!msg) {
-        msg = DEFAULT_WELCOME_MSG;
-      }
-      setWelMsg(msg);
-    };
+    // Initially set user based on passed props
+    if (props.location.state) {
+      setCurUser(props.location.state.user);
+      setStores(props.location.state.stores);
+    }
+  }, []);
 
-    fetchMsg();
+  useEffect(() => {
+    if (userid) {
+      getUserInfo(userid).then((res) => setCurUser(res));
+    }
   }, [userid]);
 
-  // Wrapper to issue fetch GET to /api/users/all
-  const fetchUsers = async () => {
-    const users = await fetchJson("GET", null, USER_LIST_API);
-    setUsersList(users);
-  };
-
   return (
-    <Container disableGutters={true} className="Home">
-      {isDebug && [
-        <p>{welMsg}</p>,
-        <TextInputField text={userid} setState={setUserid} />,
-        <button onClick={fetchUsers}>Fetch Users</button>,
-      ]}
-      {isDebug && usersList.length > 0 && (
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>ID</TableCell>
-              <TableCell>Name</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {usersList.map((user: UserUI) => (
-              <TableRow key={user["user-id"]}>
-                <TableCell>{user["user-id"]}</TableCell>
-                <TableCell>{user.name}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      )}
-      <StoreList />
+    <Container disableGutters={false} className="Home">
+      {isDebug && <TextInputField text={userid} setState={setUserid} />}
+      <UserHeader user={curUser} />
+      {isDebug && <DebugBar storesCallback={setStores} />}
+      <StoreList stores={stores} />
     </Container>
   );
 }
 
-export default Home;
+export default withRouter(Home);
