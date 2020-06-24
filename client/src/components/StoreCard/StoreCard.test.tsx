@@ -16,19 +16,11 @@ describe("StoreCard Component Tests", () => {
     longitude: -1,
   };
 
-  let redirectedUrl = "";
-
+  const mockedCallback = jest.fn();
   const props = {
     store: TEST_STORE,
-    redirect: (url: string) => {
-      redirectedUrl = url;
-    },
+    redirect: mockedCallback,
   };
-
-  // Reset base string for capturing url redirect
-  beforeEach(() => {
-    redirectedUrl = "";
-  });
 
   it("StoreCard renders correctly", () => {
     const tree = renderer.create(<StoreCard {...props} />).toJSON();
@@ -38,7 +30,7 @@ describe("StoreCard Component Tests", () => {
   it("StoreCard forms correct store redirect url", () => {
     const wrapper = Enzyme.shallow(<StoreCard {...props} />);
     wrapper.simulate("click");
-    expect(redirectedUrl).toMatch(
+    expect(mockedCallback).toBeCalledWith(
       "?id=" + TEST_STORE["store-id"] + "&mid=" + TEST_STORE["merchant-id"]
     );
   });
