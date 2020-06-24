@@ -13,6 +13,11 @@ const AppTheme = createMuiTheme({
       contrastText: "white",
     },
   },
+  typography: {
+    body2: {
+      fontWeight: 800,
+    },
+  },
 });
 
 export default AppTheme;
