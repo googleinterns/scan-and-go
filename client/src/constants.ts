@@ -20,6 +20,9 @@ export const BARCODE_PLACEHOLDER = "...barcode";
 export const ID_PLACEHOLDER = "...id";
 export const EMPTY_PLACEHOLDER = "";
 export const TITLE_TEXT = "ScanAndGo";
+// HTML DOM Handles
+export const GOOGLE_MAP_PLACEHOLDER_ID = "mapPlaceholder";
+export const GOOGLE_PLACES_SCRIPT_ID = "mapPlacesAPIScript";
 // Default values
 export const DEFAULT_INPUT_TYPE = "text";
 export const DEFAULT_WELCOME_MSG = "hello";
@@ -29,6 +32,7 @@ export const PRICE_FRACTION_DIGITS = 2;
 export const GEO_PRECISION_DIGITS = 3;
 export const PLACES_RADIUS_METERS = "5000";
 export const PLACES_TYPES = ["restaurant"];
+export const DEFAULT_STORE_RADIUS = 10000;
 // Test variables
 export const TEST_STORE_ID = "WPANCUD-1";
 export const TEST_STORE_MERCHANT_ID = "WPANCUD";
