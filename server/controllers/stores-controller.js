@@ -10,8 +10,8 @@ exports.listStores = async (req, res) => {
   const reqProps = req.body;
   let retStores = [];
 
-  const limDist = reqProps["distance"] || DEFAULT_SEARCH_RADIUS_METERS; // Limit search radius
-  const limQuery = reqProps["queryLimit"] || DEFAULT_QUERY_LIMIT; // Limit
+  const distLim = reqProps["distance"] || DEFAULT_SEARCH_RADIUS_METERS; // Limit search radius
+  const queryLim = reqProps["queryLimit"] || DEFAULT_QUERY_LIMIT; // Limit
   const userLat = reqProps["latitude"];
   const userLong = reqProps["longitude"];
 
@@ -24,14 +24,14 @@ exports.listStores = async (req, res) => {
         const lat = store["latitude"];
         const long = store["longitude"];
         const curDist = geoDist(userLat, userLong, lat, long);
-        if (curDist < limDist) {
+        if (curDist < distLim) {
           retStores.push(Object.assign({}, store, { distance: curDist }));
         }
       }
     } else {
       const storesQuery = await storesCollection
         .orderBy("name")
-        .limit(limQuery)
+        .limit(queryLim)
         .get();
       retStores = storesQuery.docs.map((doc) =>
         Object.assign({}, doc.data(), { distance: undefined })
