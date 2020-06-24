@@ -2,6 +2,8 @@ import {
   STORE_API,
   STORE_LIST_API,
   USER_API,
+  ITEM_API,
+  ITEM_LIST_API,
   DEFAULT_STORE_RADIUS,
   PLACES_RADIUS_METERS,
   PLACES_TYPES,
@@ -21,6 +23,8 @@ const loadGooglePlacesService = () => {
   service = new google.maps.places.PlacesService(map);
 };
 
+// Depending on when Actions.ts is loaded, we may not have retrieved
+// google Places API Script yet. If so, watch <script> for load prior to init
 if (google) {
   loadGooglePlacesService();
 } else {
@@ -54,6 +58,20 @@ export const getUserInfo = async (userId: string) => {
     "user-id": userId,
   };
   return await fetchJson("POST", data, USER_API);
+};
+
+export const getItem = async (
+  barcode: string | null,
+  merchantId: string | null
+) => {
+  if (!barcode || !merchantId) {
+    return null;
+  }
+  const data = {
+    "merchant-id": merchantId,
+    barcode: barcode,
+  };
+  return await fetchJson("POST", data, ITEM_API);
 };
 
 export const loginUser = (): IdentityToken | null => {
