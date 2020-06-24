@@ -35,16 +35,18 @@ export interface Store {
   "store-id": string; // Unique store-id -> Can match GMaps place_id
   "merchant-id": string; // Merchant this store belongs to (for payment info)
   name: string; // Displayed name
-  distance: number; //TODO: Refactor this field out to keep consistency with DB
   latitude: number; // Geolocation information
   longitude: number; // ''
+  distance?: number; //TODO(#115): Refactor out UI-only fields to keep consistency with DB
+  media?: string; // Image/Icon displayed
+  business_status?: string; // State of store opening
+  vicinity?: string; // Address of store
 }
 
 export const emptyStore = (): Store => ({
   "store-id": "",
   "merchant-id": "",
   name: "",
-  distance: 0.0,
   latitude: 0.0,
   longitude: 0.0,
 });
@@ -85,10 +87,15 @@ export interface GMapPlace {
   geometry: {
     // Encodes location information for map display
     location: {
-      lat: number;
-      lng: number;
+      lat: () => number; // Note: These are functions!
+      lng: () => number; // this is not entirely clear from the Places API documentation
     };
   };
+  photos: [
+    {
+      getUrl: (params?: any) => string;
+    }
+  ];
   icon: string; // URL link to image for display
   id: string; //TODO: appears to be an internal id we may not need
   name: string; // Displayed name
@@ -104,4 +111,18 @@ export interface MediaResponse {
 export const emptyMediaResponse = (): MediaResponse => ({
   bytes: "",
   mimeType: "",
+});
+
+export interface GeoLocation {
+  coords: {
+    latitude: number;
+    longitude: number;
+  };
+}
+
+export const emptyGeoLocation = (): GeoLocation => ({
+  coords: {
+    latitude: 0.0,
+    longitude: 0.0,
+  },
 });

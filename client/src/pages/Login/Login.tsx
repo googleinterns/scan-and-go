@@ -3,9 +3,8 @@ import { useHistory } from "react-router-dom";
 import TextInputField from "src/components/TextInputField";
 import { Container, Grid, Typography, Button } from "@material-ui/core";
 import { User, emptyUser, IdentityToken } from "src/interfaces";
-import { extractIdentityToken } from "src/utils";
 import { HOME_PAGE, TITLE_TEXT } from "src/constants";
-import { microapps, isWeb, isDebug } from "src/config";
+import { isWeb, isDebug } from "src/config";
 import { loginUser } from "src/pages/Actions";
 import Logo from "src/img/Logo.png";
 import "src/css/Login.css";
@@ -33,6 +32,7 @@ function Login() {
   const login = () => {
     const decodedIdentity: IdentityToken | null = loginUser();
     if (decodedIdentity) {
+      console.log(decodedIdentity);
       setUser(
         Object.assign({}, emptyUser(), {
           name: decodedIdentity.name,

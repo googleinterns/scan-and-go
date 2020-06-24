@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Store } from "src/interfaces";
 import { GEO_PRECISION_DIGITS } from "src/constants";
-import { Box, Typography, Paper, Card, Grid, Divider } from "@material-ui/core";
+import { Box, Typography, Card, Grid } from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
+
+// Specific Constants for this component
+export const MAX_CARD_HEIGHT = 100;
 
 function StoreCard({
   store,
@@ -20,6 +23,8 @@ function StoreCard({
     redirect("?id=" + store["store-id"] + "&mid=" + store["merchant-id"]);
   };
 
+  console.log(store);
+
   return (
     <Card
       onClick={redirectWrapper}
@@ -36,7 +41,8 @@ function StoreCard({
         alignItems="center"
       >
         <Grid item xs={4}>
-          Media
+          {store.media && <img src={store.media} height={MAX_CARD_HEIGHT} />}
+          {!store.media && <p>Media Placeholder</p>}
         </Grid>
         <Grid item xs={8}>
           <Typography variant="subtitle1">
