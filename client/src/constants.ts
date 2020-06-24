@@ -22,6 +22,7 @@ export const EMPTY_PLACEHOLDER = "";
 export const TITLE_TEXT = "ScanAndGo";
 // HTML DOM Handles
 export const GOOGLE_MAP_PLACEHOLDER_ID = "mapPlaceholder";
+export const GOOGLE_PLACES_SCRIPT_ID = "mapPlacesAPIScript";
 // Default values
 export const DEFAULT_INPUT_TYPE = "text";
 export const DEFAULT_WELCOME_MSG = "hello";
