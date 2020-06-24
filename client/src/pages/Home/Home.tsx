@@ -32,7 +32,6 @@ function Home(props: any) {
   }, [userid]);
 
   useEffect(() => {
-    // Transform GMapPlace into Store
     setPlaceStore(testPlaces.map((place) => transformGMapPlaceToStore(place)));
   }, [testPlaces]);
 

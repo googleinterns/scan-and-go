@@ -23,8 +23,6 @@ function StoreCard({
     redirect("?id=" + store["store-id"] + "&mid=" + store["merchant-id"]);
   };
 
-  console.log(store);
-
   return (
     <Card
       onClick={redirectWrapper}
