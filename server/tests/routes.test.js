@@ -100,13 +100,14 @@ describe("API POST Data", () => {
     ).toBe(true);
   });
   it("should display stores in alphabetic order when without location", async () => {
+    const testQueryLimit = 3;
     const res = await request(app).post("/api/store/list").send({
-      queryLimit: 1,
+      queryLimit: testQueryLimit,
     });
     expect(res.statusCode).toEqual(CONSTANTS.HTTP_SUCCESS);
     const expectedStores = TEST_STORES.sort((a, b) =>
       a.name.localeCompare(b.name)
-    ).slice(0, 1);
+    ).slice(0, testQueryLimit);
     expect(res.body).toHaveLength(expectedStores.length);
     for (const [i, _] of res.body.entries()) {
       expect(res.body[i]["store-id"]).toEqual(expectedStores[i]["store-id"]);
