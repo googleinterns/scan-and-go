@@ -14,6 +14,8 @@ export const transformGMapPlaceToStore = (gMapPlace: GMapPlace): Store => {
   // Decide whether the place we retrieved has a valid photo field
   newStore.media = gMapPlace.icon; // Default to icon (always returned)
   if (gMapPlace.photos && gMapPlace.photos.length > 0) {
+    // From: https://developers.google.com/places/web-service/search#PlaceSearchResults
+    // If any photos exist, it will only ever be [0]
     newStore.media = gMapPlace.photos[0].getUrl({ maxHeight: MAX_CARD_HEIGHT });
   }
   return newStore;
