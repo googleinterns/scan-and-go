@@ -38,11 +38,6 @@ app.use((err, req, res, next) => {
 app.use(compression());
 
 const server = app.listen(PORT, function () {
-  console.log(config.ENV);
-  if (config.ENV === config.TEST) {
-    console.log("Populating emulated Firestore with entries");
-    populate();
-  }
   console.log(`Server running on: ${PORT}`);
 });
 

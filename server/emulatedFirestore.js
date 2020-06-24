@@ -23,26 +23,26 @@ const setupSimulatedDB = async () => {
     STORES_COLLECTION,
     ORDERS_COLLECTION,
   } = require("./constants");
-  console.log("setting up emulation firestore");
 
   // Add our dummy data into emulated firestore
-  console.log("Populating USER entries");
   for (const user of TEST_USERS) {
     await firestore.collection(USERS_COLLECTION).add(user);
   }
-  console.log("Populating ITEM entries");
   for (const item of TEST_ITEMS) {
     await firestore.collection(ITEMS_COLLECTION).add(item);
   }
-  console.log("Populating STORE entries");
   for (const store of TEST_STORES) {
     await firestore.collection(STORES_COLLECTION).add(store);
   }
-  console.log("Populating ORDER entries");
   for (const order of TEST_ORDERS) {
     await firestore.collection(ORDERS_COLLECTION).add(order);
   }
 };
 
+const clearDB = async () => {
+  await firebase.clearFirestoreData({ projectId: "scan-and-go-for-gpay" });
+};
+
 module.exports.firestore = firestore;
 module.exports.populate = setupSimulatedDB;
+module.exports.clearDB = clearDB;
