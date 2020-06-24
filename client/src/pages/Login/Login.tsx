@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import TextInputField from "src/components/TextInputField";
 import { Container, Grid, Typography, Button } from "@material-ui/core";
-import { IdentityToken, emptyIdentityToken } from "src/interfaces";
+import { User, emptyUser, IdentityToken } from "src/interfaces";
 import { extractIdentityToken } from "src/utils";
 import { HOME_PAGE, TITLE_TEXT } from "src/constants";
 import { microapps, isWeb, isDebug } from "src/config";
+import { loginUser } from "src/pages/Actions";
 import Logo from "src/img/Logo.png";
 import "src/css/Login.css";
 declare const window: any;
@@ -17,34 +18,42 @@ function Login() {
 
   // Flag for us to manually run login on mobile
   const [loginError, setLoginError] = useState(false);
-  // User Identity
-  const [identity, setIdentity] = useState<IdentityToken>(emptyIdentityToken());
+  const [user, setUser] = useState<User>(emptyUser());
 
   const updateUser = (text: string) => {
-    const newIdentity = emptyIdentityToken();
-    setIdentity(Object.assign({}, newIdentity, { sub: text }));
+    //setIdentity(Object.assign({}, emptyIdentityToken(), { sub: text }));
+    setUser(
+      Object.assign({}, emptyUser(), {
+        name: text,
+        "user-id": "TEST_WEB_USER",
+      })
+    );
   };
 
   const login = () => {
-    if (isWeb) {
-      return;
+    const decodedIdentity: IdentityToken | null = loginUser();
+    if (decodedIdentity) {
+      setUser(
+        Object.assign({}, emptyUser(), {
+          name: decodedIdentity.name,
+          "user-id": decodedIdentity.sub,
+        })
+      );
+    } else {
+      setLoginError(true);
     }
-    const request = { nonce: "Don't Hack me please" };
-    microapps
-      .getIdentity(request)
-      .then((response: any) => {
-        setIdentity(extractIdentityToken(response));
-      })
-      .catch((error: any) => {
-        setLoginError(true);
-      });
   };
 
   useEffect(() => {
-    if (identity.sub !== "EMPTY" && identity.sub !== "") {
-      history.push(HOME_PAGE);
+    if (user.name !== "EMPTY" && user.name !== "") {
+      history.push({
+        pathname: HOME_PAGE,
+        state: {
+          user: user,
+        },
+      });
     }
-  }, [identity]);
+  }, [user]);
 
   useEffect(() => {
     // Initial login if on microapp

@@ -53,6 +53,7 @@ export const emptyStore = (): Store => ({
 export interface IdentityToken {
   iss: string; // Issuer identifier (accounts.google.com)
   sub: string; // Unique identifier tied to Google account
+  name: string; // User's displayed name
   aud: string; // Audience: OAuth2.0 client ID of our GCP Project
   iat: number; // Token validity start time
   exp: number; // Token validity expiry time
@@ -61,9 +62,20 @@ export interface IdentityToken {
 export const emptyIdentityToken = (): IdentityToken => ({
   iss: "",
   sub: "EMPTY",
+  name: "",
   aud: "",
   iat: -1,
   exp: 0,
+});
+
+export interface User {
+  name: string;
+  "user-id": string;
+}
+
+export const emptyUser = (): User => ({
+  name: "",
+  "user-id": "",
 });
 
 // results json response from PlacesAPI call:

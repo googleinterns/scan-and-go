@@ -1,7 +1,5 @@
 declare const window: any;
 
-export const isDebug = false;
-
 // Grab a handle to our microapps javascript library
 export const microapps = window.microapps;
 
@@ -13,3 +11,6 @@ export const google = window.google;
 // reference itself. However, within the microapps environment
 // window will be the iframe and window.parent will not be visible
 export const isWeb = window === window.parent;
+
+// Enable debugging on web by default
+export const isDebug = false || isWeb;
