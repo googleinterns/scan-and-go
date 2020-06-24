@@ -6,7 +6,7 @@ const getJson = (res: any) => {
     let res_json = res.json();
     return res_json;
   } else {
-    alert(`Response code: ${res.status}`);
+    console.error(`Response code: ${res.status}`);
     return null;
   }
 };
@@ -17,14 +17,16 @@ const getText = (res: any) => {
   if (res.ok) {
     return res_text;
   } else {
-    alert(`Response code: ${res.status}`);
+    console.error(`Response code: ${res.status}`);
     return null;
   }
 };
 
-// Alert us to any errors in fetch
+// Log to error any errors in fetch instead of alerts
+// which will not show up when debugging in microapps env
+// and is highly disruptive for user-flow on web
 const catchErr = (err: any) => {
-  alert("Error: " + err);
+  console.error("Error: " + err);
 };
 
 // fetch response from url
