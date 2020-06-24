@@ -17,7 +17,6 @@
   },
   "jest": {
     "testEnvironment": "node",
-    "globalSetup": "<rootDir>/globalTestSetup.js",
     "coveragePathIgnorePatterns": [
       "/node_modules/"
     ]
