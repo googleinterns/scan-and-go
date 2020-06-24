@@ -84,7 +84,6 @@ function DebugBar({
     setIsLoading(false);
     if (status === google.maps.places.PlacesServiceStatus.OK) {
       if (placesCallback) {
-        console.log(places);
         placesCallback(places);
       }
     }
@@ -95,8 +94,6 @@ function DebugBar({
     const userToken = loginUser();
     if (userToken) {
       setIdentity(userToken);
-    } else {
-      console.error("Web Environment detected");
     }
   };
 

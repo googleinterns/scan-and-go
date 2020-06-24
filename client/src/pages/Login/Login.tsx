@@ -32,7 +32,6 @@ function Login() {
   const login = () => {
     const decodedIdentity: IdentityToken | null = loginUser();
     if (decodedIdentity) {
-      console.log(decodedIdentity);
       setUser(
         Object.assign({}, emptyUser(), {
           name: decodedIdentity.name,

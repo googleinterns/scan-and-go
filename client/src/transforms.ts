@@ -1,11 +1,9 @@
 import { GMapPlace, Store, emptyStore } from "src/interfaces";
 import { MAX_CARD_HEIGHT } from "src/components/StoreCard/StoreCard";
-console.log(MAX_CARD_HEIGHT);
 
 // Transform GMapPlace response to Store interface for display
 export const transformGMapPlaceToStore = (gMapPlace: GMapPlace): Store => {
   const newStore = emptyStore();
-  console.log(gMapPlace);
   newStore["store-id"] = gMapPlace.place_id;
   newStore["merchant-id"] = "GOOGLEMAPS"; //TODO(#114) We store an associative mapping?
   newStore.name = gMapPlace.name;
