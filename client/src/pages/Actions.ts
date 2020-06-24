@@ -6,16 +6,29 @@ import {
   PLACES_RADIUS_METERS,
   PLACES_TYPES,
   GOOGLE_MAP_PLACEHOLDER_ID,
+  GOOGLE_PLACES_SCRIPT_ID,
 } from "src/constants";
 import { fetchJson, extractIdentityToken } from "src/utils";
 import { isWeb, google, microapps } from "src/config";
 import { IdentityToken, GeoLocation, emptyGeoLocation } from "src/interfaces";
 
 // Load up Google Maps Places API Service
-const map = new google.maps.Map(
-  document.getElementById(GOOGLE_MAP_PLACEHOLDER_ID)
-);
-const service = new google.maps.places.PlacesService(map);
+let map: any;
+let service: any;
+
+const loadGooglePlacesService = () => {
+  map = new google.maps.Map(document.getElementById(GOOGLE_MAP_PLACEHOLDER_ID));
+  service = new google.maps.places.PlacesService(map);
+};
+
+if (google) {
+  loadGooglePlacesService();
+} else {
+  const googleScript = document.getElementById(GOOGLE_PLACES_SCRIPT_ID);
+  if (googleScript) {
+    googleScript.addEventListener("load", loadGooglePlacesService);
+  }
+}
 
 export const getStoreInfo = async (storeId: string) => {
   const data = {
