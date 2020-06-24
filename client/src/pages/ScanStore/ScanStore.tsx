@@ -25,8 +25,8 @@ import {
   MediaResponse,
   emptyMediaResponse,
 } from "src/interfaces";
-import { urlGetParam, fetchJson } from "src/utils";
-import { getStoreInfo } from "src/pages/Actions";
+import { urlGetParam } from "src/utils";
+import { getStoreInfo, getItem } from "src/pages/Actions";
 import { BrowserMultiFormatReader } from "@zxing/library";
 import {
   HOME_PAGE,
@@ -103,11 +103,7 @@ function ScanStore() {
   };
 
   const updateNewItem = async (barcode: string) => {
-    const data = {
-      "merchant-id": merchantID,
-      barcode: [barcode],
-    };
-    const [item]: Item[] = await fetchJson("POST", data, ITEM_LIST_API);
+    const item: Item = await getItem(barcode, merchantID);
     if (item) {
       updateCart([
         ...cartItems,
