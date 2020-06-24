@@ -1,41 +1,44 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import TextInputField from "src/components/TextInputField";
-import StoreList from "src/components/StoreList";
-import { fetchJson, extractIdentityToken } from "src/utils";
-import { microapps, google, isWeb } from "src/config";
+import { google, isWeb } from "src/config";
 import {
   Store,
-  emptyStore,
   MediaResponse,
   emptyMediaResponse,
   IdentityToken,
   emptyIdentityToken,
   GMapPlace,
+  GeoLocation,
 } from "src/interfaces";
 import {
   TEST_STORE_ID,
   TEST_STORE_MERCHANT_ID,
   SCANSTORE_PAGE,
-  STORE_LIST_API,
-  PLACES_RADIUS_METERS,
-  PLACES_TYPES,
   GEO_PRECISION_DIGITS,
 } from "src/constants";
+import {
+  getGeoLocation,
+  getStoresByLocation,
+  loginUser,
+  getNearbyPlacesTest,
+} from "src/pages/Actions";
 import { BrowserMultiFormatReader } from "@zxing/library";
 import SampleStoreQR from "src/img/Sample_StoreQR.png";
 declare const window: any;
 
 function DebugBar({
   storesCallback,
+  placesCallback,
 }: {
   storesCallback: (stores: Store[]) => void;
+  placesCallback?: (stores: GMapPlace[]) => void;
 }) {
   const history = useHistory();
 
-  const [userCoords, setUserCoords] = useState<[number, number]>([0.0, 0.0]);
+  const [curGeoLocation, setCurGeoLocation] = useState<GeoLocation | null>(
+    null
+  );
   const [identity, setIdentity] = useState<IdentityToken>(emptyIdentityToken());
-  const [nearbyPlaces, setNearbyPlaces] = useState<GMapPlace[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [uploadImg, setUploadImg] = useState<MediaResponse>(
     emptyMediaResponse()
@@ -44,90 +47,56 @@ function DebugBar({
   const debugImgId = "sampleStoreQRImgSrc";
   const uploadImgId = "storeQRImgSrc";
 
-  // Dummy map attachment
-  const map = new google.maps.Map(document.getElementById("mapPlaceholder"));
-  // Declare our Google Map/Places API service handler
-  const service = new google.maps.places.PlacesService(map);
-
-  // Error callback for location API call
-  const errorbackLoc = (error: any) => {
-    alert(error);
-  };
-
   // Grab the location of device
   const grabLoc = () => {
-    // Use browser navigator if we are in web environment & available
-    if (isWeb) {
-      if (navigator.geolocation) {
-        setIsLoading(true);
-        navigator.geolocation.getCurrentPosition(fetchStores, errorbackLoc);
-      }
-    } else {
-      setIsLoading(true);
-      microapps
-        .getCurrentLocation()
-        .then((loc: any) => {
-          const position = {
-            coords: {
-              latitude: loc["latitude"],
-              longitude: loc["longitude"],
-            },
-          };
-          fetchStores(position);
-        })
-        .catch((err: any) => errorbackLoc(err));
-    }
+    setIsLoading(true);
+    getGeoLocation(geoLocationCallback);
   };
 
-  // fetch list of users
-  const fetchStores = async (position: {
-    coords: {
-      latitude: number;
-      longitude: number;
-    };
-  }) => {
-    // Update location
-    const data = {
-      distance: 10000,
-      latitude: position.coords.latitude,
-      longitude: position.coords.longitude,
-    };
-    const stores = await fetchJson("POST", data, STORE_LIST_API);
-    setUserCoords([position.coords.latitude, position.coords.longitude]);
-    storesCallback(stores);
+  const geoLocationCallback = (position: GeoLocation) => {
     setIsLoading(false);
+    setCurGeoLocation(position);
+  };
+
+  const fetchStores = async (position?: GeoLocation) => {
+    // When called without arguments, we default to using
+    // already present location previously retrieved
+    if (!position) {
+      if (curGeoLocation) {
+        position = curGeoLocation;
+      } else {
+        return;
+      }
+    }
+    getStoresByLocation(position).then((res: any) => storesCallback(res));
   };
 
   // Request PlacesAPI for nearby locations
   const getNearbyPlaces = () => {
-    const curLoc = new google.maps.LatLng(userCoords[0], userCoords[1]);
-    const request = {
-      location: curLoc,
-      radius: PLACES_RADIUS_METERS,
-      type: PLACES_TYPES,
-    };
-    setIsLoading(true);
-    service.nearbySearch(request, getNearbyPlacesCallback);
+    if (curGeoLocation) {
+      setIsLoading(true);
+      getNearbyPlacesTest(curGeoLocation, getNearbyPlacesCallback);
+    }
   };
 
   // Digest PlacesAPI results
   const getNearbyPlacesCallback = (places: any, status: any) => {
-    if (status === google.maps.places.PlacesServiceStatus.OK) {
-      setNearbyPlaces(places);
-    } else {
-      alert("PlacesAPI failure to return");
-    }
     setIsLoading(false);
+    if (status === google.maps.places.PlacesServiceStatus.OK) {
+      if (placesCallback) {
+        console.log(places);
+        placesCallback(places);
+      }
+    }
   };
 
   // Get user identity details
-  const loginUser = async () => {
-    // Only run in iframe (on app)
-    if (!isWeb) {
-      const request = { nonce: "Don't Hack me please" };
-      microapps.getIdentity(request).then((response: any) => {
-        setIdentity(extractIdentityToken(response));
-      });
+  const testLogin = async () => {
+    const userToken = loginUser();
+    if (userToken) {
+      setIdentity(userToken);
+    } else {
+      console.error("Web Environment detected");
     }
   };
 
@@ -161,6 +130,10 @@ function DebugBar({
   };
 
   useEffect(() => {
+    fetchStores();
+  }, [curGeoLocation]);
+
+  useEffect(() => {
     if (uploadImg.mimeType) {
       const img = document.getElementById(uploadImgId) as HTMLImageElement;
       processImageBarcode(img);
@@ -182,14 +155,21 @@ function DebugBar({
           Test Store
         </a>
       </button>
-      <button onClick={loginUser}>User Login</button>
+      <button onClick={testLogin}>User Login</button>
       <button onClick={storeQR}>Scan Store QR</button>
-      <button onClick={grabLoc}>Nearby Stores</button>
+      <button onClick={grabLoc}>Update Location</button>
+      <button onClick={() => fetchStores()}>Nearby Stores</button>
       <button onClick={getNearbyPlaces}>Nearby Restaurants</button>
       <h3 style={{ color: "#ABABAB" }}>
-        [{userCoords[0].toFixed(GEO_PRECISION_DIGITS)},
-        {userCoords[1].toFixed(GEO_PRECISION_DIGITS)}] | {identity.sub} [
-        {isLoading ? "Loading..." : ""}]
+        [
+        {curGeoLocation
+          ? curGeoLocation.coords.latitude.toFixed(GEO_PRECISION_DIGITS)
+          : "---"}
+        ,
+        {curGeoLocation
+          ? curGeoLocation.coords.longitude.toFixed(GEO_PRECISION_DIGITS)
+          : "---"}
+        ] | {identity.sub} [{isLoading ? "Loading..." : ""}]
       </h3>
     </div>
   );
