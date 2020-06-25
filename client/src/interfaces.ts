@@ -80,15 +80,15 @@ export const emptyUser = (): User => ({
   "user-id": "",
 });
 
-// results json response from PlacesAPI call:
-// https://developers.google.com/places/web-service/search#PlaceSearchResults
+// results json response from PlacesAPI call using PlacesService:
+// https://developers.google.com/maps/documentation/javascript/reference/places-service#PlaceResult
 export interface GMapPlace {
   business_status: string; // Whether business is open
   geometry: {
     // Encodes location information for map display
     location: {
       lat: () => number; // Note: These are functions!
-      lng: () => number; // this is not entirely clear from the Places API documentation
+      lng: () => number; // we are wrapping around a PlaceResult object
     };
   };
   photos: [
@@ -103,9 +103,10 @@ export interface GMapPlace {
   vicinity: string; // address field
 }
 
+// Response from microapps.requestMedia() API call
 export interface MediaResponse {
-  bytes: string;
-  mimeType: string;
+  bytes: string; // Image data in bytes
+  mimeType: string; // Type of image
 }
 
 export const emptyMediaResponse = (): MediaResponse => ({
@@ -113,6 +114,7 @@ export const emptyMediaResponse = (): MediaResponse => ({
   mimeType: "",
 });
 
+// Declare interface for navigator.geolocation result
 export interface GeoLocation {
   coords: {
     latitude: number;

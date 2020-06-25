@@ -16,6 +16,7 @@ function UserHeader({ user }: { user: User | null }) {
   const padTime = (num: number) => {
     // Ensure our time is output in hh:mm:ss
     // non-constants used will unlikely change
+    if (num === 0) return "00";
     return num ? num.toString().padStart(2, "0") : "";
   };
 
