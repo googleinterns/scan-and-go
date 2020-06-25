@@ -1,0 +1,17 @@
+steps:
+  - name: node:10
+    entrypoint: yarn
+    args:
+      - install
+    id: "client-build"
+    dir: "client/"
+  - name: "gcr.io/cloud-builders/gcloud"
+    waitFor: ["client-build"]
+    args: ["app", "deploy"]
+    dir: "client/"
+    timeout: 300s
+  - name: "gcr.io/cloud-builders/gcloud"
+    args: ["app", "deploy"]
+    dir: "server/"
+    timeout: 300s
+
