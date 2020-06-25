@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import { OutlinedInput, InputLabel, InputAdornment } from "@material-ui/core";
 import LocationOnIcon from "@material-ui/icons/LocationOn";
 import LocationOffIcon from "@material-ui/icons/LocationOff";
+import { isDebug } from "src/config";
 
 function SearchBar({
   iconCallback,
   onChangeCallback,
   onEnterCallback,
 }: {
-  iconCallback?: () => void;
+  iconCallback?: (status: boolean) => void;
   onChangeCallback?: (text: string) => void;
   onEnterCallback?: (text: string) => void;
 }) {
@@ -16,7 +17,6 @@ function SearchBar({
 
   const iconClickWrapper = () => {
     setGpsStatus(!gpsStatus);
-    if (iconCallback) iconCallback();
   };
 
   const dynamicChangeWrapper = (
@@ -42,11 +42,17 @@ function SearchBar({
     }
   };
 
+  useEffect(() => {
+    if (iconCallback) iconCallback(gpsStatus);
+  }, [gpsStatus]);
+
   return (
     <div className="DebugBar">
-      <InputLabel htmlFor="stores-search-bar">
-        Search {gpsStatus ? "with" : "without"} Location
-      </InputLabel>
+      {isDebug && (
+        <InputLabel htmlFor="stores-search-bar">
+          Search {gpsStatus ? "with" : "without"} Location
+        </InputLabel>
+      )}
       <OutlinedInput
         id="stores-search-bar"
         startAdornment={

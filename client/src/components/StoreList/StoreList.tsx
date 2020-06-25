@@ -20,15 +20,16 @@ function StoreList({ stores }: { stores: Store[] }) {
 
   return (
     <Container disableGutters={true} className="StoreList">
-      <Divider />
-      {stores &&
-        stores.map((store) => (
-          <StoreCard
-            key={store["store-id"]}
-            redirect={enterStore}
-            store={store}
-          />
-        ))}
+      <div>
+        {stores &&
+          stores.map((store) => (
+            <StoreCard
+              key={store["store-id"]}
+              redirect={enterStore}
+              store={store}
+            />
+          ))}
+      </div>
     </Container>
   );
 }
