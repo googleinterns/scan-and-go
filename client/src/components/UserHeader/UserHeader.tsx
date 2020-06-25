@@ -3,6 +3,7 @@ import { User } from "src/interfaces";
 import { DEFAULT_WELCOME_MSG } from "src/constants";
 import { Typography, Paper, Grid, Box, Button } from "@material-ui/core";
 import { getDayPeriod } from "src/utils";
+import { isDebug } from "src/config";
 
 function UserHeader({ user }: { user: User | null }) {
   const curHour = new Date().getHours();
@@ -44,11 +45,13 @@ function UserHeader({ user }: { user: User | null }) {
                   !
                 </Typography>
               </Grid>
-              <Grid item xs={12}>
-                <Typography variant="body1">
-                  {padTime(curHour)}:{padTime(curMin)}:{padTime(curSec)}
-                </Typography>
-              </Grid>
+              {isDebug && (
+                <Grid item xs={12}>
+                  <Typography variant="body1">
+                    {padTime(curHour)}:{padTime(curMin)}:{padTime(curSec)}
+                  </Typography>
+                </Grid>
+              )}
             </Grid>
             <Grid item xs={3}>
               <Button fullWidth={true} variant="contained" color="primary">
