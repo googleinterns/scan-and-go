@@ -4,6 +4,7 @@ import StoreList from "src/components/StoreList";
 import TextInputField from "src/components/TextInputField";
 import UserHeader from "src/components/UserHeader";
 import DebugBar from "./DebugBar";
+import SearchBar from "src/components/SearchBar";
 import { User, emptyUser, Store, GMapPlace } from "src/interfaces";
 import { getUserInfo } from "src/pages/Actions";
 import { Container } from "@material-ui/core";
@@ -16,6 +17,14 @@ function Home(props: any) {
   const [stores, setStores] = useState<Store[]>([]);
   const [testPlaces, setTestPlaces] = useState<GMapPlace[]>([]);
   const [placeStore, setPlaceStore] = useState<Store[]>([]);
+
+  const updateSearchText = (text: string) => {
+    console.log("Searched Text: " + text);
+  };
+
+  const grabLocation = () => {
+    console.log("Attempt to trigger getStoresByLocation");
+  };
 
   useEffect(() => {
     // Initially set user based on passed props
@@ -42,6 +51,11 @@ function Home(props: any) {
       {isDebug && (
         <DebugBar storesCallback={setStores} placesCallback={setTestPlaces} />
       )}
+      <SearchBar
+        iconCallback={grabLocation}
+        onChangeCallback={updateSearchText}
+        onEnterCallback={updateSearchText}
+      />
       <StoreList stores={stores} />
       <StoreList stores={placeStore} />
     </Container>

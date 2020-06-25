@@ -3,6 +3,7 @@ import { Store } from "src/interfaces";
 import { GEO_PRECISION_DIGITS } from "src/constants";
 import { Box, Typography, Card, Grid } from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
+import StoreCardMedia from "./StoreCardMedia";
 
 // Specific Constants for this component
 export const MAX_CARD_HEIGHT = 100;
@@ -39,8 +40,7 @@ function StoreCard({
         alignItems="center"
       >
         <Grid item xs={4}>
-          {store.media && <img src={store.media} height={MAX_CARD_HEIGHT} />}
-          {!store.media && <p>Media Placeholder</p>}
+          <StoreCardMedia media={store.media} height={MAX_CARD_HEIGHT} />
         </Grid>
         <Grid item xs={8}>
           <Typography component="span" variant="subtitle1">
