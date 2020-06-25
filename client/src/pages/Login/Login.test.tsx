@@ -7,6 +7,7 @@ import Login from "./Login";
 import { Input } from "@material-ui/core";
 import * as config from "src/config";
 import { isWeb, microapps } from "src/config";
+import { HOME_PAGE } from "src/constants";
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -65,7 +66,7 @@ describe("Simulate test within GPay Env", () => {
     // we should expect a url redirect
     await waitFor(() => {
       const pushArgs = global.mockRedirectPush.mock.calls[0];
-      expect(pushArgs[0]).toHaveProperty("pathname", "/home");
+      expect(pushArgs[0]).toHaveProperty("pathname", HOME_PAGE);
     });
   });
 });

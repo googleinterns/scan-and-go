@@ -43,7 +43,7 @@ function StoreCard({
           {!store.media && <p>Media Placeholder</p>}
         </Grid>
         <Grid item xs={8}>
-          <Typography variant="subtitle1">
+          <Typography component="span" variant="subtitle1">
             <Box display="inline" fontWeight="fontWeightBold">
               {store.name}
             </Box>
@@ -53,9 +53,7 @@ function StoreCard({
             {store.longitude.toFixed(GEO_PRECISION_DIGITS)}]
           </Typography>
           <Typography variant="body2" align="right">
-            <Box display="inline" fontWeight="fontWeightBold">
-              Schrödinger's Store
-            </Box>
+            Schrödinger's Store
           </Typography>
         </Grid>
       </Grid>
