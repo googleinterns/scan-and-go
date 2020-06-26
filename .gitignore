@@ -5,6 +5,7 @@
 *.sublime-workspace
 **/__snapshots__/
 **/*.swp
+*.env
 
 # Temporary
 **/docs
