@@ -7,8 +7,16 @@ Open-source 2020 Google Internship project. ScanAndGo is a Spot-as-a-service app
 ## Development
 
 ### Prerequisites
+
 1. [Node js v12.18.1](https://nodejs.org/en/download/) or recommended with a node version manager [nvm](https://github.com/nvm-sh/nvm)
 2. Npm with node or install [Yarn](https://yarnpkg.com/getting-started/install)
+
+#### First-time set-up
+
+1. cd `/client`
+2. Install project dependencies by running `yarn install .`
+3. cd `/server`
+4. Install project dependencies by running `yarn install .`
 
 ### Front-end Server (React)
 
