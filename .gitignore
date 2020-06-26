@@ -6,6 +6,9 @@
 **/__snapshots__/
 **/*.swp
 
+# Temporary
+**/docs
+
 # Project specific exclusions
 code.list
 client/src/sample_order.json

@@ -4,7 +4,9 @@ import StoreList from "src/components/StoreList";
 import TextInputField from "src/components/TextInputField";
 import UserHeader from "src/components/UserHeader";
 import DebugBar from "./DebugBar";
-import SearchBar from "src/components/SearchBar";
+import IconSearchBar from "src/components/IconSearchBar";
+import LocationOnIcon from "@material-ui/icons/LocationOn";
+import LocationOffIcon from "@material-ui/icons/LocationOff";
 import { User, emptyUser, Store, GMapPlace, GeoLocation } from "src/interfaces";
 import {
   getUserInfo,
@@ -36,8 +38,8 @@ function Home(props: any) {
   const readySearchText = (text: string) => {
     // Testing trigger with searching nearby restaurants with Places API
     if (text === SECRET_TRIGGER && curGeoLocation) {
+      //TODO(#127): Update testing for fetching nearby places
       getNearbyPlacesTest(curGeoLocation, (places: any, status: any) => {
-        console.log(status);
         if (status === google.maps.places.PlacesServiceStatus.OK) {
           setTestPlaces(places);
         }
@@ -48,7 +50,6 @@ function Home(props: any) {
   const grabLocation = (state: boolean) => {
     setUseLocation(state);
     if (state) {
-      console.log("Attempt to trigger getStoresByLocation");
       getGeoLocation(locationSuccessCallback);
     } else {
       // Clear search results?
@@ -82,6 +83,8 @@ function Home(props: any) {
   }, [userid]);
 
   useEffect(() => {
+    //TODO(#127): Update when resolved and remove testPlaces/placeStores
+    //            when functionality is built into backend server /store/list
     setPlaceStores(testPlaces.map((place) => transformGMapPlaceToStore(place)));
   }, [testPlaces]);
 
@@ -92,10 +95,11 @@ function Home(props: any) {
       {isDebug && (
         <DebugBar storesCallback={setStores} placesCallback={setTestPlaces} />
       )}
-      <SearchBar
+      <IconSearchBar
         iconCallback={grabLocation}
         onChangeCallback={updateSearchText}
-        onEnterCallback={readySearchText}
+        onSubmitCallback={readySearchText}
+        icon={[<LocationOnIcon color="primary" />, <LocationOffIcon />]}
       />
       {!useLocation && (
         <Typography variant="body2">
