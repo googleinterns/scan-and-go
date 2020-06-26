@@ -29,6 +29,8 @@
     "express": "^4.17.1",
     "helmet": "^3.22.0",
     "jest": "^26.0.1",
+    "jsonwebtoken": "^8.5.1",
+    "jwks-rsa": "^1.8.1",
     "supertest": "^4.0.2"
   },
   "devDependencies": {
