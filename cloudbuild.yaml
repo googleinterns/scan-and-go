@@ -28,4 +28,6 @@ steps:
     dir: "server/"
     waitFor: ["server-build"]
     timeout: 300s
-
+    
+options:
+  machineType: "N1_HIGHCPU_8"
