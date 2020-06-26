@@ -61,7 +61,7 @@ function Login() {
 
   // Simple (Debugging) Login Form
   return (
-    <Container disableGutters={true} className="Login">
+    <Container disableGutters={!isWeb} className="Login">
       {/* Web Interface Testing purposes */}
       {isWeb && (
         <Grid container spacing={3} direction="column" alignItems="center">
