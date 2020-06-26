@@ -17,6 +17,9 @@ const AppTheme = createMuiTheme({
     body2: {
       fontWeight: 800,
     },
+    subtitle2: {
+      color: "#909090",
+    },
   },
 });
 
