@@ -3,6 +3,8 @@ import { Store } from "src/interfaces";
 import { GEO_PRECISION_DIGITS } from "src/constants";
 import { Box, Typography, Card, Grid } from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
+import { isDebug } from "src/config";
+import StoreCardMedia from "./StoreCardMedia";
 
 // Specific Constants for this component
 export const MAX_CARD_HEIGHT = 100;
@@ -39,8 +41,7 @@ function StoreCard({
         alignItems="center"
       >
         <Grid item xs={4}>
-          {store.media && <img src={store.media} height={MAX_CARD_HEIGHT} />}
-          {!store.media && <p>Media Placeholder</p>}
+          <StoreCardMedia media={store.media} height={MAX_CARD_HEIGHT} />
         </Grid>
         <Grid item xs={8}>
           <Typography component="span" variant="subtitle1">
@@ -48,12 +49,20 @@ function StoreCard({
               {store.name}
             </Box>
           </Typography>
-          <Typography variant="body1">
-            [{store.latitude.toFixed(GEO_PRECISION_DIGITS)},
-            {store.longitude.toFixed(GEO_PRECISION_DIGITS)}]
-          </Typography>
+          {isDebug && (
+            <Typography variant="body1">
+              [{store.latitude.toFixed(GEO_PRECISION_DIGITS)},
+              {store.longitude.toFixed(GEO_PRECISION_DIGITS)}]
+            </Typography>
+          )}
+          {store.vicinity &&
+            store.vicinity
+              .split(",")
+              .map((text) => <Typography variant="body1">{text}</Typography>)}
           <Typography variant="body2" align="right">
-            Schrödinger's Store
+            {store.business_status
+              ? store.business_status
+              : "Schrödinger's Store"}
           </Typography>
         </Grid>
       </Grid>

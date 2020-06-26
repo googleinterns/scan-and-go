@@ -13,7 +13,4 @@ export const google = window.google;
 export const isWeb = window === window.parent;
 
 // Enable debugging on web by default
-export const isDebug = true;
-
-// Places API Key
-export const PLACES_KEY = "AIzaSyBkGOvn8gUfLrECXPQ5KFNCHUqoXr3mzCc";
+export const isDebug = false;
