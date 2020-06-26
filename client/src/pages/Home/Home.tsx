@@ -37,6 +37,7 @@ function Home(props: any) {
 
   const readySearchText = (text: string) => {
     // Testing trigger with searching nearby restaurants with Places API
+    //TODO(#131): Replace with server call for nearby stores when implemented
     if (text === SECRET_TRIGGER && curGeoLocation) {
       //TODO(#127): Update testing for fetching nearby places
       getNearbyPlacesTest(curGeoLocation, (places: any, status: any) => {

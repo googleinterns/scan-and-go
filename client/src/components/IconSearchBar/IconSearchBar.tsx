@@ -43,6 +43,7 @@ function IconSearchBar({
   };
 
   const keyPressWrapper = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    // Unfocus input text field to 'submit' search query on ENTER pressed
     if (event.key === "Enter") {
       const ele = document.getElementById("stores-search-bar");
       if (ele) ele.blur();
