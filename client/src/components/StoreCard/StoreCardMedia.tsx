@@ -8,7 +8,12 @@ function StoreCardMedia({
   height?: number;
 }) {
   if (media) {
-    return <img src={media} height={height} />;
+    return (
+      <img
+        src={media}
+        style={{ borderRadius: "50%", height: height, width: height }}
+      />
+    );
   } else {
     return <p>Media Placeholder</p>;
   }

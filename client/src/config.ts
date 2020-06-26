@@ -13,4 +13,4 @@ export const google = window.google;
 export const isWeb = window === window.parent;
 
 // Enable debugging on web by default
-export const isDebug = true;
+export const isDebug = false;
