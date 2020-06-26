@@ -15,7 +15,7 @@ import {
   getNearbyPlacesTest,
 } from "src/pages/Actions";
 import { Container, Typography } from "@material-ui/core";
-import { isDebug, google } from "src/config";
+import { isWeb, isDebug, google } from "src/config";
 import { transformGMapPlaceToStore } from "src/transforms";
 
 function Home(props: any) {
@@ -90,7 +90,7 @@ function Home(props: any) {
   }, [testPlaces]);
 
   return (
-    <Container disableGutters={false} className="Home">
+    <Container disableGutters={!isWeb} className="Home">
       {isDebug && <TextInputField text={userid} setState={setUserid} />}
       <UserHeader user={curUser} />
       {isDebug && (

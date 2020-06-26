@@ -60,7 +60,9 @@ function StoreCard({
               .split(",")
               .map((text) => <Typography variant="body1">{text}</Typography>)}
           <Typography variant="body2" align="right">
-            Schrödinger's Store
+            {store.business_status
+              ? store.business_status
+              : "Schrödinger's Store"}
           </Typography>
         </Grid>
       </Grid>
