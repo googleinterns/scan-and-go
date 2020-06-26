@@ -1,13 +1,17 @@
-const config = require("./../config");
 const { storesCollection } = require("./../firestore");
 const { geoDist, flatMap } = require("./../utils");
+const {
+  DEFAULT_SEARCH_RADIUS_METERS,
+  DEFAULT_QUERY_LIMIT,
+} = require("./../constants");
 
 // Extraction of list of stores
 exports.listStores = async (req, res) => {
   const reqProps = req.body;
   let retStores = [];
 
-  const limDist = reqProps["distance"] || 2000; // Limit search radius
+  const distLim = reqProps["distance"] || DEFAULT_SEARCH_RADIUS_METERS; // Limit search radius
+  const queryLim = reqProps["queryLimit"] || DEFAULT_QUERY_LIMIT; // Limit
   const userLat = reqProps["latitude"];
   const userLong = reqProps["longitude"];
 
@@ -20,10 +24,18 @@ exports.listStores = async (req, res) => {
         const lat = store["latitude"];
         const long = store["longitude"];
         const curDist = geoDist(userLat, userLong, lat, long);
-        if (curDist < limDist) {
+        if (curDist < distLim) {
           retStores.push(Object.assign({}, store, { distance: curDist }));
         }
       }
+    } else {
+      const storesQuery = await storesCollection
+        .orderBy("name")
+        .limit(queryLim)
+        .get();
+      retStores = storesQuery.docs.map((doc) =>
+        Object.assign({}, doc.data(), { distance: undefined })
+      );
     }
   } catch (err) {
     console.error(err);
