@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { User } from "src/interfaces";
 import { DEFAULT_WELCOME_MSG } from "src/constants";
 import { Typography, Paper, Grid, Box, Button } from "@material-ui/core";
+import { useTheme } from "@material-ui/core/styles";
 import { getDayPeriod } from "src/utils";
 import { isDebug } from "src/config";
 
@@ -9,6 +10,9 @@ function UserHeader({ user }: { user: User | null }) {
   const curHour = new Date().getHours();
   const curMin = new Date().getMinutes();
   const [curSec, setCurSec] = useState();
+
+  const theme = useTheme();
+  const headerBotPadding = theme.spacing(4);
 
   const updateTime = () => {
     setCurSec(new Date().getSeconds());
@@ -33,7 +37,7 @@ function UserHeader({ user }: { user: User | null }) {
   return (
     <div className="UserHeader">
       {user && (
-        <Paper elevation={0}>
+        <Paper elevation={0} style={{ paddingBottom: headerBotPadding }}>
           <Grid container direction="row" justify="space-between">
             <Grid item xs={8}>
               <Grid item xs={12}>
