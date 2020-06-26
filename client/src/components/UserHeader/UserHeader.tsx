@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { User } from "src/interfaces";
-import { DEFAULT_WELCOME_MSG } from "src/constants";
+import { DEFAULT_USER_HEADER_SUBTITLE } from "src/constants";
 import { Typography, Paper, Grid, Box, Button } from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
 import { getDayPeriod } from "src/utils";
@@ -54,6 +54,9 @@ function UserHeader({ user }: { user: User | null }) {
                     {user.name}
                   </Box>
                   !
+                </Typography>
+                <Typography variant="subtitle2">
+                  {DEFAULT_USER_HEADER_SUBTITLE}
                 </Typography>
               </Grid>
               {isDebug && (
