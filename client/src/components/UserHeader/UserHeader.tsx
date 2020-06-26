@@ -12,6 +12,7 @@ function UserHeader({ user }: { user: User | null }) {
   const [curSec, setCurSec] = useState();
 
   const theme = useTheme();
+  const headerTopPadding = theme.spacing(2);
   const headerBotPadding = theme.spacing(4);
 
   const updateTime = () => {
@@ -37,7 +38,13 @@ function UserHeader({ user }: { user: User | null }) {
   return (
     <div className="UserHeader">
       {user && (
-        <Paper elevation={0} style={{ paddingBottom: headerBotPadding }}>
+        <Paper
+          elevation={0}
+          style={{
+            paddingTop: headerTopPadding,
+            paddingBottom: headerBotPadding,
+          }}
+        >
           <Grid container direction="row" justify="space-between">
             <Grid item xs={8}>
               <Grid item xs={12}>
