@@ -35,6 +35,7 @@ function UserHeader({ user }: { user: User | null }) {
     setInterval(updateTime, 500);
   }, [curSec]);
 
+  //TODO(#132) Usage of '14px' should be abstracted to custom font variant for consistency
   return (
     <div className="UserHeader">
       {user && (
@@ -45,7 +46,12 @@ function UserHeader({ user }: { user: User | null }) {
             paddingBottom: headerBotPadding,
           }}
         >
-          <Grid container direction="row" justify="space-between">
+          <Grid
+            container
+            direction="row"
+            justify="space-between"
+            alignItems="center"
+          >
             <Grid item xs={8}>
               <Grid item xs={12}>
                 <Typography variant="h4">
@@ -54,9 +60,6 @@ function UserHeader({ user }: { user: User | null }) {
                     {user.name}
                   </Box>
                   !
-                </Typography>
-                <Typography variant="subtitle2">
-                  {DEFAULT_USER_HEADER_SUBTITLE}
                 </Typography>
               </Grid>
               {isDebug && (
@@ -67,10 +70,20 @@ function UserHeader({ user }: { user: User | null }) {
                 </Grid>
               )}
             </Grid>
-            <Grid item xs={3}>
-              <Button fullWidth={true} variant="contained" color="primary">
+            <Grid item xs={4}>
+              <Button
+                fullWidth={true}
+                variant="contained"
+                color="primary"
+                style={{ fontSize: "14px" }}
+              >
                 Shopping List
               </Button>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="subtitle2">
+                {DEFAULT_USER_HEADER_SUBTITLE}
+              </Typography>
             </Grid>
           </Grid>
         </Paper>
