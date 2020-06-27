@@ -33,7 +33,6 @@ afterAll(() => {
   server.close();
 });
 
-// TODO: not sure why first test occasionally takes >5000ms (vs. <100 ms for subsequent tests) and thus fails due to timeout
 describe("Assert Mock Database Loaded", () => {
   it("Users database should match", async () => {
     const usersQuery = await usersCollection.get();
@@ -148,18 +147,25 @@ describe("API POST Data", () => {
   });
 });
 
-describe("API GET User Data", () => {
-  it("should get TEST_USER orders", async () => {
-    const testUserId = TEST_USERS[0]["user-id"];
-    authenticateUser.mockImplementation((req, res, next) => {
-      req.userId = testUserId;
-      next();
-    });
+describe("API GET Nonce", () => {
+  it("should get a static nonce", async () => {
+    const res = await request(app).get("/api/nonce");
+    expect(res.text).toEqual("static nonce");
+  });
+});
 
+describe("API GET User Data", () => {
+  const testUserId = TEST_USERS[0]["user-id"];
+  authenticateUser.mockImplementation((req, res, next) => {
+    req.userId = testUserId;
+    next();
+  });
+
+  it("should get TEST_USER orders", async () => {
     const expectedOrders = TEST_ORDERS.filter(
       (order) => order["user-id"] === testUserId
     );
-    const res = await request(app).get(`/api/order/list`);
+    const res = await request(app).get("/api/order/list");
     expect(res.body).toHaveLength(expectedOrders.length);
     expect(res.body.every((order) => order["user-id"] === testUserId)).toBe(
       true

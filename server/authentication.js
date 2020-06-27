@@ -5,8 +5,6 @@ const client = jwksClient({
   jwksUri: "https://www.googleapis.com/oauth2/v3/certs",
 });
 
-const keys = require("./client_secret.json").web;
-
 const getKey = (header, keyCallback) => {
   client.getSigningKey(header.kid, function (err, key) {
     if (key) {
@@ -18,12 +16,16 @@ const getKey = (header, keyCallback) => {
 };
 
 const authenticateUser = (req, res, next) => {
-  if (!req.headers.authorization) {
-    return next();
+  if (
+    !req.headers.authorization ||
+    req.headers.authorization.split(" ")[0] !== "Bearer"
+  ) {
+    return res.sendStatus(HTTP_UNAUTHORIZED);
   }
-  // assert(req.headers.authorization.split(' ')[0] === 'Bearer');
   const token = req.headers.authorization.split(" ")[1];
-  const nonce = req.headers["x-nonce"];
+  const nonce = "static nonce";
+  // TODO (#133: replace with REACT_APP_MICROAPPS_CLIENT_ID
+  const keys = require("./client_secret.json").web;
   const options = {
     audience: keys.client_id,
     issuer: ["https://accounts.google.com", "accounts.google.com"],

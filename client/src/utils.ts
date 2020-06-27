@@ -1,5 +1,6 @@
 import { CartItem } from "src/interfaces";
 import { DAY_PERIOD, PRICE_FRACTION_DIGITS } from "src/constants";
+import { microapps, isWeb } from "./config";
 
 // Get json from response
 const getJson = (res: any) => {
@@ -31,18 +32,34 @@ const catchErr = (err: any) => {
 };
 
 // fetch response from url
-const fetchRes = async (reqType: string, data: any, url: string) => {
+// fetch response from url
+const fetchRes = async (
+  reqType: string,
+  data: Object,
+  url: string,
+  auth: Boolean = false
+) => {
   if (data == null) {
     return await fetch(url);
   } else {
+    const headers = new Headers({
+      "Content-Type": "application/json",
+    });
+    if (auth && !isWeb) {
+      const nonce = await fetchText("GET", {}, "/api/nonce");
+      const request = { nonce: nonce };
+      const idToken = microapps.getIdentity(request).catch((err: any) => {
+        return null;
+      });
+      headers.append("Authorization", "Bearer " + idToken);
+    }
+
     return await fetch(url, {
       method: reqType,
       mode: "cors",
       cache: "no-cache",
       credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: headers,
       redirect: "follow",
       referrerPolicy: "no-referrer",
       body: JSON.stringify(data),
@@ -51,14 +68,24 @@ const fetchRes = async (reqType: string, data: any, url: string) => {
 };
 
 // fetch json response from url
-export const fetchJson = async (reqType: string, data: any, url: string) => {
+export const fetchJson = async (
+  reqType: string,
+  data: any,
+  url: string,
+  auth: Boolean = false
+) => {
   return fetchRes(reqType, data, url)
     .then((res) => getJson(res))
     .catch((err) => catchErr(err));
 };
 
 // fetch text response from url
-export const fetchText = async (reqType: string, data: any, url: string) => {
+export const fetchText = async (
+  reqType: string,
+  data: any,
+  url: string,
+  auth: Boolean = false
+) => {
   return fetchRes(reqType, data, url)
     .then((res) => getText(res))
     .catch((err) => catchErr(err));

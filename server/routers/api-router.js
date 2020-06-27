@@ -11,6 +11,9 @@ const router = express.Router();
 router.post("/", apiController.getWelcomeMessage);
 router.get("/user/list", usersController.listUsers);
 
+// Nonce Endpoint
+router.get("/nonce", (req, res) => res.send("static nonce"));
+
 // Store API
 router.post("/store", storesController.getStore);
 router.post("/store/list", storesController.listStores); //Batch Operation
@@ -24,10 +27,6 @@ router.post("/item/list", itemsController.listItems); //Batch Operation
 
 // Order API
 router.post("/order", ordersController.addOrder);
-router.use("/order/list", authenticateUser);
-router.get("/order/list", ordersController.listOrders);
-// router.get("/order/list", authenticateUser, ordersController.listOrders);
-// TODO: not sure why this line causes multiple unit tests to take much longer and fail due to timeout
-//       when it should behave the same as the previous two lienes
+router.get("/order/list", authenticateUser, ordersController.listOrders);
 
 module.exports = router;
