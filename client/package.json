@@ -33,7 +33,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test -u --env=jest-environment-jsdom-sixteen",
     "eject": "react-scripts eject",
-    "create-env": "printenv | grep \"^REACT_APP_\"  > .env"
+    "create-env": "printenv | grep \"^REACT_APP_\"  > .env",
+    "create-component": "python ../tools/create_component.py"
   },
   "eslintConfig": {
     "extends": "react-app"
