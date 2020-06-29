@@ -6,37 +6,37 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  Grid,
 } from "@material-ui/core";
-import { getSubtotalPrice, getTotalPrice } from "./CartActions";
+import ItemCard from "src/components/ItemCard";
+import ItemCardCompact from "src/components/ItemCardCompact";
 
-function Cart({ contents }: { contents: CartItem[] }) {
+function Cart({
+  contents,
+  collapse,
+  updateItemQuantity,
+}: {
+  contents: CartItem[];
+  collapse: boolean;
+  updateItemQuantity?: (barcode: string, quantity: number) => void;
+}) {
   return (
     <div className="Cart">
-      {contents.length > 0 && (
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Quantity</TableCell>
-              <TableCell>Price</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {contents.map((curItem: CartItem) => (
-              <TableRow key={curItem.item.barcode}>
-                <TableCell>{curItem.item.name}</TableCell>
-                <TableCell>{curItem.quantity}</TableCell>
-                <TableCell>{getSubtotalPrice(curItem)}</TableCell>
-              </TableRow>
-            ))}
-            <TableRow key="total">
-              <TableCell>Total Price:</TableCell>
-              <TableCell></TableCell>
-              <TableCell>{getTotalPrice(contents)}</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      )}
+      {contents.length > 0 &&
+        contents.map((cartItem) =>
+          collapse ? (
+            <ItemCardCompact cartItem={cartItem} />
+          ) : (
+            <ItemCard
+              cartItem={cartItem}
+              updateItemQuantity={
+                updateItemQuantity
+                  ? updateItemQuantity
+                  : (barcode: string, quantity: number) => {}
+              }
+            />
+          )
+        )}
     </div>
   );
 }

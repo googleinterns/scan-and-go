@@ -5,7 +5,17 @@ import ItemCard from "src/components/ItemCard";
 import Cart from "src/components/Cart";
 import CartHeader from "src/components/CartHeader";
 import TextInputField from "src/components/TextInputField";
-import { Fab, Box, Divider, Grid, Paper, Typography } from "@material-ui/core";
+import {
+  FormGroup,
+  FormControlLabel,
+  Switch,
+  Fab,
+  Box,
+  Divider,
+  Grid,
+  Paper,
+  Typography,
+} from "@material-ui/core";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import EditIcon from "@material-ui/icons/Edit";
 import PaymentIcon from "@material-ui/icons/Payment";
@@ -27,7 +37,7 @@ import {
   ITEM_LIST_API,
   BARCODE_PLACEHOLDER,
 } from "src/constants";
-import { microapps } from "src/config";
+import { microapps, isWeb, isDebug } from "src/config";
 import SampleBarcode from "src/img/Sample_EAN8.png";
 declare const window: any;
 
@@ -109,21 +119,8 @@ function ScanStore() {
     // TODO (#59): Notify user if barcode is invalid or item not found
   };
 
-  const renderShoppingList = () => {
-    return cartItems.map((cartItem) => {
-      return (
-        <Grid key={cartItem.item.barcode} item xs={12}>
-          <ItemCard
-            cartItem={cartItem}
-            updateItemQuantity={updateItemQuantity}
-          />
-        </Grid>
-      );
-    });
-  };
-
-  const toggleCart = () => {
-    setShowCart(!showCart);
+  const toggleCart = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setShowCart(event.target.checked);
   };
 
   const makePayment = () => {
@@ -172,99 +169,54 @@ function ScanStore() {
   return (
     <div className="ScanStore">
       <CartHeader store={curStore} scanBarcodeCallback={addItem} />
-      <Grid container spacing={1} direction="column" alignItems="stretch">
-        {!showCart && (
-          <Grid item xs={12}>
-            <Paper elevation={1}>
-              <Box p={1}>
-                <Grid item container direction="row" alignItems="center">
-                  {/* TODO (#60): Keep Cart or Shopping List, but not both */}
-                  <Grid item xs={6}>
-                    <h1>Shopping List:</h1>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <TextInputField
-                      text={curBarcode ? curBarcode : BARCODE_PLACEHOLDER}
-                      setState={setCurBarcode}
-                    />
-                  </Grid>
-                </Grid>
-                {cartItems.length > 0 && (
-                  <Grid
-                    container
-                    spacing={1}
-                    direction="column"
-                    alignItems="stretch"
-                  >
-                    <Grid
-                      container
-                      direction="row"
-                      justify="center"
-                      alignItems="center"
-                    >
-                      <Grid item xs={3}></Grid>
-                      <Grid item xs={3}>
-                        <Typography variant="subtitle1">Name</Typography>
-                      </Grid>
-                      <Grid item xs={2}>
-                        <Typography variant="subtitle1">Unit Price</Typography>
-                      </Grid>
-                      <Grid item xs={2}>
-                        <Typography variant="subtitle1">Subtotal</Typography>
-                      </Grid>
-                      <Grid item xs={2}></Grid>
-                    </Grid>
-                    <Divider />
-                    {renderShoppingList()}
-                  </Grid>
-                )}
-              </Box>
-            </Paper>
-          </Grid>
-        )}
-        <button id="testScanBtn" onClick={testBarcode}>
-          Test Barcode API
-        </button>
-        <img
-          id={debugImgId}
-          hidden={true}
-          width="200"
-          height="200"
-          src={SampleBarcode}
+      <FormGroup row>
+        <FormControlLabel
+          control={<Switch onChange={toggleCart} color="primary" />}
+          label="Compact View"
         />
-        {uploadImg.mimeType && (
-          <Grid item xs={12} justify="center">
-            <Paper elevation={2}>
-              <img
-                id={uploadImgId}
-                hidden={!debugImg}
-                width="200"
-                height="200"
-                src={
-                  "data:" + uploadImg.mimeType + ";base64," + uploadImg.bytes
-                }
-              />
-            </Paper>
-          </Grid>
-        )}
-      </Grid>
-      {showCart && [
-        <h3>Current Cart Contents:</h3>,
-        <Cart contents={cartItems} />,
-      ]}
-      <Fab
-        style={{ position: "fixed", bottom: "10px", left: "10px" }}
-        color="primary"
-        onClick={toggleCart}
-      >
-        {showCart ? <EditIcon /> : <ShoppingCartIcon />}
-      </Fab>
+      </FormGroup>
+      {!showCart &&
+        (isDebug || isWeb) && [
+          <TextInputField
+            text={curBarcode ? curBarcode : BARCODE_PLACEHOLDER}
+            setState={setCurBarcode}
+          />,
+          <button id="testScanBtn" onClick={testBarcode}>
+            Test Barcode API
+          </button>,
+        ]}
+      <img
+        id={debugImgId}
+        hidden={true}
+        width="200"
+        height="200"
+        src={SampleBarcode}
+      />
+      {uploadImg.mimeType && (
+        <Grid item xs={12} justify="center">
+          <Paper elevation={2}>
+            <img
+              id={uploadImgId}
+              hidden={!debugImg}
+              width="200"
+              height="200"
+              src={"data:" + uploadImg.mimeType + ";base64," + uploadImg.bytes}
+            />
+          </Paper>
+        </Grid>
+      )}
+      <Divider />
+      <Cart
+        contents={cartItems}
+        collapse={showCart}
+        updateItemQuantity={updateItemQuantity}
+      />
       <Fab
         style={{ position: "fixed", bottom: "10px", right: "10px" }}
-        color="secondary"
-        onClick={showCart ? makePayment : addItem}
+        color="primary"
+        onClick={makePayment}
       >
-        {showCart ? <PaymentIcon /> : <AddIcon />}
+        <PaymentIcon />
       </Fab>
     </div>
   );
