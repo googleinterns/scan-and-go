@@ -15,8 +15,10 @@ Open-source 2020 Google Internship project. ScanAndGo is a Spot-as-a-service app
 
 1. cd `/client`
 2. Install project dependencies by running `yarn install .`
-3. cd `/server`
-4. Install project dependencies by running `yarn install .`
+3. Obtain keys for required environment variables specified in `/client/env_template`
+   and store it in .env file. This file or any keys should not be checked in.
+4. cd `/server`
+5. Install project dependencies by running `yarn install .`
 
 ### Front-end Server (React)
 

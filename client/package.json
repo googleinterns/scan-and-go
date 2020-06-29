@@ -32,7 +32,8 @@
     "start": "serve -s build -l 80",
     "build": "react-scripts build",
     "test": "react-scripts test -u --env=jest-environment-jsdom-sixteen",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "create-env": "printenv | grep \"^REACT_APP_\"  > .env"
   },
   "eslintConfig": {
     "extends": "react-app"
