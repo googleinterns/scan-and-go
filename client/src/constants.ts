@@ -29,6 +29,8 @@ export const DEFAULT_WELCOME_MSG = "hello";
 export const DEFAULT_USERNAME = "commander";
 export const DEFAULT_USER_HEADER_SUBTITLE =
   "Shop at your favorite stores with Google Pay";
+export const DEFAULT_CART_HEADER_TITLE = "My Cart";
+export const DEFAULT_STORE_HEADER_SUBTITLE = "Currently Shopping @";
 export const DEFAULT_BACK_BTN_TEXT = "back";
 export const PRICE_FRACTION_DIGITS = 2;
 export const GEO_PRECISION_DIGITS = 3;
