@@ -2,25 +2,26 @@ steps:
   - name: node:10
     entrypoint: yarn
     args:
-      - create-env
-    id: "client-env"
-    dir: "client/"
-    env:
-      - "REACT_APP_GOOGLE_MAPS_API_KEY=${_GOOGLE_MAPS_API_KEY}"
-      - "REACT_APP_MICROAPPS_CLIENT_ID=${_MICROAPPS_CLIENT_ID}"
-  - name: node:10
-    entrypoint: yarn
-    args:
       - install
     id: "client-install"
     dir: "client/"
   - name: node:10
     entrypoint: yarn
     args:
+      - create-env
+    id: "client-env"
+    dir: "client/"
+    env:
+      - "REACT_APP_GOOGLE_MAPS_API_KEY=${_GOOGLE_MAPS_API_KEY}"
+      - "REACT_APP_MICROAPPS_CLIENT_ID=${_MICROAPPS_CLIENT_ID}"
+    waitFor: ["client-install"]
+  - name: node:10
+    entrypoint: yarn
+    args:
       - build
     id: "client-build"
     dir: "client/"
-    waitFor: ["client-install", "client-env"]
+    waitFor: ["client-env"]
   - name: "gcr.io/cloud-builders/gcloud"
     args: ["app", "deploy"]
     dir: "client/"
