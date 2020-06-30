@@ -23,12 +23,11 @@ const authenticateUser = (req, res, next) => {
     return res.sendStatus(HTTP_UNAUTHORIZED);
   }
   const token = req.headers.authorization.split(" ")[1];
-  // TODO (#133): replace with env var
-  const keys = require("./client_secret.json").web;
   const options = {
-    audience: keys.client_id,
+    audience:
+      process.env.EXPRESS_SERVER_MICROAPPS_CLIENT_ID || "invalid audience",
     issuer: ["https://accounts.google.com", "accounts.google.com"],
-    // TODO (#149): implement more secure nonce
+    // TODO (#149): implement more secure nonce + configure web flow to use nonce
     // nonce: "static nonce",
   };
   jwt.verify(token, getKey, options, (err, decoded) => {

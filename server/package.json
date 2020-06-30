@@ -10,7 +10,8 @@
     "pretest": "curl -X DELETE \"http://localhost:8080/emulator/v1/projects/scan-and-go-for-gpay/databases/(default)/documents\"",
     "test": "NODE_ENV=\"test\" jest",
     "prestart_test": "curl -X DELETE \"http://localhost:8080/emulator/v1/projects/scan-and-go-for-gpay/databases/(default)/documents\"",
-    "start_test": "NODE_ENV=\"test\" node server.js"
+    "start_test": "NODE_ENV=\"test\" node server.js",
+    "create-env": "printenv | grep \"EXPRESS_SERVER_\" > .env"
   },
   "eslintConfig": {
     "extends": "prettier"
