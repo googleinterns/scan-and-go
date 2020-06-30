@@ -1,4 +1,5 @@
 import { createMuiTheme } from "@material-ui/core/styles";
+import { Fab } from "@material-ui/core";
 
 // https://material-ui.com/customization/theming/#createmuitheme-options-args-theme
 // Customize our app-specific theme
@@ -19,6 +20,19 @@ const AppTheme = createMuiTheme({
     },
     subtitle2: {
       color: "#909090",
+    },
+  },
+});
+
+export const ErrorTheme = createMuiTheme({
+  palette: {
+    primary: {
+      main: "#FFFFFF",
+      contrastText: "#00E676",
+    },
+    secondary: {
+      main: "#FFFFFF",
+      contrastText: "#F44336",
     },
   },
 });

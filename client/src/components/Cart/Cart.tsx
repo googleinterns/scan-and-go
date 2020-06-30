@@ -25,9 +25,10 @@ function Cart({
       {contents.length > 0 &&
         contents.map((cartItem) =>
           collapse ? (
-            <ItemCardCompact cartItem={cartItem} />
+            <ItemCardCompact key={cartItem.item.barcode} cartItem={cartItem} />
           ) : (
             <ItemCard
+              key={cartItem.item.barcode}
               cartItem={cartItem}
               updateItemQuantity={
                 updateItemQuantity
