@@ -130,3 +130,9 @@ export const emptyGeoLocation = (): GeoLocation => ({
     longitude: 0.0,
   },
 });
+
+export interface Order {
+  "order-id": string;
+  "merchant-id": string;
+  "user--id": string;
+}
