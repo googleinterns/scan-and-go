@@ -9,6 +9,7 @@ import {
   PLACES_TYPES,
   GOOGLE_MAP_PLACEHOLDER_ID,
   GOOGLE_PLACES_SCRIPT_ID,
+  ORDER_LIST_API,
 } from "src/constants";
 import { fetchJson, extractIdentityToken } from "src/utils";
 import { isWeb, google, microapps } from "src/config";
@@ -125,4 +126,8 @@ export const getNearbyPlacesTest = (
     type: PLACES_TYPES,
   };
   service.nearbySearch(request, successCallback);
+};
+
+export const getOrders = async () => {
+  return await fetchJson("GET", {}, ORDER_LIST_API, true);
 };

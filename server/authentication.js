@@ -23,21 +23,21 @@ const authenticateUser = (req, res, next) => {
     return res.sendStatus(HTTP_UNAUTHORIZED);
   }
   const token = req.headers.authorization.split(" ")[1];
-  const nonce = "static nonce";
-  // TODO (#133: replace with REACT_APP_MICROAPPS_CLIENT_ID
+  // TODO (#133): replace with env var
   const keys = require("./client_secret.json").web;
   const options = {
     audience: keys.client_id,
     issuer: ["https://accounts.google.com", "accounts.google.com"],
-    nonce: nonce,
+    // TODO (#149): implement more secure nonce
+    // nonce: "static nonce",
   };
   jwt.verify(token, getKey, options, (err, decoded) => {
     if (err) {
       return next(err);
     }
     req.userId = decoded.sub;
+    return next();
   });
-  return next();
 };
 
 module.exports = authenticateUser;

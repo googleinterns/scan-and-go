@@ -31,40 +31,54 @@ const catchErr = (err: any) => {
   console.error("Error: " + err);
 };
 
-// fetch response from url
+const getIdToken = async () => {
+  let idToken = "";
+  if (!isWeb) {
+    // Microapp flow
+    const nonce = await fetchText("GET", {}, "/api/nonce");
+    const request = { nonce: nonce };
+    idToken = microapps.getIdentity(request).catch((err: any) => {
+      return null;
+    });
+  } else {
+    // Web flow with Google Sign-In https://developers.google.com/identity/sign-in/web
+    const googleUser = gapi.auth2.getAuthInstance().currentUser.get();
+    idToken = googleUser.getAuthResponse().id_token;
+  }
+  return idToken;
+};
+
+const setHeaders = async (auth: Boolean = false) => {
+  const headers = new Headers({
+    "Content-Type": "application/json",
+  });
+  if (auth) {
+    const idToken = await getIdToken();
+    headers.append("Authorization", "Bearer " + idToken);
+  }
+  return headers;
+};
+
 // fetch response from url
 const fetchRes = async (
   reqType: string,
-  data: Object,
+  data: Object = {},
   url: string,
   auth: Boolean = false
 ) => {
-  if (data == null) {
-    return await fetch(url);
-  } else {
-    const headers = new Headers({
-      "Content-Type": "application/json",
-    });
-    if (auth && !isWeb) {
-      const nonce = await fetchText("GET", {}, "/api/nonce");
-      const request = { nonce: nonce };
-      const idToken = microapps.getIdentity(request).catch((err: any) => {
-        return null;
-      });
-      headers.append("Authorization", "Bearer " + idToken);
-    }
-
-    return await fetch(url, {
-      method: reqType,
-      mode: "cors",
-      cache: "no-cache",
-      credentials: "include",
-      headers: headers,
-      redirect: "follow",
-      referrerPolicy: "no-referrer",
-      body: JSON.stringify(data),
-    });
+  const headers = await setHeaders(auth);
+  let body;
+  if (reqType == "POST") {
+    body = JSON.stringify(data);
   }
+  return await fetch(url, {
+    method: reqType,
+    credentials: "include",
+    headers: headers,
+    redirect: "follow",
+    referrerPolicy: "no-referrer",
+    body: body,
+  });
 };
 
 // fetch json response from url
@@ -74,7 +88,7 @@ export const fetchJson = async (
   url: string,
   auth: Boolean = false
 ) => {
-  return fetchRes(reqType, data, url)
+  return fetchRes(reqType, data, url, auth)
     .then((res) => getJson(res))
     .catch((err) => catchErr(err));
 };
@@ -86,7 +100,7 @@ export const fetchText = async (
   url: string,
   auth: Boolean = false
 ) => {
-  return fetchRes(reqType, data, url)
+  return fetchRes(reqType, data, url, auth)
     .then((res) => getText(res))
     .catch((err) => catchErr(err));
 };

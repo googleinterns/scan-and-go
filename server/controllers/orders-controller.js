@@ -45,7 +45,6 @@ exports.addOrder = async (req, res) => {
  */
 exports.listOrders = async (req, res) => {
   const userId = req.userId;
-  console.log(userId);
   let orders = [];
 
   try {
