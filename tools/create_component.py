@@ -40,37 +40,40 @@ else:
 
 # Read template files
 __dir__ = os.getcwd();
-template_component = "template.tsx"  #TODO: Replace with read from crc.config.json
-template_test = "template.test.tsx"  #TODO: Replace with read from crc.config.json
+TEMPLATE_COMPONENT_PATH = "template.tsx"  #TODO: Replace with read from crc.config.json
+TEMPLATE_TEST_PATH = "template.test.tsx"  #TODO: Replace with read from crc.config.json
+TEMPLATE_INDEX_PATH = "template.index.tsx"#TODO: Replace with read from crc.config.json
+
 # Replace inline variables with specified configs
 #TODO Read variable mapping from crc.config.json
 var_mapping = dict()
 var_mapping["$NAME"] = args.name
+
+def parseFileLines(fname):
+    file_data = ""
+    with open(fname,'r') as fin:
+        for line in fin:
+            for k in var_mapping.keys():
+                line = line.replace(k,var_mapping[k])
+            file_data += line
+    return file_data
+
+def writeFileLines(fname,file_lines):
+    with open(fname,'w+') as fout:
+        for line in file_lines:
+            fout.write(line)
+
 # Read component template
-component = ""
-with open(os.path.join(__dir__,template_component),'r') as fin:
-    for line in fin:
-        for k in var_mapping.keys():
-            line = line.replace(k,var_mapping[k])
-        component += line
+component = parseFileLines(os.path.join(__dir__,TEMPLATE_COMPONENT_PATH))
 # Read test template
-test = ""
-with open(os.path.join(__dir__,template_test),'r') as fin:
-    for line in fin:
-        for k in var_mapping.keys():
-            line = line.replace(k,var_mapping[k])
-        test += line
+test = parseFileLines(os.path.join(__dir__,TEMPLATE_TEST_PATH))
+# Read index template
+index = parseFileLines(os.path.join(__dir__,TEMPLATE_INDEX_PATH))
 
 # Write files
-component_file = os.path.join(component_folder,args.name+".tsx")
-test_file = os.path.join(component_folder,args.name+".test.tsx")
-index_file = os.path.join(component_folder,"index.tsx");
-with open(os.path.join(__dir__,component_file),'w+') as fout:
-    for line in component:
-        fout.write(line)
-with open(os.path.join(__dir__,test_file),'w+') as fout:
-    for line in test:
-        fout.write(line)
-with open(os.path.join(__dir__,index_file),'w+') as fout:
-    fout.write("import {0} from \"./{0}\";\n".format(args.name));
-    fout.write("export default {};\n".format(args.name));
+component_file_path = os.path.join(component_folder,args.name+".tsx")
+test_file_path = os.path.join(component_folder,args.name+".test.tsx")
+index_file_path = os.path.join(component_folder,"index.tsx");
+writeFileLines(component_file_path,component)
+writeFileLines(test_file_path,test)
+writeFileLines(index_file_path,index)
