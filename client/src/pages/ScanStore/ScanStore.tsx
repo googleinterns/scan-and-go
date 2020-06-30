@@ -168,13 +168,18 @@ function ScanStore() {
 
   return (
     <div className="ScanStore">
-      <CartHeader store={curStore} scanBarcodeCallback={addItem} />
-      <FormGroup row>
-        <FormControlLabel
-          control={<Switch onChange={toggleCart} color="primary" />}
-          label="Compact View"
-        />
-      </FormGroup>
+      <CartHeader
+        store={curStore}
+        scanBarcodeCallback={addItem}
+        payload={
+          <FormGroup row>
+            <FormControlLabel
+              control={<Switch onChange={toggleCart} color="primary" />}
+              label="Compact View"
+            />
+          </FormGroup>
+        }
+      />
       {!showCart &&
         (isDebug || isWeb) && [
           <TextInputField

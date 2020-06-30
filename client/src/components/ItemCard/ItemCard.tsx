@@ -46,16 +46,12 @@ function ItemCard({
               <Typography variant="body1">{cartItem.item.name}</Typography>
             </Grid>
             <Grid item xs style={{ minHeight: 50, overflow: "scroll" }}>
-              <Typography variant="subtitle2">
-                ITEM DESCRIPTION
-                <br />
-                that is very
-                <br />
-                very
-                <br />
-                long
-                <br />
-              </Typography>
+              {cartItem.item.detail &&
+                cartItem.item.detail
+                  .split("%0A")
+                  .map((line: string) => (
+                    <Typography variant="subtitle2">{line}</Typography>
+                  ))}
             </Grid>
             <Grid item xs>
               <ItemCardQuantityMixer

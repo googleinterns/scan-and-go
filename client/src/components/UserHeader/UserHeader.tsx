@@ -61,11 +61,6 @@ function UserHeader({ user }: { user: User | null }) {
               {DEFAULT_USER_HEADER_SUBTITLE}
             </Typography>
           }
-          debug={
-            <Typography variant="body1">
-              {padTime(curHour)}:{padTime(curMin)}:{padTime(curSec)}
-            </Typography>
-          }
           button={
             <Button
               fullWidth={true}
@@ -75,6 +70,13 @@ function UserHeader({ user }: { user: User | null }) {
             >
               Shopping List
             </Button>
+          }
+          payload={
+            isDebug ? (
+              <Typography variant="body1">
+                {padTime(curHour)}:{padTime(curMin)}:{padTime(curSec)}
+              </Typography>
+            ) : undefined
           }
         />
       )}

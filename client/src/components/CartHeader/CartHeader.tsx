@@ -10,9 +10,11 @@ import Header from "src/components/Header";
 function CartHeader({
   store,
   scanBarcodeCallback,
+  payload,
 }: {
   store: Store;
   scanBarcodeCallback: () => Promise<void>;
+  payload?: React.ReactElement;
 }) {
   return (
     <div className="CartHeader">
@@ -36,6 +38,7 @@ function CartHeader({
             Scan Barcode
           </Button>
         }
+        payload={payload}
       />
     </div>
   );

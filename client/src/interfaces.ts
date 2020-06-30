@@ -12,6 +12,7 @@ export interface Item {
   price: number; // Price in dollars decimal
   "merchant-id": string; // Which merchant owns this item
   media?: string; // Image display string
+  detail?: string; // Optional descriptive message to display
 }
 
 export const emptyItem = (): Item => ({

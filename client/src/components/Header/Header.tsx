@@ -6,13 +6,13 @@ import { useTheme } from "@material-ui/core/styles";
 function Header({
   title,
   subtitle,
-  debug,
   button,
+  payload,
 }: {
   title: React.ReactElement;
   subtitle?: React.ReactElement;
-  debug?: React.ReactElement;
   button?: React.ReactElement;
+  payload?: React.ReactElement;
 }) {
   const theme = useTheme();
   const headerTopPadding = theme.spacing(2);
@@ -37,9 +37,9 @@ function Header({
             <Grid item xs={12}>
               {title}
             </Grid>
-            {isDebug && debug && (
+            {payload && (
               <Grid item xs={12}>
-                {debug}
+                {payload}
               </Grid>
             )}
           </Grid>
