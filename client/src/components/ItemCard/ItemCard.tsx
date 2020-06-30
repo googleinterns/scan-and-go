@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { CartItem } from "src/interfaces";
 import { PRICE_FRACTION_DIGITS } from "src/constants";
-import { Typography, Paper, Grid, Divider } from "@material-ui/core";
+import { Typography, Card, Grid, Divider } from "@material-ui/core";
+import { useTheme } from "@material-ui/core/styles";
+import { getSubtotalPrice } from "src/utils";
 
 function ItemCard({
   cartItem,
@@ -10,6 +12,9 @@ function ItemCard({
   cartItem: CartItem;
   updateItemQuantity: (barcode: string, quantity: number) => void;
 }) {
+  const theme = useTheme();
+  const themeSpacing = theme.spacing(1);
+
   const increaseCounter = () => {
     updateItemQuantity(cartItem.item.barcode, cartItem.quantity + 1);
   };
@@ -19,7 +24,12 @@ function ItemCard({
   };
 
   return (
-    <Paper elevation={0}>
+    <Card
+      style={{
+        marginTop: themeSpacing,
+        padding: themeSpacing,
+      }}
+    >
       <Grid container direction="row" justify="center" alignItems="center">
         <Grid item xs={3}>
           <p>Media</p>
@@ -33,12 +43,7 @@ function ItemCard({
           </Typography>
         </Grid>
         <Grid item xs={2}>
-          <Typography variant="body1">
-            $
-            {(cartItem.item.price * cartItem.quantity).toFixed(
-              PRICE_FRACTION_DIGITS
-            )}
-          </Typography>
+          <Typography variant="body1">${getSubtotalPrice(cartItem)}</Typography>
         </Grid>
         <Grid
           container
@@ -63,8 +68,7 @@ function ItemCard({
           </Grid>
         </Grid>
       </Grid>
-      <Divider />
-    </Paper>
+    </Card>
   );
 }
 

@@ -15,7 +15,7 @@ function Receipt(props: any) {
       <a href="/home">back</a>
       <p>Order [{orderID}] Confimed!</p>
       <h3>Receipt:</h3>
-      {contents && <Cart contents={contents} />}
+      {contents && <Cart contents={contents} collapse={true} />}
     </div>
   );
 }
