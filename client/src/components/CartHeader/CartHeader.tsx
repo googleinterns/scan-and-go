@@ -16,29 +16,27 @@ function CartHeader({
 }) {
   return (
     <div className="CartHeader">
-      {store && (
-        <Header
-          title={
-            <Typography variant="h4">{DEFAULT_CART_HEADER_TITLE}</Typography>
-          }
-          subtitle={
-            <Typography variant="subtitle2">
-              {DEFAULT_STORE_HEADER_SUBTITLE} {store.name}
-            </Typography>
-          }
-          button={
-            <Button
-              fullWidth={true}
-              variant="contained"
-              color="primary"
-              style={{ fontSize: "14px" }}
-              onClick={scanBarcodeCallback}
-            >
-              Scan Barcode
-            </Button>
-          }
-        />
-      )}
+      <Header
+        title={
+          <Typography variant="h4">{DEFAULT_CART_HEADER_TITLE}</Typography>
+        }
+        subtitle={
+          <Typography variant="subtitle2">
+            {DEFAULT_STORE_HEADER_SUBTITLE} {store.name}
+          </Typography>
+        }
+        button={
+          <Button
+            fullWidth={true}
+            variant="contained"
+            color="primary"
+            style={{ fontSize: "14px" }}
+            onClick={scanBarcodeCallback}
+          >
+            Scan Barcode
+          </Button>
+        }
+      />
     </div>
   );
 }
