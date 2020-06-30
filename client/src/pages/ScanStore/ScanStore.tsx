@@ -3,16 +3,9 @@ import { useHistory } from "react-router-dom";
 import StoreHeader from "src/components/StoreHeader";
 import ItemCard from "src/components/ItemCard";
 import Cart from "src/components/Cart";
+import CartHeader from "src/components/CartHeader";
 import TextInputField from "src/components/TextInputField";
-import {
-  Fab,
-  Box,
-  Container,
-  Divider,
-  Grid,
-  Paper,
-  Typography,
-} from "@material-ui/core";
+import { Fab, Box, Divider, Grid, Paper, Typography } from "@material-ui/core";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import EditIcon from "@material-ui/icons/Edit";
 import PaymentIcon from "@material-ui/icons/Payment";
@@ -177,13 +170,9 @@ function ScanStore() {
   }, [uploadImg]);
 
   return (
-    <Container disableGutters={true} className="ScanStore">
+    <div className="ScanStore">
+      <CartHeader store={curStore} scanBarcodeCallback={addItem} />
       <Grid container spacing={1} direction="column" alignItems="stretch">
-        <Grid item xs={12}>
-          <Paper elevation={1}>
-            <StoreHeader store={curStore} link={HOME_PAGE} />
-          </Paper>
-        </Grid>
         {!showCart && (
           <Grid item xs={12}>
             <Paper elevation={1}>
@@ -277,7 +266,7 @@ function ScanStore() {
       >
         {showCart ? <PaymentIcon /> : <AddIcon />}
       </Fab>
-    </Container>
+    </div>
   );
 }
 

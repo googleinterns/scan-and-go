@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import TextInputField from "src/components/TextInputField";
-import { Container, Grid, Typography, Button } from "@material-ui/core";
+import { Grid, Typography, Button } from "@material-ui/core";
 import { User, emptyUser, IdentityToken } from "src/interfaces";
 import { HOME_PAGE, TITLE_TEXT } from "src/constants";
 import { isWeb, isDebug } from "src/config";
@@ -61,7 +61,7 @@ function Login() {
 
   // Simple (Debugging) Login Form
   return (
-    <Container disableGutters={!isWeb} className="Login">
+    <div className="Login">
       {/* Web Interface Testing purposes */}
       {isWeb && (
         <Grid container spacing={3} direction="column" alignItems="center">
@@ -122,7 +122,7 @@ function Login() {
           ]}
         </Grid>
       )}
-    </Container>
+    </div>
   );
 }
 
