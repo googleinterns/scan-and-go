@@ -3,10 +3,13 @@ import renderer from "react-test-renderer";
 import Enzyme from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
 import CartHeader from "./CartHeader";
+import Header from "src/components/Header";
+import { Button } from "@material-ui/core";
 
 Enzyme.configure({ adapter: new Adapter() });
 
 describe("CartHeader Component Tests", () => {
+  const mockedScanBarcode = jest.fn();
   const props = {
     store: {
       name: "TEST_STORE",
@@ -15,10 +18,27 @@ describe("CartHeader Component Tests", () => {
       latitude: -1,
       longitude: -1,
     },
+    scanBarcodeCallback: mockedScanBarcode,
   };
 
   it("CartHeader renders correctly", () => {
     const tree = renderer.create(<CartHeader {...props} />).toJSON();
     expect(tree).toMatchSnapshot();
+  });
+
+  it("CartHeader displays Store information", () => {
+    const wrapper = Enzyme.shallow(<CartHeader {...props} />);
+    const headerElement = wrapper.find(Header);
+    const storeInfoProp = headerElement.prop("subtitle");
+    expect(storeInfoProp.props.children).toContain(props.store.name);
+  });
+
+  it("CartHeader has button and triggers scan barcode callback", () => {
+    const wrapper = Enzyme.mount(<CartHeader {...props} />);
+    const buttons = wrapper.find(Button);
+    expect(buttons).toHaveLength(1);
+    const scanButton = buttons.last();
+    scanButton.simulate("click");
+    expect(mockedScanBarcode).toHaveBeenCalled();
   });
 });
