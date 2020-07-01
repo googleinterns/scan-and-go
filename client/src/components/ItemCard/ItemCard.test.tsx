@@ -35,14 +35,14 @@ describe("ItemCard Component Tests", () => {
   });
 
   it("ItemCard triggers increment correctly", () => {
-    const wrapper = Enzyme.shallow(<ItemCard {...props} />);
+    const wrapper = Enzyme.mount(<ItemCard {...props} />);
     const incBtn = wrapper.find("#inc").last();
     incBtn.simulate("click");
     expect(num).toBe(2);
   });
 
   it("ItemCard triggers decrement correctly", () => {
-    const wrapper = Enzyme.shallow(<ItemCard {...props} />);
+    const wrapper = Enzyme.mount(<ItemCard {...props} />);
     const decBtn = wrapper.find("#dec").last();
     decBtn.simulate("click");
     expect(num).toBe(0);

@@ -7,7 +7,15 @@ import CartHeader from "./CartHeader";
 Enzyme.configure({ adapter: new Adapter() });
 
 describe("CartHeader Component Tests", () => {
-  const props = {};
+  const props = {
+    store: {
+      name: "TEST_STORE",
+      "store-id": "TEST_STORE",
+      "merchant-id": "TEST_MERCHANT",
+      latitude: -1,
+      longitude: -1,
+    },
+  };
 
   it("CartHeader renders correctly", () => {
     const tree = renderer.create(<CartHeader {...props} />).toJSON();
