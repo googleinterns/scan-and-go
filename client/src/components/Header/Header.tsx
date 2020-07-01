@@ -31,7 +31,7 @@ function Header({
           container
           direction="row"
           justify="space-between"
-          alignItems="center"
+          alignItems="flex-start"
         >
           <Grid item xs={8}>
             <Grid item xs={12}>
