@@ -8,7 +8,6 @@ import {
   TableRow,
   Grid,
 } from "@material-ui/core";
-import * as Experiments from "src/experiments";
 import ItemCard from "src/components/ItemCard";
 import ItemCardCompact from "src/components/ItemCardCompact";
 
