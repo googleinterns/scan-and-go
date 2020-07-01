@@ -23,20 +23,20 @@ function Cart({
   return (
     <div className="Cart">
       {contents.length > 0 &&
-        contents.map((cartItem) =>
-          collapse ? (
-            <ItemCardCompact cartItem={cartItem} />
+        contents.map((cartItem) => {
+          const cardProps = {
+            key: cartItem.item.barcode,
+            cartItem: cartItem,
+            updateItemQuantity: updateItemQuantity
+              ? updateItemQuantity
+              : () => {},
+          };
+          return collapse ? (
+            <ItemCardCompact {...cardProps} />
           ) : (
-            <ItemCard
-              cartItem={cartItem}
-              updateItemQuantity={
-                updateItemQuantity
-                  ? updateItemQuantity
-                  : (barcode: string, quantity: number) => {}
-              }
-            />
-          )
-        )}
+            <ItemCard {...cardProps} />
+          );
+        })}
     </div>
   );
 }

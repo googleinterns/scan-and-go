@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { CartItem } from "src/interfaces";
-import { PRICE_FRACTION_DIGITS } from "src/constants";
-import { Typography, Card, Grid, Divider } from "@material-ui/core";
+import { PRICE_FRACTION_DIGITS, PLACEHOLDER_ITEM_MEDIA } from "src/constants";
+import { Fab, Typography, Paper, Grid, Divider } from "@material-ui/core";
+import AddIcon from "@material-ui/icons/Add";
+import RemoveIcon from "@material-ui/icons/Remove";
 import { useTheme } from "@material-ui/core/styles";
-import { getSubtotalPrice } from "src/utils";
+import { getSubtotalPrice, parseRawTextNewlines } from "src/utils";
+import ItemCardMedia from "./ItemCardMedia";
+import ItemCardQuantityMixer from "./ItemCardQuantityMixer";
+
+const ITEM_CARD_MAX_HEIGHT = 120;
 
 function ItemCard({
   cartItem,
@@ -15,60 +21,66 @@ function ItemCard({
   const theme = useTheme();
   const themeSpacing = theme.spacing(1);
 
-  const increaseCounter = () => {
-    updateItemQuantity(cartItem.item.barcode, cartItem.quantity + 1);
-  };
-
-  const decreaseCounter = () => {
-    updateItemQuantity(cartItem.item.barcode, cartItem.quantity - 1);
+  const updateItemQuantityWrapper = (quantity: number) => {
+    updateItemQuantity(cartItem.item.barcode, quantity);
   };
 
   return (
-    <Card
+    <Paper
+      elevation={0}
       style={{
         marginTop: themeSpacing,
         padding: themeSpacing,
       }}
     >
-      <Grid container direction="row" justify="center" alignItems="center">
-        <Grid item xs={3}>
-          <p>Media</p>
+      <Grid container>
+        <Grid item>
+          <ItemCardMedia
+            height={ITEM_CARD_MAX_HEIGHT}
+            media={
+              cartItem.item.media ? cartItem.item.media : PLACEHOLDER_ITEM_MEDIA
+            }
+          />
         </Grid>
-        <Grid item xs={3}>
-          <Typography variant="body1">{cartItem.item.name}</Typography>
-        </Grid>
-        <Grid item xs={2}>
-          <Typography variant="body1">
-            ${cartItem.item.price.toFixed(PRICE_FRACTION_DIGITS)}
-          </Typography>
-        </Grid>
-        <Grid item xs={2}>
-          <Typography variant="body1">${getSubtotalPrice(cartItem)}</Typography>
-        </Grid>
-        <Grid
-          container
-          item
-          xs={2}
-          spacing={0}
-          direction="column"
-          alignItems="center"
-        >
-          <Grid item xs={12}>
-            <button id="inc" onClick={increaseCounter}>
-              Plus
-            </button>
+        <Grid item xs container direction="row">
+          <Grid item xs container direction="column" align-items="stretch">
+            <Grid item>
+              <Typography variant="body1">{cartItem.item.name}</Typography>
+            </Grid>
+            <Grid item xs style={{ overflow: "scroll" }}>
+              {cartItem.item.detail &&
+                parseRawTextNewlines(
+                  cartItem.item.detail
+                ).map((line: string) => (
+                  <Typography variant="subtitle2">{line}</Typography>
+                ))}
+            </Grid>
           </Grid>
-          <Grid item xs={12}>
-            <p>{cartItem.quantity}</p>
-          </Grid>
-          <Grid item xs={12}>
-            <button id="dec" onClick={decreaseCounter}>
-              Minus
-            </button>
+          <Grid item>
+            <Grid item container style={{ height: "100%" }} direction="column">
+              <Grid item xs container direction="column">
+                <Grid item>
+                  <Typography variant="body1" align="right">
+                    ea. ${cartItem.item.price.toFixed(PRICE_FRACTION_DIGITS)}
+                  </Typography>
+                </Grid>
+                <Grid item>
+                  <Typography variant="body1" align="right">
+                    Subtotal: ${getSubtotalPrice(cartItem)}
+                  </Typography>
+                </Grid>
+              </Grid>
+              <Grid item>
+                <ItemCardQuantityMixer
+                  quantity={cartItem.quantity}
+                  updateQuantity={updateItemQuantityWrapper}
+                />
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
-    </Card>
+    </Paper>
   );
 }
 

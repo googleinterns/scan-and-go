@@ -6,6 +6,7 @@
 **/__snapshots__/
 **/*.swp
 *.env
+**/*.orig
 
 # Temporary
 **/docs

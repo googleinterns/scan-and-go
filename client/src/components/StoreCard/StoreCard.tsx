@@ -4,6 +4,7 @@ import { GEO_PRECISION_DIGITS } from "src/constants";
 import { Box, Typography, Card, Grid } from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
 import { isDebug } from "src/config";
+import { parseRawAddressNewlines } from "src/utils";
 import StoreCardMedia from "./StoreCardMedia";
 
 // Specific Constants for this component
@@ -56,9 +57,9 @@ function StoreCard({
             </Typography>
           )}
           {store.vicinity &&
-            store.vicinity
-              .split(",")
-              .map((text) => <Typography variant="body1">{text}</Typography>)}
+            parseRawAddressNewlines(store.vicinity).map((text) => (
+              <Typography variant="body1">{text}</Typography>
+            ))}
           <Typography variant="body2" align="right">
             {store.business_status
               ? store.business_status
