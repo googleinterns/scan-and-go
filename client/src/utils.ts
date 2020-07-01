@@ -129,7 +129,7 @@ export const getSubtotalPrice = (cartItem: CartItem) => {
 
 // Returns a list of strings
 export const parseRawTextNewlines = (text: string): string[] => {
-  return text.split("%0A");
+  return text.split("%0A"); // %0A URL encoded \n newline character
 };
 
 // Returns formatted address seperated into lines

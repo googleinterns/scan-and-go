@@ -29,7 +29,7 @@ function Cart({
             cartItem: cartItem,
             updateItemQuantity: updateItemQuantity
               ? updateItemQuantity
-              : (barcode: string, quantity: number) => {},
+              : () => {},
           };
           return collapse ? (
             <ItemCardCompact {...cardProps} />

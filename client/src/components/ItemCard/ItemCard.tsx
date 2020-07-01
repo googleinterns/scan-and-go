@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { CartItem } from "src/interfaces";
-import { PRICE_FRACTION_DIGITS } from "src/constants";
+import { PRICE_FRACTION_DIGITS, PLACEHOLDER_ITEM_MEDIA } from "src/constants";
 import { Fab, Typography, Paper, Grid, Divider } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
@@ -37,7 +37,9 @@ function ItemCard({
         <Grid item>
           <ItemCardMedia
             height={ITEM_CARD_MAX_HEIGHT}
-            media={cartItem.item.media}
+            media={
+              cartItem.item.media ? cartItem.item.media : PLACEHOLDER_ITEM_MEDIA
+            }
           />
         </Grid>
         <Grid item xs container direction="row">
@@ -49,10 +51,9 @@ function ItemCard({
               {cartItem.item.detail &&
                 parseRawTextNewlines(
                   cartItem.item.detail
-                ).map((line: string) => [
-                  <Typography variant="subtitle2">{line}</Typography>,
-                  <Typography variant="subtitle2">{line}</Typography>,
-                ])}
+                ).map((line: string) => (
+                  <Typography variant="subtitle2">{line}</Typography>
+                ))}
             </Grid>
           </Grid>
           <Grid item>
