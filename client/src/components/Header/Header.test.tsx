@@ -16,7 +16,7 @@ describe("Header Component Tests", () => {
         TEST BUTTON
       </button>
     ),
-    payload: <p id="test-payload">PAYLOAD</p>,
+    content: <p id="test-content">PAYLOAD</p>,
   };
 
   it("Header renders correctly", () => {
@@ -29,7 +29,7 @@ describe("Header Component Tests", () => {
     expect(wrapper.find("#test-title").last()).toHaveLength(1);
     expect(wrapper.find("#test-subtitle").last()).toHaveLength(1);
     expect(wrapper.find("#test-btn").last()).toHaveLength(1);
-    expect(wrapper.find("#test-payload").last()).toHaveLength(1);
+    expect(wrapper.find("#test-content").last()).toHaveLength(1);
   });
 
   it("Button runs onClick function", () => {

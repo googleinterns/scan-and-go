@@ -158,6 +158,6 @@ export const deepHtmlStringMatch = (element: any, match: string) => {
   // recursively call this matching function
   // reduce return value with || to get final matching result
   return element.props.children
-    .map((child) => deepHtmlStringMatch(child, match))
-    .reduce((accum, cur) => accum || cur);
+    .map((child: any) => deepHtmlStringMatch(child, match))
+    .reduce((accum: boolean, cur: boolean) => accum || cur);
 };

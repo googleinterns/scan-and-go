@@ -7,12 +7,12 @@ function Header({
   title,
   subtitle,
   button,
-  payload,
+  content,
 }: {
   title: React.ReactElement;
   subtitle?: React.ReactElement;
   button?: React.ReactElement;
-  payload?: React.ReactElement;
+  content?: React.ReactElement;
 }) {
   const theme = useTheme();
   const headerTopPadding = theme.spacing(2);
@@ -37,9 +37,9 @@ function Header({
             <Grid item xs={12}>
               {title}
             </Grid>
-            {payload && (
+            {content && (
               <Grid item xs={12}>
-                {payload}
+                {content}
               </Grid>
             )}
           </Grid>

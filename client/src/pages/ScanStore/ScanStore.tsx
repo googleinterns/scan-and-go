@@ -178,7 +178,7 @@ function ScanStore() {
       <CartHeader
         store={curStore}
         scanBarcodeCallback={addItem}
-        payload={
+        content={
           <FormGroup row>
             <FormControlLabel
               control={<Switch onChange={toggleCart} color="primary" />}

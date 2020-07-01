@@ -71,7 +71,7 @@ function UserHeader({ user }: { user: User | null }) {
               Shopping List
             </Button>
           }
-          payload={
+          content={
             isDebug ? (
               <Typography variant="body1">
                 {padTime(curHour)}:{padTime(curMin)}:{padTime(curSec)}
