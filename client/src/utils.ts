@@ -75,7 +75,7 @@ const fetchRes = async (
 ) => {
   const headers = await setHeaders(auth);
   let body;
-  if (reqType == "POST") {
+  if (reqType === "POST") {
     body = JSON.stringify(data);
   }
   return await fetch(url, {

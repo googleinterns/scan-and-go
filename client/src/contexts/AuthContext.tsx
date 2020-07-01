@@ -18,12 +18,13 @@ const reducer = (state: any, action: any) => {
         user: user,
       };
     }
-    case "unsetUser":
+    case "unsetUser": {
       window.localStorage.clear();
       return {
         ...state,
         user: emptyUser,
       };
+    }
   }
 };
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import TextInputField from "src/components/TextInputField";
 import { Grid, Typography, Button } from "@material-ui/core";
@@ -6,6 +6,7 @@ import { User, emptyUser, IdentityToken } from "src/interfaces";
 import { HOME_PAGE, TITLE_TEXT } from "src/constants";
 import { isWeb, isDebug } from "src/config";
 import { loginUser } from "src/pages/Actions";
+import { AuthContext } from "src/contexts/AuthContext";
 import Logo from "src/img/Logo.png";
 import "src/css/Login.css";
 declare const window: any;
@@ -17,17 +18,7 @@ function Login() {
 
   // Flag for us to manually run login on mobile
   const [loginError, setLoginError] = useState(false);
-  const [user, setUser] = useState<User>(emptyUser);
-
-  const updateUser = (text: string) => {
-    //setIdentity(Object.assign({}, emptyIdentityToken(), { sub: text }));
-    setUser(
-      Object.assign({}, emptyUser, {
-        name: text,
-        "user-id": "TEST_WEB_USER",
-      })
-    );
-  };
+  const { user, setUser } = useContext(AuthContext);
 
   const login = () => {
     const decodedIdentity: IdentityToken | null = loginUser();
@@ -59,6 +50,27 @@ function Login() {
     login();
   }, []);
 
+  const onSignIn = async (googleUser: gapi.auth2.GoogleUser) => {
+    // https://developers.google.com/identity/sign-in/web
+    var profile = googleUser.getBasicProfile();
+    setUser({
+      name: profile.getName(),
+      "user-id": profile.getId(),
+    });
+  };
+
+  useEffect(() => {
+    // https://stackoverflow.com/a/59039972/
+    if (isWeb) {
+      window.gapi.signin2.render("g-signin2", {
+        scope: "https://www.googleapis.com/auth/plus.login",
+        longtitle: true,
+        theme: "dark",
+        onsuccess: onSignIn,
+      });
+    }
+  }, [onSignIn]);
+
   // Simple (Debugging) Login Form
   return (
     <div className="Login">
@@ -72,12 +84,7 @@ function Login() {
             <img src={Logo} height="200" width="auto" />
           </Grid>
           <Grid item>
-            <TextInputField
-              id="username"
-              text="Username"
-              fullWidth={true}
-              setState={updateUser}
-            />
+            <TextInputField id="username" text="Username" fullWidth={true} />
           </Grid>
           <Grid item>
             <TextInputField type="password" text="Password" fullWidth={true} />
@@ -87,6 +94,7 @@ function Login() {
               Log in
             </Button>
           </Grid>
+          <div id="g-signin2" hidden={user !== emptyUser}></div>
         </Grid>
       )}
       {(!isWeb || isDebug) && (

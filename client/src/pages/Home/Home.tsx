@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { withRouter } from "react-router-dom";
 import StoreList from "src/components/StoreList";
 import TextInputField from "src/components/TextInputField";
@@ -17,10 +17,11 @@ import {
 import { Typography } from "@material-ui/core";
 import { isWeb, isDebug, google } from "src/config";
 import { transformGMapPlaceToStore } from "src/transforms";
+import { AuthContext } from "src/contexts/AuthContext";
 
 function Home(props: any) {
+  const { user, setUser } = useContext(AuthContext);
   const [userid, setUserid] = useState("");
-  const [curUser, setCurUser] = useState<User>(emptyUser);
   const [stores, setStores] = useState<Store[]>([]);
   const [testPlaces, setTestPlaces] = useState<GMapPlace[]>([]);
   const [placeStores, setPlaceStores] = useState<Store[]>([]);
@@ -66,7 +67,7 @@ function Home(props: any) {
   useEffect(() => {
     // Initially set user based on passed props
     if (props.location.state) {
-      setCurUser(props.location.state.user);
+      setUser(props.location.state.user);
       setStores(props.location.state.stores);
     }
   }, []);
@@ -79,7 +80,7 @@ function Home(props: any) {
 
   useEffect(() => {
     if (userid) {
-      getUserInfo(userid).then((res) => setCurUser(res));
+      getUserInfo(userid).then((res) => setUser(res));
     }
   }, [userid]);
 
@@ -92,7 +93,7 @@ function Home(props: any) {
   return (
     <div className="Home">
       {isDebug && <TextInputField text={userid} setState={setUserid} />}
-      <UserHeader user={curUser} />
+      <UserHeader user={user} />
       {isDebug && (
         <DebugBar storesCallback={setStores} placesCallback={setTestPlaces} />
       )}
