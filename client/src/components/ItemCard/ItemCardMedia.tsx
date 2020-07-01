@@ -2,13 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useTheme } from "@material-ui/core/styles";
 import { Paper } from "@material-ui/core";
 
-function ItemCardMedia({
-  media,
-  height,
-}: {
-  media: string | null | undefined;
-  height?: number;
-}) {
+function ItemCardMedia({ media, height }: { media: string; height?: number }) {
   const theme = useTheme();
 
   const [imgStyle, setImgStyle] = useState({});
@@ -30,24 +24,20 @@ function ItemCardMedia({
     }
   }, []);
 
-  if (media) {
-    return (
-      <Paper
-        elevation={2}
-        style={{
-          borderRadius: "20%",
-          height: height,
-          width: height,
-          overflow: "hidden",
-          marginRight: theme.spacing(2),
-        }}
-      >
-        <img id="item-card-media-imgSrc" src={media} style={imgStyle} />
-      </Paper>
-    );
-  } else {
-    return <p>Media Placeholder</p>;
-  }
+  return (
+    <Paper
+      elevation={2}
+      style={{
+        borderRadius: "20%",
+        height: height,
+        width: height,
+        overflow: "hidden",
+        marginRight: theme.spacing(2),
+      }}
+    >
+      <img id="item-card-media-imgSrc" src={media} style={imgStyle} />
+    </Paper>
+  );
 }
 
 export default ItemCardMedia;
