@@ -24,12 +24,7 @@ function ItemCardQuantityMixer({
 
   return (
     <MuiThemeProvider theme={ErrorTheme}>
-      <Grid
-        container
-        direction="row"
-        alignItems="center"
-        style={{ padding: theme.spacing(1) }}
-      >
+      <Grid container direction="row" alignItems="center">
         <Grid item>
           <Fab color="primary" id="inc" onClick={increaseCounter} size="small">
             <AddIcon />

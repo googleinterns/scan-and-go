@@ -5,7 +5,7 @@ import { Fab, Typography, Paper, Grid, Divider } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
 import { useTheme } from "@material-ui/core/styles";
-import { getSubtotalPrice } from "src/utils";
+import { getSubtotalPrice, parseRawTextNewlines } from "src/utils";
 import ItemCardMedia from "./ItemCardMedia";
 import ItemCardQuantityMixer from "./ItemCardQuantityMixer";
 
@@ -41,42 +41,39 @@ function ItemCard({
           />
         </Grid>
         <Grid item xs container direction="row">
-          <Grid item xs container direction="column">
-            <Grid item xs>
+          <Grid item xs container direction="column" align-items="stretch">
+            <Grid item>
               <Typography variant="body1">{cartItem.item.name}</Typography>
             </Grid>
-            <Grid item xs style={{ minHeight: 50, overflow: "scroll" }}>
+            <Grid item xs style={{ overflow: "scroll" }}>
               {cartItem.item.detail &&
-                cartItem.item.detail
-                  .split("%0A")
-                  .map((line: string) => (
-                    <Typography variant="subtitle2">{line}</Typography>
-                  ))}
-            </Grid>
-            <Grid item xs>
-              <ItemCardQuantityMixer
-                quantity={cartItem.quantity}
-                updateQuantity={updateItemQuantityWrapper}
-              />
+                parseRawTextNewlines(
+                  cartItem.item.detail
+                ).map((line: string) => [
+                  <Typography variant="subtitle2">{line}</Typography>,
+                  <Typography variant="subtitle2">{line}</Typography>,
+                ])}
             </Grid>
           </Grid>
           <Grid item>
-            <Grid
-              item
-              container
-              direction="column"
-              justify="space-between"
-              align-items="stretch"
-            >
-              <Grid item>
-                <Typography variant="body1" align="right">
-                  ea. ${cartItem.item.price.toFixed(PRICE_FRACTION_DIGITS)}
-                </Typography>
+            <Grid item container style={{ height: "100%" }} direction="column">
+              <Grid item xs container direction="column">
+                <Grid item>
+                  <Typography variant="body1" align="right">
+                    ea. ${cartItem.item.price.toFixed(PRICE_FRACTION_DIGITS)}
+                  </Typography>
+                </Grid>
+                <Grid item>
+                  <Typography variant="body1" align="right">
+                    Subtotal: ${getSubtotalPrice(cartItem)}
+                  </Typography>
+                </Grid>
               </Grid>
               <Grid item>
-                <Typography variant="body1" align="right">
-                  Subtotal: ${getSubtotalPrice(cartItem)}
-                </Typography>
+                <ItemCardQuantityMixer
+                  quantity={cartItem.quantity}
+                  updateQuantity={updateItemQuantityWrapper}
+                />
               </Grid>
             </Grid>
           </Grid>

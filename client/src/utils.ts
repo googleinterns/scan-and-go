@@ -126,3 +126,13 @@ export const getSubtotalPrice = (cartItem: CartItem) => {
     PRICE_FRACTION_DIGITS
   );
 };
+
+// Returns a list of strings
+export const parseRawTextNewlines = (text: string): string[] => {
+  return text.split("%0A");
+};
+
+// Returns formatted address seperated into lines
+export const parseRawAddressNewlines = (addr: string): string[] => {
+  return addr.split(",");
+};
