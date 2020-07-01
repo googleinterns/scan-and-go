@@ -2,7 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useTheme } from "@material-ui/core/styles";
 import { Paper } from "@material-ui/core";
 
-function ItemCardMedia({ media, height }: { media: string; height?: number }) {
+function ItemCardMedia({
+  media,
+  height,
+}: {
+  media: string;
+  height?: number | string;
+}) {
   const theme = useTheme();
 
   const [imgStyle, setImgStyle] = useState({});

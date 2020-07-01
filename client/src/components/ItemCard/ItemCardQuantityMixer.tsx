@@ -24,7 +24,7 @@ function ItemCardQuantityMixer({
 
   return (
     <MuiThemeProvider theme={LightErrorTheme}>
-      <Grid container direction="row" alignItems="center">
+      <Grid container direction="row" justify="flex-end">
         <Grid item>
           <Fab color="primary" id="inc" onClick={increaseCounter} size="small">
             <AddIcon />

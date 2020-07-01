@@ -9,7 +9,7 @@ import { getSubtotalPrice, parseRawTextNewlines } from "src/utils";
 import ItemCardMedia from "./ItemCardMedia";
 import ItemCardQuantityMixer from "./ItemCardQuantityMixer";
 
-const ITEM_CARD_MAX_HEIGHT = 120;
+const ITEM_CARD_MAX_HEIGHT = "15vh";
 
 function ItemCard({
   cartItem,
