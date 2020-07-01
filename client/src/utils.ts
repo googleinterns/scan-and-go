@@ -42,8 +42,15 @@ const getIdToken = async () => {
     });
   } else {
     // Web flow with Google Sign-In https://developers.google.com/identity/sign-in/web
+    // Load and initialize the GoogleAuth object, otherwise throws gapi/auth2 is not defined error
+    await new Promise((resolve, reject) => {
+      gapi.load("auth2", resolve);
+    });
+    gapi.auth2.init({ client_id: process.env.REACT_APP_MICROAPPS_CLIENT_ID });
+
+    // Force refresh is necessary to get a non-empty AuthResponse
     const googleUser = gapi.auth2.getAuthInstance().currentUser.get();
-    idToken = googleUser.getAuthResponse().id_token;
+    idToken = await googleUser.reloadAuthResponse().then((res) => res.id_token);
   }
   return idToken;
 };
