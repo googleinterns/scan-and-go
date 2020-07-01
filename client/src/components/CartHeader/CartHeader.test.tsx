@@ -26,7 +26,7 @@ describe("CartHeader Component Tests", () => {
     expect(tree).toMatchSnapshot();
   });
 
-  it("CartHeader displays Store information", () => {
+  it("CartHeader displays Store information in subtitle", () => {
     const wrapper = Enzyme.shallow(<CartHeader {...props} />);
     const headerElement = wrapper.find(Header);
     const storeInfoProp = headerElement.prop("subtitle");
