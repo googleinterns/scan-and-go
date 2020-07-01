@@ -3,7 +3,7 @@ import { Fab, Typography, Grid } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
 import { useTheme, MuiThemeProvider } from "@material-ui/core/styles";
-import { ErrorTheme } from "src/theme";
+import { LightErrorTheme } from "src/theme";
 
 function ItemCardQuantityMixer({
   quantity,
@@ -23,7 +23,7 @@ function ItemCardQuantityMixer({
   };
 
   return (
-    <MuiThemeProvider theme={ErrorTheme}>
+    <MuiThemeProvider theme={LightErrorTheme}>
       <Grid container direction="row" alignItems="center">
         <Grid item>
           <Fab color="primary" id="inc" onClick={increaseCounter} size="small">

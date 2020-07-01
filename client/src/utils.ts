@@ -136,3 +136,28 @@ export const parseRawTextNewlines = (text: string): string[] => {
 export const parseRawAddressNewlines = (addr: string): string[] => {
   return addr.split(",");
 };
+
+// Deep checking of element's children for string match
+// note: tradeoff for doing map-reduce, no early termination on match
+export const deepHtmlStringMatch = (element: any, match: string) => {
+  // Base case for string matching entire element
+  if (typeof element === "string") {
+    return element === match;
+  }
+  // Return false if no contents
+  // note ordering of if statements, next check will guarantee
+  // some element.props.children exists
+  if (!element.props || !element.props.children) {
+    return false;
+  }
+  // Second base case for only 1 children (not in array)
+  if (typeof element.props.children === "string") {
+    return element.props.children === match;
+  }
+  // Treat children list as potentially other elements and
+  // recursively call this matching function
+  // reduce return value with || to get final matching result
+  return element.props.children
+    .map((child) => deepHtmlStringMatch(child, match))
+    .reduce((accum, cur) => accum || cur);
+};
