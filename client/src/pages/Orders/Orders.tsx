@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { withRouter } from "react-router-dom";
 import {
   Table,
@@ -8,20 +8,22 @@ import {
   TableRow,
 } from "@material-ui/core";
 import { getOrders } from "../Actions";
-import { Order } from "src/interfaces";
+import { Order, emptyUser } from "src/interfaces";
 import { isWeb } from "src/config";
+import { AuthContext } from "src/contexts/AuthContext";
 declare const window: any;
 
 function Orders(props: any) {
-  const [userName, setUserName] = useState<string>("");
-  const [googleUser, setGoogleUser] = useState<gapi.auth2.GoogleUser>();
   const [orders, setOrders] = useState<Order[]>([]);
-
+  const { user, setAuth } = useContext(AuthContext);
+  
   const onSignIn = async (googleUser: gapi.auth2.GoogleUser) => {
     // https://developers.google.com/identity/sign-in/web
     var profile = googleUser.getBasicProfile();
-    setUserName(profile.getName());
-    setGoogleUser(googleUser);
+    setAuth({ 
+      name: profile.getName(),
+      "user-id": profile.getId(), 
+    });
   };
 
   useEffect(() => {
@@ -34,19 +36,19 @@ function Orders(props: any) {
         onsuccess: onSignIn,
       });
     }
-  }, []);
+  });
 
   useEffect(() => {
-    if (!isWeb || googleUser) {
+    if (user !== emptyUser) {
       getOrders().then((res) => setOrders(res));
     }
-  }, [googleUser]);
+  }, [user]);
 
   return (
     <div className="Orders">
       <a href="/home">back</a>
-      <div id="g-signin2" hidden={googleUser != null}></div>
-      <h3 hidden={userName == ""}>Hello {userName}</h3>
+      <div id="g-signin2" hidden={user !== emptyUser}></div>
+      <h3 hidden={user === emptyUser}>Hello {user.name}</h3>
       <Table>
         <TableHead>
           <TableRow>
@@ -55,7 +57,7 @@ function Orders(props: any) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {orders.map((order: Order) => {
+          {orders && orders.map((order: Order) => {
             return (
               <TableRow key={order["order-id"]}>
                 <TableCell>{order["order-id"]}</TableCell>

@@ -17,12 +17,12 @@ function Login() {
 
   // Flag for us to manually run login on mobile
   const [loginError, setLoginError] = useState(false);
-  const [user, setUser] = useState<User>(emptyUser());
+  const [user, setUser] = useState<User>(emptyUser);
 
   const updateUser = (text: string) => {
     //setIdentity(Object.assign({}, emptyIdentityToken(), { sub: text }));
     setUser(
-      Object.assign({}, emptyUser(), {
+      Object.assign({}, emptyUser, {
         name: text,
         "user-id": "TEST_WEB_USER",
       })
@@ -33,7 +33,7 @@ function Login() {
     const decodedIdentity: IdentityToken | null = loginUser();
     if (decodedIdentity) {
       setUser(
-        Object.assign({}, emptyUser(), {
+        Object.assign({}, emptyUser, {
           name: decodedIdentity.name,
           "user-id": decodedIdentity.sub,
         })

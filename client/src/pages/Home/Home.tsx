@@ -20,7 +20,7 @@ import { transformGMapPlaceToStore } from "src/transforms";
 
 function Home(props: any) {
   const [userid, setUserid] = useState("");
-  const [curUser, setCurUser] = useState<User>(emptyUser());
+  const [curUser, setCurUser] = useState<User>(emptyUser);
   const [stores, setStores] = useState<Store[]>([]);
   const [testPlaces, setTestPlaces] = useState<GMapPlace[]>([]);
   const [placeStores, setPlaceStores] = useState<Store[]>([]);

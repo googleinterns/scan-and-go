@@ -77,7 +77,7 @@ export interface User {
   "user-id": string;
 }
 
-export const emptyUser = (): User => ({
+export const emptyUser: User = ({
   name: "",
   "user-id": "",
 });
