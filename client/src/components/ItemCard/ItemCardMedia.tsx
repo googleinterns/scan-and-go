@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useTheme } from "@material-ui/core/styles";
+import { Paper } from "@material-ui/core";
 
 function ItemCardMedia({
   media,
@@ -31,7 +32,8 @@ function ItemCardMedia({
 
   if (media) {
     return (
-      <div
+      <Paper
+        elevation={2}
         style={{
           borderRadius: "20%",
           height: height,
@@ -41,7 +43,7 @@ function ItemCardMedia({
         }}
       >
         <img id="item-card-media-imgSrc" src={media} style={imgStyle} />
-      </div>
+      </Paper>
     );
   } else {
     return <p>Media Placeholder</p>;

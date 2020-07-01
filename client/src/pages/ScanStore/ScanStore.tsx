@@ -16,6 +16,7 @@ import {
   Paper,
   Typography,
 } from "@material-ui/core";
+import { MuiThemeProvider } from "@material-ui/core/styles";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import EditIcon from "@material-ui/icons/Edit";
 import PaymentIcon from "@material-ui/icons/Payment";
@@ -38,6 +39,7 @@ import {
   BARCODE_PLACEHOLDER,
 } from "src/constants";
 import { microapps, isWeb, isDebug } from "src/config";
+import { ErrorTheme } from "src/theme";
 import SampleBarcode from "src/img/Sample_EAN8.png";
 declare const window: any;
 
@@ -53,6 +55,7 @@ function ScanStore() {
   const [curStore, setCurStore] = useState<Store>(emptyStore());
   const [cartItems, updateCart] = useState<CartItem[]>([]);
   const [showCart, setShowCart] = useState(false);
+  const [showDebug, setShowDebug] = useState(false);
   const [uploadImg, setUploadImg] = useState<MediaResponse>(
     emptyMediaResponse()
   );
@@ -123,6 +126,10 @@ function ScanStore() {
     setShowCart(event.target.checked);
   };
 
+  const toggleDebug = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setShowDebug(event.target.checked);
+  };
+
   const makePayment = () => {
     //TODO(#48) This should be just an ID without exposing the contents of our Order
     history.push({
@@ -177,19 +184,24 @@ function ScanStore() {
               control={<Switch onChange={toggleCart} color="primary" />}
               label="Compact View"
             />
+            <MuiThemeProvider theme={ErrorTheme}>
+              <FormControlLabel
+                control={<Switch onChange={toggleDebug} color="secondary" />}
+                label="Debug"
+              />
+            </MuiThemeProvider>
           </FormGroup>
         }
       />
-      {!showCart &&
-        (isDebug || isWeb) && [
-          <TextInputField
-            text={curBarcode ? curBarcode : BARCODE_PLACEHOLDER}
-            setState={setCurBarcode}
-          />,
-          <button id="testScanBtn" onClick={testBarcode}>
-            Test Barcode API
-          </button>,
-        ]}
+      {showDebug && [
+        <TextInputField
+          text={curBarcode ? curBarcode : BARCODE_PLACEHOLDER}
+          setState={setCurBarcode}
+        />,
+        <button id="testScanBtn" onClick={testBarcode}>
+          Test Barcode API
+        </button>,
+      ]}
       <img
         id={debugImgId}
         hidden={true}
