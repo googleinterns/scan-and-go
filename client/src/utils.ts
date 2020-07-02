@@ -35,6 +35,7 @@ const getIdToken = async () => {
   let idToken = "";
   if (!isWeb) {
     // Microapp flow
+    // TODO (#149): implement more secure nonce
     const nonce = await fetchText("GET", {}, "/api/nonce");
     const request = { nonce: nonce };
     idToken = microapps.getIdentity(request).catch((err: any) => {

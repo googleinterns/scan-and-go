@@ -12,7 +12,12 @@ import {
 } from "src/constants";
 import { fetchJson, extractIdentityToken } from "src/utils";
 import { isWeb, google, microapps } from "src/config";
-import { IdentityToken, GeoLocation, emptyGeoLocation, emptyUser } from "src/interfaces";
+import {
+  IdentityToken,
+  GeoLocation,
+  emptyGeoLocation,
+  emptyUser,
+} from "src/interfaces";
 
 // Load up Google Maps Places API Service
 let map: any;
@@ -78,7 +83,8 @@ export const loginUser = (): IdentityToken | null => {
   if (isWeb) {
     return null;
   }
-  //TODO(#113) Server-side generated nonce?
+  // TODO (#149): implement more secure nonce
+  // TODO (#163): synchronize login on microapp and web
   const request = { nonce: "Don't Hack me please" };
   const identityToken = microapps
     .getIdentity(request)
@@ -128,7 +134,7 @@ export const getNearbyPlacesTest = (
 };
 
 export const getOrders = async () => {
-  return await fetchJson("GET", {}, ORDER_LIST_API, true) || [];
+  return (await fetchJson("GET", {}, ORDER_LIST_API, true)) || [];
 };
 
 export const getUser = () => {
@@ -138,4 +144,4 @@ export const getUser = () => {
   } else {
     return emptyUser;
   }
-}
+};

@@ -47,10 +47,10 @@ function Login() {
 
   useEffect(() => {
     if (isWeb) {
-      //stackoverflow.com/questions/31640234/using-google-sign-in-button-with-react-2
+      // Wait for gapi to be initialized stackoverflow.com/questions/31640234/using-google-sign-in-button-with-react-2
       https: window.addEventListener("google-loaded", renderGSigninButton);
     }
-    // TODO: synchronize login on microapp and web
+    // TODO (#163): synchronize login on microapp and web
     // Initial login if on microapp
     login();
   }, []);
@@ -64,7 +64,7 @@ function Login() {
     });
   };
 
-  // https://stackoverflow.com/a/59039972/
+  // Render Google Sign-in button in React component https://stackoverflow.com/a/59039972/
   const renderGSigninButton = () => {
     gapi.signin2.render("g-signin2", {
       scope: "https://www.googleapis.com/auth/plus.login",

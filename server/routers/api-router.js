@@ -12,6 +12,7 @@ router.post("/", apiController.getWelcomeMessage);
 router.get("/user/list", usersController.listUsers);
 
 // Nonce Endpoint
+// TODO (#149): implement more secure nonce
 router.get("/nonce", (req, res) => res.send("static nonce"));
 
 // Store API
