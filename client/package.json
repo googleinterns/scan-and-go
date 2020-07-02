@@ -17,6 +17,7 @@
     "@types/react-dom": "^16.9.0",
     "@types/react-router-dom": "^5.1.5",
     "@types/react-test-renderer": "^16.9.2",
+    "@types/react-toastify": "^4.1.0",
     "@zxing/library": "^0.17.0",
     "material-components-web": "^6.0.0",
     "material-ui": "^0.20.2",
@@ -25,6 +26,7 @@
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
+    "react-toastify": "^6.0.6",
     "serve": "^11.3.1",
     "typescript": "~3.7.2"
   },

@@ -3,7 +3,6 @@
 }
 
 .content {
-    height: 80vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -12,4 +11,8 @@
 #canvas {
     height: 60vw;
     width: 60vw;
+}
+
+.toastContainer {
+    height: 200px,
 }
