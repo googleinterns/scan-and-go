@@ -68,13 +68,13 @@ function Home(props: any) {
 
   const scanStoreQRCallback = (storeUrl: string) => {
     // Try to extract store-id and merchant-id fields from storeUrl
-    const storeId = parseUrlParam(storeUrl, "id"); //TODO Replace with constants for "id"/"mid"
+    const storeId = parseUrlParam(storeUrl, "id"); //TODO(#167) Replace with constants for "id"/"mid"
     const merchantId = parseUrlParam(storeUrl, "mid");
     // If valid extraction, push us to new site
     if (storeId && merchantId) {
       history.push(SCANSTORE_PAGE + "?id=" + storeId + "&mid=" + merchantId);
     } else {
-      //TODO Let user know that QR is malformed
+      //TODO(#65) Let user know that QR is malformed
     }
   };
 

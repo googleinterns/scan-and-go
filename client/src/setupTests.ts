@@ -1,5 +1,3 @@
-export const TEST_BARCODE_STRING = "helloworld";
-
 // Mocking GPay Microapps API
 global.microapps = {
   getIdentity: (request: any) =>
