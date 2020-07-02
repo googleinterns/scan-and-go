@@ -2,7 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useTheme } from "@material-ui/core/styles";
 import { Paper } from "@material-ui/core";
 
-function ItemCardMedia({ media, height }: { media: string; height?: number }) {
+function ItemCardMedia({
+  media,
+  height,
+  maxHeight,
+}: {
+  media: string;
+  height?: number | string;
+  maxHeight?: number | string;
+}) {
   const theme = useTheme();
 
   const [imgStyle, setImgStyle] = useState({});
@@ -20,6 +28,8 @@ function ItemCardMedia({ media, height }: { media: string; height?: number }) {
       setImgStyle({
         height: constrainByHeight ? height : "auto",
         width: constrainByHeight ? "auto" : height,
+        maxHeight: constrainByHeight ? maxHeight : "auto",
+        maxWidth: constrainByHeight ? "auto" : maxHeight,
       });
     }
   }, []);
@@ -31,6 +41,8 @@ function ItemCardMedia({ media, height }: { media: string; height?: number }) {
         borderRadius: "20%",
         height: height,
         width: height,
+        maxHeight: maxHeight,
+        maxWidth: maxHeight,
         overflow: "hidden",
         marginRight: theme.spacing(2),
       }}

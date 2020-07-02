@@ -30,17 +30,18 @@ function Login() {
   };
 
   const login = () => {
-    const decodedIdentity: IdentityToken | null = loginUser();
-    if (decodedIdentity) {
-      setUser(
-        Object.assign({}, emptyUser(), {
-          name: decodedIdentity.name,
-          "user-id": decodedIdentity.sub,
-        })
-      );
-    } else {
-      setLoginError(true);
-    }
+    loginUser().then((decodedIdentity: IdentityToken | null) => {
+      if (decodedIdentity) {
+        setUser(
+          Object.assign({}, emptyUser(), {
+            name: decodedIdentity.name,
+            "user-id": decodedIdentity.sub,
+          })
+        );
+      } else {
+        setLoginError(true);
+      }
+    });
   };
 
   useEffect(() => {
