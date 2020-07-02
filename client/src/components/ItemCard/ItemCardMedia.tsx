@@ -5,9 +5,11 @@ import { Paper } from "@material-ui/core";
 function ItemCardMedia({
   media,
   height,
+  maxHeight,
 }: {
   media: string;
   height?: number | string;
+  maxHeight?: number | string;
 }) {
   const theme = useTheme();
 
@@ -26,6 +28,8 @@ function ItemCardMedia({
       setImgStyle({
         height: constrainByHeight ? height : "auto",
         width: constrainByHeight ? "auto" : height,
+        maxHeight: constrainByHeight ? maxHeight : "auto",
+        maxWidth: constrainByHeight ? "auto" : maxHeight,
       });
     }
   }, []);
@@ -37,6 +41,8 @@ function ItemCardMedia({
         borderRadius: "20%",
         height: height,
         width: height,
+        maxHeight: maxHeight,
+        maxWidth: maxHeight,
         overflow: "hidden",
         marginRight: theme.spacing(2),
       }}

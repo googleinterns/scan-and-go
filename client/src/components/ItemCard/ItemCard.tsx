@@ -9,7 +9,8 @@ import { getSubtotalPrice, parseRawTextNewlines } from "src/utils";
 import ItemCardMedia from "./ItemCardMedia";
 import ItemCardQuantityMixer from "./ItemCardQuantityMixer";
 
-const ITEM_CARD_MAX_HEIGHT = "15vh";
+const ITEM_CARD_MAX_HEIGHT = 120;
+const ITEM_CARD_MEDIA_WIDTH = "20vw";
 
 function ItemCard({
   cartItem,
@@ -36,7 +37,8 @@ function ItemCard({
       <Grid container>
         <Grid item>
           <ItemCardMedia
-            height={ITEM_CARD_MAX_HEIGHT}
+            maxHeight={ITEM_CARD_MAX_HEIGHT}
+            height={ITEM_CARD_MEDIA_WIDTH}
             media={
               cartItem.item.media ? cartItem.item.media : PLACEHOLDER_ITEM_MEDIA
             }

@@ -74,19 +74,18 @@ export const getItem = async (
   return await fetchJson("POST", data, ITEM_API);
 };
 
-export const loginUser = (): IdentityToken | null => {
+export const loginUser = async () => {
   if (isWeb) {
     return null;
   }
   //TODO(#113) Server-side generated nonce?
   const request = { nonce: "Don't Hack me please" };
-  const identityToken = microapps
+  return await microapps
     .getIdentity(request)
     .then((res: any) => extractIdentityToken(res))
     .catch((err: any) => {
       return null;
     });
-  return identityToken;
 };
 
 export const getGeoLocation = (
