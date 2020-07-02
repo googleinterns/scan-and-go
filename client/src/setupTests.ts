@@ -1,3 +1,5 @@
+export const TEST_BARCODE_STRING = "helloworld";
+
 // Mocking GPay Microapps API
 global.microapps = {
   getIdentity: (request: any) =>
@@ -29,4 +31,23 @@ jest.mock("react-router-dom", () => ({
   useHistory: () => ({
     push: global.mockRedirectPush,
   }),
+}));
+
+// Try to capture the zxing scanner call to verify
+// we are reaching here
+jest.mock("@zxing/library", () => ({
+  ...jest.requireActual("@zxing/library"),
+  BrowserMultiFormatReader: function () {
+    return {
+      // We simply return the image src data passed to us
+      // in tests, we will write plaintext instead of image
+      // bytes into our img src field
+      decodeFromImage: (imgElement: HTMLImageElement) =>
+        new Promise((resolve, reject) => {
+          resolve({
+            text: imgElement.src,
+          });
+        }),
+    };
+  },
 }));

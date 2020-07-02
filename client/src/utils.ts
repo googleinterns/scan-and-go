@@ -182,3 +182,15 @@ export const processImageBarcode = async (img: HTMLImageElement) => {
   }
   return false;
 };
+
+// Jest does not load up image files by default
+// in order to actually read file data, we use nodejs "fs" module
+export const jestImportImage = (imgPath: string) => {
+  const fs = require("fs");
+  // Actually read and load up the file information
+  const imgFileRaw = fs.readFileSync(imgPath);
+  const imgFileData = imgFileRaw.toString("base64");
+  const imgFileType = imgPath.split(".").pop();
+  // Format this information into src expected format
+  return `data:image/${imgFileType};base64,${imgFileData}`;
+};

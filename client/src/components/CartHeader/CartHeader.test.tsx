@@ -1,4 +1,5 @@
 import React from "react";
+import { waitFor } from "@testing-library/react";
 import renderer from "react-test-renderer";
 import Enzyme from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
@@ -33,12 +34,13 @@ describe("CartHeader Component Tests", () => {
     expect(storeInfoProp.props.children).toContain(props.store.name);
   });
 
-  it("CartHeader has button and triggers scan barcode callback", () => {
+  it("CartHeader has button and triggers scan barcode callback", async () => {
     const wrapper = Enzyme.mount(<CartHeader {...props} />);
     const buttons = wrapper.find(Button);
     expect(buttons).toHaveLength(1);
     const scanButton = buttons.last();
     scanButton.simulate("click");
-    expect(mockedScanBarcode).toHaveBeenCalled();
+    // We require waitFor to wait for effect hooks to trigger in <MediaScanner />
+    await waitFor(() => expect(mockedScanBarcode).toHaveBeenCalled());
   });
 });
