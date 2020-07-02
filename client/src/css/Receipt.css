@@ -1,0 +1,15 @@
+.receipt {
+    height: 90vh;
+}
+
+.content {
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#canvas {
+    height: 60vw;
+    width: 60vw;
+}
