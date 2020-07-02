@@ -29,7 +29,12 @@
 
     <meta name="google-signin-scope" content="profile email"/>
     <meta name="google-signin-client_id" content="%REACT_APP_MICROAPPS_CLIENT_ID%"}/>
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://apis.google.com/js/platform.js?onload=triggerGoogleLoaded" async defer></script>
+    <script type="text/javascript">
+      function triggerGoogleLoaded() {
+        window.dispatchEvent(new Event('google-loaded'));
+      }
+    </script>
 
     <title>ScanAndGo GPay</title>
   </head>
