@@ -1,5 +1,6 @@
 import { CartItem } from "src/interfaces";
 import { DAY_PERIOD, PRICE_FRACTION_DIGITS } from "src/constants";
+import { BrowserMultiFormatReader } from "@zxing/library";
 
 // Get json from response
 const getJson = (res: any) => {
@@ -73,10 +74,15 @@ export const extractIdentityToken = (response: string) => {
   return JSON.parse(atob(response.split(".")[1]));
 };
 
+// Parse a given url for parameters
+export const parseUrlParam = (url: string, param: string): string | null => {
+  const urlParams = new URLSearchParams(url);
+  return urlParams.get(param);
+};
+
 // Grab url parameter
 export const urlGetParam = (param: string): string | null => {
-  const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get(param);
+  return parseUrlParam(window.location.search, param);
 };
 
 // Decode json from encoded url parameter
@@ -160,4 +166,19 @@ export const deepHtmlStringMatch = (element: any, match: string) => {
   return element.props.children
     .map((child: any) => deepHtmlStringMatch(child, match))
     .reduce((accum: boolean, cur: boolean) => accum || cur);
+};
+
+// Given a HTML img element, process image data for barcode string
+export const processImageBarcode = async (img: HTMLImageElement) => {
+  const codeReader = new BrowserMultiFormatReader();
+  if (img) {
+    const result = await codeReader
+      .decodeFromImage(img)
+      .then((res: any) => res.text)
+      .catch((err: any) => null);
+    if (result) {
+      return result;
+    }
+  }
+  return false;
 };

@@ -5,8 +5,19 @@ import { Typography, Paper, Grid, Box, Button } from "@material-ui/core";
 import { getDayPeriod } from "src/utils";
 import { isDebug } from "src/config";
 import Header from "src/components/Header";
+import CropFreeIcon from "@material-ui/icons/CropFree";
+import SampleStoreQR from "src/img/Sample_StoreQR.png";
+import MediaScanner from "src/components/MediaScanner";
 
-function UserHeader({ user }: { user: User | null }) {
+function UserHeader({
+  user,
+  scanStoreQRCallback,
+  content,
+}: {
+  user: User | null;
+  scanStoreQRCallback: (storeUrl: string) => void;
+  content?: React.ReactElement;
+}) {
   const curHour = new Date().getHours();
   const curMin = new Date().getMinutes();
   const [curSec, setCurSec] = useState();
@@ -62,14 +73,20 @@ function UserHeader({ user }: { user: User | null }) {
             </Typography>
           }
           button={
-            <Button
-              fullWidth={true}
-              variant="contained"
-              color="primary"
-              style={{ fontSize: "14px" }}
-            >
-              Shopping List
-            </Button>
+            <MediaScanner
+              button={
+                <Button
+                  variant="contained"
+                  fullWidth={true}
+                  color="primary"
+                  startIcon={<CropFreeIcon />}
+                >
+                  Store QR
+                </Button>
+              }
+              resultCallback={scanStoreQRCallback}
+              debugFallbackImg={SampleStoreQR}
+            />
           }
           content={
             isDebug ? (

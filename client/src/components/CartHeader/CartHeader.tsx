@@ -6,6 +6,9 @@ import {
 } from "src/constants";
 import { Typography, Button } from "@material-ui/core";
 import Header from "src/components/Header";
+import MediaScanner from "src/components/MediaScanner";
+import CropFreeIcon from "@material-ui/icons/CropFree";
+import SampleBarcode from "src/img/Sample_EAN8.png";
 
 function CartHeader({
   store,
@@ -13,7 +16,7 @@ function CartHeader({
   content,
 }: {
   store: Store;
-  scanBarcodeCallback: () => Promise<void>;
+  scanBarcodeCallback: (barcode: string) => Promise<void>;
   content?: React.ReactElement;
 }) {
   return (
@@ -28,15 +31,20 @@ function CartHeader({
           </Typography>
         }
         button={
-          <Button
-            fullWidth={true}
-            variant="contained"
-            color="primary"
-            style={{ fontSize: "14px" }}
-            onClick={scanBarcodeCallback}
-          >
-            Scan Barcode
-          </Button>
+          <MediaScanner
+            button={
+              <Button
+                fullWidth={true}
+                variant="contained"
+                color="primary"
+                startIcon={<CropFreeIcon />}
+              >
+                Scan
+              </Button>
+            }
+            resultCallback={scanBarcodeCallback}
+            debugFallbackImg={SampleBarcode}
+          />
         }
         content={content}
       />

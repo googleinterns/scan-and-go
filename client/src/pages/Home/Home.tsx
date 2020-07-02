@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { withRouter } from "react-router-dom";
+import { withRouter, useHistory } from "react-router-dom";
 import StoreList from "src/components/StoreList";
 import TextInputField from "src/components/TextInputField";
 import UserHeader from "src/components/UserHeader";
@@ -7,6 +7,7 @@ import DebugBar from "./DebugBar";
 import IconSearchBar from "src/components/IconSearchBar";
 import LocationOnIcon from "@material-ui/icons/LocationOn";
 import LocationOffIcon from "@material-ui/icons/LocationOff";
+import { SCANSTORE_PAGE } from "src/constants";
 import { User, emptyUser, Store, GMapPlace, GeoLocation } from "src/interfaces";
 import {
   getUserInfo,
@@ -17,6 +18,7 @@ import {
 import { Typography } from "@material-ui/core";
 import { isWeb, isDebug, google } from "src/config";
 import { transformGMapPlaceToStore } from "src/transforms";
+import { parseUrlParam } from "src/utils";
 
 function Home(props: any) {
   const [userid, setUserid] = useState("");
@@ -28,6 +30,7 @@ function Home(props: any) {
   const [curGeoLocation, setCurGeoLocation] = useState<GeoLocation | null>(
     null
   );
+  const history = useHistory();
 
   const SECRET_TRIGGER = "hungry";
 
@@ -63,6 +66,18 @@ function Home(props: any) {
     setCurGeoLocation(position);
   };
 
+  const scanStoreQRCallback = (storeUrl: string) => {
+    // Try to extract store-id and merchant-id fields from storeUrl
+    const storeId = parseUrlParam(storeUrl, "id"); //TODO Replace with constants for "id"/"mid"
+    const merchantId = parseUrlParam(storeUrl, "mid");
+    // If valid extraction, push us to new site
+    if (storeId && merchantId) {
+      history.push(SCANSTORE_PAGE + "?id=" + storeId + "&mid=" + merchantId);
+    } else {
+      //TODO Let user know that QR is malformed
+    }
+  };
+
   useEffect(() => {
     // Initially set user based on passed props
     if (props.location.state) {
@@ -92,7 +107,7 @@ function Home(props: any) {
   return (
     <div className="Home">
       {isDebug && <TextInputField text={userid} setState={setUserid} />}
-      <UserHeader user={curUser} />
+      <UserHeader user={curUser} scanStoreQRCallback={scanStoreQRCallback} />
       {isDebug && (
         <DebugBar storesCallback={setStores} placesCallback={setTestPlaces} />
       )}
