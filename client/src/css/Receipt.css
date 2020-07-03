@@ -1,18 +1,36 @@
 .receipt {
-    height: 90vh;
+    height: 96vh;
+    width: 90%;
+    margin: 2vh 5vw;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
 }
 
-.content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.qrCode {
+    flex: 1;
 }
 
 #canvas {
-    height: 60vw;
-    width: 60vw;
+    margin: 0 auto;
+    display: block;
+    width: auto;
+    max-width: 100vw;
+    max-height: 100vh;
 }
 
-.toastContainer {
-    height: 200px,
+.contents {
+    flex: 2;
+    overflow: auto;
+    margin-bottom: 5%;
+}
+
+.button {
+    width: 95%;
+    font-size: "14px";
+    border-radius: 14;
+    align-self: center;
+    margin-top: auto;
 }

@@ -5,40 +5,17 @@ import { urlGetParam } from "src/utils";
 import { CartItem } from "src/interfaces";
 import { Button, Typography } from "@material-ui/core";
 import QRCode from "qrcode";
+import { toast, Zoom, Flip, cssTransition } from 'react-toastify';
+import StyledToastContainer from "./StyledToastContainer";
+import { HOME_PAGE } from "src/constants";
 import "src/css/Receipt.css";
-import { ToastContainer, toast, Zoom, Flip, cssTransition } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 declare const window: any;
 
 const Receipt: React.FC<RouteComponentProps> = ({history}) => {
-  // TODO: remove test variables
-  const testorderId = "TEST ORDER";
-  const cheese: CartItem = {
-    item: {
-      name: "cheese",
-      price: 3.2,
-      "merchant-id": "WPANCUD",
-      barcode: "93245036",
-    },
-    quantity: 2,
-  };
-  const milk: CartItem = {
-    item: {
-      name: "milk",
-      price: 5.6,
-      "merchant-id": "WPANCUD",
-      barcode: "93202411",
-    },
-    quantity: 1,
-  };
-  const testContents = [cheese, milk];
-  const orderId = testorderId;
-  const contents = testContents;
-  
   // Update URL params to find storeID
-  // const orderId = urlGetParam("id");
-  // const contents = history.location.state ? history.location.state.contents : null;
-  
+  const orderId = urlGetParam("id");
+  const contents = history.location.state ? history.location.state.contents : null;
   const toastId = 0;
 
   const verify = () => {
@@ -59,18 +36,23 @@ const Receipt: React.FC<RouteComponentProps> = ({history}) => {
       type: toast.TYPE.SUCCESS, 
       autoClose: 3000,
       hideProgressBar: true, 
-      transition: cssTransition({
-        enter: 'zoomIn',
-        exit: 'zoomOut',
-      })
+      transition: Flip
     });  
   };
 
   useEffect(() => {
     verify();
-    setTimeout(() => confirm(), 3000);
+    setTimeout(() => {
+      confirm();
+    }, 3000);
     generateQR();
   }, []);
+
+  const returnToHome = () => {
+    history.push({
+      pathname: HOME_PAGE,
+    });
+  }
 
   const generateQR = () => {
     const text = JSON.stringify(orderId);
@@ -86,22 +68,23 @@ const Receipt: React.FC<RouteComponentProps> = ({history}) => {
 
   return (
     <div className="receipt">
-      <a href="/home">back</a>
+      <StyledToastContainer autoClose={5000} pauseOnFocusLoss={false} transition={Zoom}/>
       <Typography variant="h4">Receipt</Typography>
-      <div className="content">
+      <div className="qrCode">
         <canvas id="canvas"/>
       </div>
-      {contents && <Cart contents={contents} collapse={true} />}
+      <div className="contents">
+        <Typography variant="h6">Order details</Typography>
+        {contents && <Cart contents={contents} collapse={true} />}
+      </div>
       <Button
-        onClick={verify}
-        fullWidth={true}
+        onClick={returnToHome}
+        className="button"
         variant="contained"
         color="primary"
-        style={{ fontSize: "14px", borderRadius: 14 }}
       >
         Confirm Checkout
       </Button>
-      <ToastContainer className="toastContainer" autoClose={5000} pauseOnFocusLoss={false} transition={Zoom}/>
     </div>    
   );
 }
