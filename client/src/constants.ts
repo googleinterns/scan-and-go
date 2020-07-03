@@ -39,6 +39,7 @@ export const PLACES_TYPES = ["restaurant"];
 export const DEFAULT_STORE_RADIUS = 10000;
 export const PLACEHOLDER_ITEM_MEDIA = "http://placekitten.com/200/200";
 // Test variables
+export const TEST_ORDER_ID = "TEST ORDER";
 export const TEST_STORE_ID = "WPANCUD-1";
 export const TEST_STORE_MERCHANT_ID = "WPANCUD";
 // Enums

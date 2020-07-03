@@ -1,18 +1,20 @@
-import React from 'react';
-import styled from 'styled-components';
-import { ToastContainer, ToastContainerProps } from 'react-toastify';
+import React from "react";
+import styled from "styled-components";
+import { ToastContainer, ToastContainerProps } from "react-toastify";
 import AppTheme from "src/theme";
 import ErrorTheme from "src/theme";
 import "src/css/index.css";
 
-export const WrappedToastContainer = ({ className, ...rest }: ToastContainerProps & { className?: string }) => (
+export const WrappedToastContainer = ({
+  className,
+  ...rest
+}: ToastContainerProps & { className?: string }) => (
   <div className={className}>
     <ToastContainer {...rest} />
   </div>
 );
 
-export default styled(WrappedToastContainer).attrs({
-})`
+export default styled(WrappedToastContainer).attrs({})`
   .Toastify__toast-container {
   }
   .Toastify__toast {
