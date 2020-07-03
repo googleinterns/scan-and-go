@@ -1,26 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import TextInputField from "src/components/TextInputField";
 import { Grid, Typography, Button } from "@material-ui/core";
-import { User, emptyUser, IdentityToken } from "src/interfaces";
+import { GlobalState, User, emptyUser, IdentityToken } from "src/interfaces";
 import { HOME_PAGE, TITLE_TEXT } from "src/constants";
 import { isWeb, isDebug } from "src/config";
 import { loginUser } from "src/pages/Actions";
+import AlertToast from "src/components/AlertToast";
 import Logo from "src/img/Logo.png";
 import "src/css/Login.css";
+import { AppContext } from "src/App";
 declare const window: any;
 
 function Login() {
   const logoSpinnerSpeed = 3;
 
   const history = useHistory();
+  const appContext: GlobalState = useContext(AppContext) as GlobalState;
 
   // Flag for us to manually run login on mobile
   const [loginError, setLoginError] = useState(false);
   const [user, setUser] = useState<User>(emptyUser());
 
   const updateUser = (text: string) => {
-    //setIdentity(Object.assign({}, emptyIdentityToken(), { sub: text }));
     setUser(
       Object.assign({}, emptyUser(), {
         name: text,
@@ -40,6 +42,13 @@ function Login() {
         );
       } else {
         setLoginError(true);
+        appContext.alerts.set([
+          <AlertToast
+            key={new Date().getTime()}
+            content={<p>Login with Google in the microapp!</p>}
+            style={{ severity: "error" }}
+          />,
+        ]);
       }
     });
   };

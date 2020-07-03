@@ -5,6 +5,7 @@
  * database documents as well as API json responses.
  *
  */
+import React from "react";
 
 export interface Item {
   barcode: string; // SKU identifier
@@ -130,3 +131,10 @@ export const emptyGeoLocation = (): GeoLocation => ({
     longitude: 0.0,
   },
 });
+
+export interface GlobalState {
+  alerts: {
+    get: React.ReactElement[];
+    set: (alerts: React.ReactElement[]) => void;
+  };
+}
