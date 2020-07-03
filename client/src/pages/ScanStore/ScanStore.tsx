@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import StoreHeader from "src/components/StoreHeader";
 import ItemCard from "src/components/ItemCard";
 import Cart from "src/components/Cart";
 import CartHeader from "src/components/CartHeader";
 import TextInputField from "src/components/TextInputField";
+import AlertToast from "src/components/AlertToast";
 import {
   FormGroup,
   FormControlLabel,
@@ -28,6 +29,7 @@ import {
   emptyStore,
   MediaResponse,
   emptyMediaResponse,
+  GlobalState,
 } from "src/interfaces";
 import { urlGetParam } from "src/utils";
 import { getStoreInfo, getItem } from "src/pages/Actions";
@@ -39,6 +41,7 @@ import {
 } from "src/constants";
 import { microapps, isWeb, isDebug } from "src/config";
 import { ErrorTheme } from "src/theme";
+import { AppContext } from "src/App";
 declare const window: any;
 
 // Flag to toggle display of taken image (for debugging)
@@ -49,6 +52,7 @@ function ScanStore() {
   const merchantID = urlGetParam("mid");
 
   const history = useHistory();
+  const appContext = useContext(AppContext) as GlobalState;
 
   const [curStore, setCurStore] = useState<Store>(emptyStore());
   const [cartItems, updateCart] = useState<CartItem[]>([]);
@@ -86,7 +90,7 @@ function ScanStore() {
 
   const updateNewItem = async (barcode: string) => {
     const item: Item = await getItem(barcode, merchantID);
-    if (item) {
+    if (item.barcode) {
       updateCart([
         ...cartItems,
         {
@@ -94,8 +98,15 @@ function ScanStore() {
           quantity: 1,
         },
       ]);
+    } else if (appContext.alerts) {
+      appContext.alerts.set([
+        <AlertToast
+          key={new Date().getTime()}
+          content={`No item with barcode: ${barcode} found!`}
+          style={{ severity: "error" }}
+        />,
+      ]);
     }
-    // TODO (#59): Notify user if barcode is invalid or item not found
   };
 
   const toggleCart = (event: React.ChangeEvent<HTMLInputElement>) => {

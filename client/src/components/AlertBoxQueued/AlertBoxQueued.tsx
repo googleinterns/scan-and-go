@@ -4,7 +4,6 @@ function AlertBoxQueued({ content }: { content: React.ReactElement[] }) {
   const [displayedAlert, setDisplayedAlert] = useState<
     React.ReactElement | undefined
   >();
-  const [alertQueue, setAlertQueue] = useState<React.ReactElement[]>([]);
   const [queue, setQueue] = useState<React.ReactElement[]>([]);
 
   const popContent = () => {
@@ -21,16 +20,8 @@ function AlertBoxQueued({ content }: { content: React.ReactElement[] }) {
   }, [queue]);
 
   useEffect(() => {
-    if (alertQueue.length) {
-      console.log(`addition: ${alertQueue.length}`);
-      setQueue([...alertQueue, ...queue]);
-      setAlertQueue([]);
-    }
-  }, [alertQueue]);
-
-  useEffect(() => {
     if (content) {
-      setAlertQueue(content);
+      setQueue([...content, ...queue]);
     }
   }, [content]);
 

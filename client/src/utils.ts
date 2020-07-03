@@ -175,7 +175,9 @@ export const processImageBarcode = async (img: HTMLImageElement) => {
     const result = await codeReader
       .decodeFromImage(img)
       .then((res: any) => res.text)
-      .catch((err: any) => null);
+      .catch((err: any) => {
+        throw err;
+      });
     if (result) {
       return result;
     }

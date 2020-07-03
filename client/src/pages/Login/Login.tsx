@@ -16,7 +16,7 @@ function Login() {
   const logoSpinnerSpeed = 3;
 
   const history = useHistory();
-  const appContext: GlobalState = useContext(AppContext) as GlobalState;
+  const appContext = useContext(AppContext) as GlobalState;
 
   // Flag for us to manually run login on mobile
   const [loginError, setLoginError] = useState(false);
@@ -42,13 +42,15 @@ function Login() {
         );
       } else {
         setLoginError(true);
-        appContext.alerts.set([
-          <AlertToast
-            key={new Date().getTime()}
-            content={<p>Login with Google in the microapp!</p>}
-            style={{ severity: "error" }}
-          />,
-        ]);
+        if (appContext.alerts) {
+          appContext.alerts.set([
+            <AlertToast
+              key={new Date().getTime()}
+              content={"Login with Google in the microapp!"}
+              style={{ severity: "error" }}
+            />,
+          ]);
+        }
       }
     });
   };

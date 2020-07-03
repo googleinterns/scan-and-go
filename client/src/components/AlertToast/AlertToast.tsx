@@ -8,7 +8,7 @@ function AlertToast({
   style,
   closeCallback,
 }: {
-  content: React.ReactElement;
+  content: React.ReactElement | string;
   style: {
     severity: "error" | "success" | "info" | "warning" | undefined;
     variant?: "outlined" | "standard" | "filled" | undefined;
@@ -21,21 +21,9 @@ function AlertToast({
   const theme = useTheme();
 
   const alertDismissCallback = () => {
-    console.log("dismissed alert");
     setShowAlert(false);
     if (closeCallback) closeCallback();
   };
-
-  useEffect(() => {
-    console.log("mounting");
-    console.log(closeCallback);
-    // call dismiss alert callback when alert unmounts from DOM
-    if (closeCallback) {
-      return () => {
-        console.log("unmounting alert");
-      };
-    }
-  }, []);
 
   return (
     <Slide

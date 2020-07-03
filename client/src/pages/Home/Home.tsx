@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { withRouter, useHistory } from "react-router-dom";
 import StoreList from "src/components/StoreList";
 import TextInputField from "src/components/TextInputField";
@@ -7,8 +7,17 @@ import DebugBar from "./DebugBar";
 import IconSearchBar from "src/components/IconSearchBar";
 import LocationOnIcon from "@material-ui/icons/LocationOn";
 import LocationOffIcon from "@material-ui/icons/LocationOff";
+import AlertToast from "src/components/AlertToast";
+import { AppContext } from "src/App";
 import { SCANSTORE_PAGE } from "src/constants";
-import { User, emptyUser, Store, GMapPlace, GeoLocation } from "src/interfaces";
+import {
+  User,
+  emptyUser,
+  Store,
+  GMapPlace,
+  GeoLocation,
+  GlobalState,
+} from "src/interfaces";
 import {
   getUserInfo,
   getGeoLocation,
@@ -31,6 +40,7 @@ function Home(props: any) {
     null
   );
   const history = useHistory();
+  const appContext = useContext(AppContext) as GlobalState;
 
   const SECRET_TRIGGER = "hungry";
 
@@ -75,6 +85,15 @@ function Home(props: any) {
       history.push(SCANSTORE_PAGE + "?id=" + storeId + "&mid=" + merchantId);
     } else {
       //TODO(#65) Let user know that QR is malformed
+      if (appContext.alerts) {
+        appContext.alerts.set([
+          <AlertToast
+            key={new Date().getTime()}
+            content={`Malformed store QR: ${storeUrl}`}
+            style={{ severity: "error" }}
+          />,
+        ]);
+      }
     }
   };
 

@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { isWeb, microapps } from "src/config";
-import { MediaResponse, emptyMediaResponse } from "src/interfaces";
+import { MediaResponse, emptyMediaResponse, GlobalState } from "src/interfaces";
 import { processImageBarcode } from "src/utils";
+import AlertToast from "src/components/AlertToast";
+import { AppContext } from "src/App";
 
 function MediaScanner({
   button,
@@ -16,6 +18,7 @@ function MediaScanner({
 
   const uploadedImgId = "media-img-upload";
   const debugImgId = "media-img-debug";
+  const appContext = useContext(AppContext) as GlobalState;
 
   const requestMediaUpload = async () => {
     if (isWeb) {
@@ -38,9 +41,21 @@ function MediaScanner({
     } else {
       return;
     }
-    processImageBarcode(img).then((barcode: string) => {
-      resultCallback(barcode);
-    });
+    processImageBarcode(img)
+      .then((barcode: string) => {
+        resultCallback(barcode);
+      })
+      .catch((err: any) => {
+        if (appContext.alerts) {
+          appContext.alerts.set([
+            <AlertToast
+              key={new Date().getTime()}
+              content={`Scanner error: ${err}`}
+              style={{ severity: "error" }}
+            />,
+          ]);
+        }
+      });
   };
 
   useEffect(() => {
