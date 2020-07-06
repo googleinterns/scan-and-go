@@ -14,8 +14,8 @@ function MediaScanner({
 }) {
   const [uploadedImg, setUploadedImg] = useState<MediaResponse>();
 
-  const uploadedImgId = "media-img-upload";
-  const debugImgId = "media-img-debug";
+  const UPLOADED_IMG_ID = "media-img-upload";
+  const DEBUG_IMG_ID = "media-img-debug";
 
   const requestMediaUpload = async () => {
     if (isWeb) {
@@ -31,10 +31,10 @@ function MediaScanner({
   };
 
   const scanBarcodeFromImage = () => {
-    let img = document.getElementById(uploadedImgId) as HTMLImageElement;
+    let img = document.getElementById(UPLOADED_IMG_ID) as HTMLImageElement;
     // Try to fallback, else abort
     if (!img && debugFallbackImg) {
-      img = document.getElementById(debugImgId) as HTMLImageElement;
+      img = document.getElementById(DEBUG_IMG_ID) as HTMLImageElement;
     } else {
       return;
     }
@@ -57,12 +57,12 @@ function MediaScanner({
       {uploadedImg && (
         <img
           hidden={true}
-          id={uploadedImgId}
+          id={UPLOADED_IMG_ID}
           src={"data:" + uploadedImg.mimeType + ";base64," + uploadedImg.bytes}
         />
       )}
       {debugFallbackImg && (
-        <img hidden={true} id={debugImgId} src={debugFallbackImg} />
+        <img hidden={true} id={DEBUG_IMG_ID} src={debugFallbackImg} />
       )}
     </div>
   );
