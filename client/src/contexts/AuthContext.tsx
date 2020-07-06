@@ -1,6 +1,7 @@
 import React, { createContext, useState, useReducer } from "react";
 import { getUser } from "src/pages/Actions";
 import { User, emptyUser } from "src/interfaces";
+import { SET_USER, UNSET_USER } from "src/constants";
 
 export const AuthContext = createContext({
   user: emptyUser,
@@ -10,7 +11,7 @@ export const AuthContext = createContext({
 
 const reducer = (state: any, action: any) => {
   switch (action.type) {
-    case "setUser": {
+    case SET_USER: {
       const { user } = action.payload;
       window.localStorage.setItem("user", JSON.stringify(user));
       return {
@@ -18,7 +19,7 @@ const reducer = (state: any, action: any) => {
         user: user,
       };
     }
-    case "unsetUser": {
+    case UNSET_USER: {
       window.localStorage.clear();
       return {
         ...state,
@@ -37,10 +38,10 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({
   const { user } = state;
 
   const setUser = (user: User) => {
-    dispatch({ type: "setUser", payload: { user } });
+    dispatch({ type: SET_USER, payload: { user } });
   };
   const unsetUser = () => {
-    dispatch({ type: "unsetUser" });
+    dispatch({ type: UNSET_USER });
   };
 
   return (

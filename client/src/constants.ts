@@ -49,3 +49,6 @@ export enum DAY_PERIOD {
   EVENING = "Evening",
   NIGHT = "Night",
 }
+// Reducer actions
+export const SET_USER = "setUser";
+export const UNSET_USER = "unsetUser";
