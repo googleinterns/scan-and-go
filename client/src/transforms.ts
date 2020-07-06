@@ -1,5 +1,5 @@
 import { GMapPlace, Store, emptyStore } from "src/interfaces";
-import { MAX_CARD_HEIGHT } from "src/components/StoreCard/StoreCard";
+import { themeConfig } from "src/theme";
 
 // Transform GMapPlace response to Store interface for display
 export const transformGMapPlaceToStore = (gMapPlace: GMapPlace): Store => {
@@ -16,7 +16,9 @@ export const transformGMapPlaceToStore = (gMapPlace: GMapPlace): Store => {
   if (gMapPlace.photos && gMapPlace.photos.length > 0) {
     // From: https://developers.google.com/places/web-service/search#PlaceSearchResults
     // If any photos exist, it will only ever be [0]
-    newStore.media = gMapPlace.photos[0].getUrl({ maxHeight: MAX_CARD_HEIGHT });
+    newStore.media = gMapPlace.photos[0].getUrl({
+      maxHeight: themeConfig.max_card_height,
+    });
   }
   return newStore;
 };

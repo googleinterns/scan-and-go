@@ -33,7 +33,9 @@ function ItemCardQuantityMixer({
         <Grid item>
           <Typography
             variant="h5"
+            align="center"
             style={{
+              minWidth: "5vw",
               marginLeft: theme.spacing(2),
               marginRight: theme.spacing(2),
             }}
@@ -41,7 +43,7 @@ function ItemCardQuantityMixer({
             {quantity}
           </Typography>
         </Grid>
-        <Grid item color="error">
+        <Grid item>
           <Fab
             color="secondary"
             id="dec"

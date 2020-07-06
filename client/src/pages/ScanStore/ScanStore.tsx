@@ -29,7 +29,7 @@ import {
   MediaResponse,
   emptyMediaResponse,
 } from "src/interfaces";
-import { urlGetParam } from "src/utils";
+import { urlGetParam, emptyArray } from "src/utils";
 import { getStoreInfo, getItem } from "src/pages/Actions";
 import {
   HOME_PAGE,
@@ -51,14 +51,14 @@ function ScanStore() {
   const history = useHistory();
 
   const [curStore, setCurStore] = useState<Store>(emptyStore());
-  const [cartItems, updateCart] = useState<CartItem[]>([]);
+  const [cartItems, updateCart] = useState<(CartItem | null)[]>([]);
   const [showCompactCart, setShowCompactCart] = useState(false);
   const [showDebug, setShowDebug] = useState(false);
   const [debugBarcode, setDebugBarcode] = useState<string>("");
 
   const addItemToCart = async (barcode: string) => {
     const existingItem = cartItems.find(
-      (cartItem) => cartItem.item.barcode === barcode
+      (cartItem) => cartItem && cartItem.item.barcode === barcode
     );
     if (existingItem) {
       updateItemQuantity(barcode, existingItem.quantity + 1);
@@ -70,12 +70,14 @@ function ScanStore() {
   const updateItemQuantity = (barcode: string, quantity: number) => {
     if (quantity <= 0) {
       updateCart(
-        cartItems.filter((cartItem) => cartItem.item.barcode !== barcode)
+        cartItems.filter(
+          (cartItem) => cartItem && cartItem.item.barcode !== barcode
+        )
       );
     } else {
       updateCart(
         cartItems.map((cartItem) => {
-          if (cartItem.item.barcode === barcode) {
+          if (cartItem && cartItem.item.barcode === barcode) {
             return Object.assign({}, cartItem, { quantity: quantity });
           }
           return cartItem;
@@ -85,10 +87,14 @@ function ScanStore() {
   };
 
   const updateNewItem = async (barcode: string) => {
+    const origItems = [...cartItems];
+    // Add a placeholder item first
+    updateCart([...origItems, null]);
     const item: Item = await getItem(barcode, merchantID);
+    // Override placeholder item when we receive actual info
     if (item) {
       updateCart([
-        ...cartItems,
+        ...origItems,
         {
           item: item,
           quantity: 1,

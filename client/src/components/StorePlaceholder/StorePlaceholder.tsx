@@ -1,71 +1,63 @@
 import React, { useEffect, useState } from "react";
+import { Grid } from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
-import { Card, Grid } from "@material-ui/core";
+import { themeConfig } from "src/theme";
+import MediaInfoCard from "src/components/MediaInfoCard";
 import "src/css/animation.css";
-import { MAX_CARD_HEIGHT } from "src/components/StoreCard/StoreCard";
 
 function StorePlaceholder() {
   const theme = useTheme();
   const themeSpacing = theme.spacing(1);
+
   return (
-    <Card
-      className="animate-flicker"
-      style={{
-        marginTop: themeSpacing,
-        padding: themeSpacing,
-      }}
-    >
-      <Grid
-        container
-        direction="row"
-        justify="space-between"
-        alignItems="center"
-      >
-        <Grid item>
-          <div
-            className="idle-gradient"
-            style={{
-              borderRadius: "50%",
-              margin: themeSpacing,
-              height: "15vw",
-              width: "15vw",
-              maxHeight: MAX_CARD_HEIGHT,
-              maxWidth: MAX_CARD_HEIGHT,
-            }}
-          />
+    <MediaInfoCard
+      media=""
+      mediaVariant="circle"
+      title={
+        <div
+          className="idle-gradient"
+          style={{
+            width: "80%",
+            height: "5vw",
+            maxHeight: themeConfig.max_card_height * 0.15,
+            margin: themeSpacing,
+          }}
+        />
+      }
+      content={
+        <div
+          className="idle-gradient"
+          style={{
+            width: "60%",
+            height: "8vw",
+            maxHeight: themeConfig.max_card_height * 0.6,
+            margin: themeSpacing,
+          }}
+        />
+      }
+      rightColumn={
+        <Grid
+          item
+          container
+          style={{ height: "100%" }}
+          justify="flex-end"
+          direction="column"
+        >
+          <Grid item>
+            <div
+              className="idle-gradient"
+              style={{
+                width: "15vw",
+                height: "2vw",
+                maxHeight: themeConfig.max_card_height * 0.1,
+              }}
+            />
+          </Grid>
         </Grid>
-        <Grid item xs>
-          <div
-            className="idle-gradient"
-            style={{
-              width: "60%",
-              height: "5vw",
-              maxHeight: MAX_CARD_HEIGHT * 0.15,
-              margin: themeSpacing,
-            }}
-          />
-          <div
-            className="idle-gradient"
-            style={{
-              width: "30%",
-              height: "8vw",
-              maxHeight: MAX_CARD_HEIGHT * 0.6,
-              margin: themeSpacing,
-            }}
-          />
-          <div
-            className="idle-gradient"
-            style={{
-              width: "20%",
-              height: "2vw",
-              maxHeight: MAX_CARD_HEIGHT * 0.1,
-              marginTop: -themeSpacing,
-              float: "right",
-            }}
-          />
-        </Grid>
-      </Grid>
-    </Card>
+      }
+      placeholder={true}
+      elevation={1}
+    />
   );
 }
 

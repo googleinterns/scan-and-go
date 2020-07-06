@@ -18,7 +18,7 @@ import {
 import { Typography } from "@material-ui/core";
 import { isWeb, isDebug, google } from "src/config";
 import { transformGMapPlaceToStore } from "src/transforms";
-import { parseUrlParam } from "src/utils";
+import { parseUrlParam, emptyArray } from "src/utils";
 
 function Home(props: any) {
   const [userid, setUserid] = useState("");
@@ -43,7 +43,7 @@ function Home(props: any) {
     // Testing trigger with searching nearby restaurants with Places API
     //TODO(#131): Replace with server call for nearby stores when implemented
     if (text === SECRET_TRIGGER && curGeoLocation) {
-      setPlaceStores(generatePlaceholderStores());
+      setPlaceStores(emptyArray(6));
       //TODO(#127): Update testing for fetching nearby places
       getNearbyPlacesTest(curGeoLocation, (places: any, status: any) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
@@ -53,17 +53,11 @@ function Home(props: any) {
     }
   };
 
-  const generatePlaceholderStores = () => {
-    // Fill an array with nulls, StoreList contains logic
-    // to render StorePlaceholder if store is null
-    return new Array(6).fill(null);
-  };
-
   const grabLocation = (state: boolean) => {
     setUseLocation(state);
     setLoadingLocation(state);
     if (state) {
-      setStores(generatePlaceholderStores());
+      setStores(emptyArray(6));
       getGeoLocation(locationSuccessCallback, () => {
         setUseLocation(false);
         setLoadingLocation(false);

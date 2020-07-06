@@ -194,3 +194,8 @@ export const jestImportImage = (imgPath: string) => {
   // Format this information into src expected format
   return `data:image/${imgFileType};base64,${imgFileData}`;
 };
+
+// Fill an empty array
+export const emptyArray = (length: number) => {
+  return new Array(length).fill(null);
+};

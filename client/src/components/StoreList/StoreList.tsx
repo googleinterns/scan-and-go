@@ -5,7 +5,7 @@ import StoreCard from "src/components/StoreCard";
 import StorePlaceholder from "src/components/StorePlaceholder";
 import { SCANSTORE_PAGE } from "src/constants";
 
-function StoreList({ stores }: { stores: Store[] }) {
+function StoreList({ stores }: { stores: (Store | null)[] }) {
   const history = useHistory();
 
   const enterStore = (url: string) => {

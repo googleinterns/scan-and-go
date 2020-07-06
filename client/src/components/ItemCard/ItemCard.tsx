@@ -6,11 +6,8 @@ import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
 import { useTheme } from "@material-ui/core/styles";
 import { getSubtotalPrice, parseRawTextNewlines } from "src/utils";
-import ItemCardMedia from "./ItemCardMedia";
 import ItemCardQuantityMixer from "./ItemCardQuantityMixer";
-
-const ITEM_CARD_MAX_HEIGHT = 120;
-const ITEM_CARD_MEDIA_WIDTH = "20vw";
+import MediaInfoCard from "src/components/MediaInfoCard";
 
 function ItemCard({
   cartItem,
@@ -27,62 +24,41 @@ function ItemCard({
   };
 
   return (
-    <Paper
-      elevation={0}
-      style={{
-        marginTop: themeSpacing,
-        padding: themeSpacing,
-      }}
-    >
-      <Grid container>
-        <Grid item>
-          <ItemCardMedia
-            maxHeight={ITEM_CARD_MAX_HEIGHT}
-            height={ITEM_CARD_MEDIA_WIDTH}
-            media={
-              cartItem.item.media ? cartItem.item.media : PLACEHOLDER_ITEM_MEDIA
-            }
-          />
-        </Grid>
-        <Grid item xs container direction="row">
-          <Grid item xs container direction="column" align-items="stretch">
+    <MediaInfoCard
+      media={cartItem.item.media ? cartItem.item.media : PLACEHOLDER_ITEM_MEDIA}
+      mediaVariant="rounded"
+      title={<Typography variant="body1">{cartItem.item.name}</Typography>}
+      content={
+        <div>
+          {cartItem.item.detail &&
+            parseRawTextNewlines(cartItem.item.detail).map((line: string) => (
+              <Typography variant="subtitle2">{line}</Typography>
+            ))}
+        </div>
+      }
+      rightColumn={
+        <Grid item container style={{ height: "100%" }} direction="column">
+          <Grid item xs container direction="column">
             <Grid item>
-              <Typography variant="body1">{cartItem.item.name}</Typography>
+              <Typography variant="body1" align="right">
+                ea. ${cartItem.item.price.toFixed(PRICE_FRACTION_DIGITS)}
+              </Typography>
             </Grid>
-            <Grid item xs style={{ overflow: "scroll" }}>
-              {cartItem.item.detail &&
-                parseRawTextNewlines(
-                  cartItem.item.detail
-                ).map((line: string) => (
-                  <Typography variant="subtitle2">{line}</Typography>
-                ))}
+            <Grid item>
+              <Typography variant="body1" align="right">
+                Subtotal: ${getSubtotalPrice(cartItem)}
+              </Typography>
             </Grid>
           </Grid>
           <Grid item>
-            <Grid item container style={{ height: "100%" }} direction="column">
-              <Grid item xs container direction="column">
-                <Grid item>
-                  <Typography variant="body1" align="right">
-                    ea. ${cartItem.item.price.toFixed(PRICE_FRACTION_DIGITS)}
-                  </Typography>
-                </Grid>
-                <Grid item>
-                  <Typography variant="body1" align="right">
-                    Subtotal: ${getSubtotalPrice(cartItem)}
-                  </Typography>
-                </Grid>
-              </Grid>
-              <Grid item>
-                <ItemCardQuantityMixer
-                  quantity={cartItem.quantity}
-                  updateQuantity={updateItemQuantityWrapper}
-                />
-              </Grid>
-            </Grid>
+            <ItemCardQuantityMixer
+              quantity={cartItem.quantity}
+              updateQuantity={updateItemQuantityWrapper}
+            />
           </Grid>
         </Grid>
-      </Grid>
-    </Paper>
+      }
+    />
   );
 }
 
