@@ -77,7 +77,7 @@ export interface User {
   "user-id": string;
 }
 
-export const emptyUser = (): User => ({
+export const emptyUser: User = ({
   name: "",
   "user-id": "",
 });
@@ -130,3 +130,9 @@ export const emptyGeoLocation = (): GeoLocation => ({
     longitude: 0.0,
   },
 });
+
+export interface Order {
+  "order-id": string;
+  "merchant-id": string;
+  "user--id": string;
+}

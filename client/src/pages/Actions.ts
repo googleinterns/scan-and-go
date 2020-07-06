@@ -3,16 +3,21 @@ import {
   STORE_LIST_API,
   USER_API,
   ITEM_API,
-  ITEM_LIST_API,
   DEFAULT_STORE_RADIUS,
   PLACES_RADIUS_METERS,
   PLACES_TYPES,
   GOOGLE_MAP_PLACEHOLDER_ID,
   GOOGLE_PLACES_SCRIPT_ID,
+  ORDER_LIST_API,
 } from "src/constants";
 import { fetchJson, extractIdentityToken } from "src/utils";
 import { isWeb, google, microapps } from "src/config";
-import { IdentityToken, GeoLocation, emptyGeoLocation } from "src/interfaces";
+import {
+  IdentityToken,
+  GeoLocation,
+  emptyGeoLocation,
+  emptyUser,
+} from "src/interfaces";
 
 // Load up Google Maps Places API Service
 let map: any;
@@ -78,7 +83,8 @@ export const loginUser = async () => {
   if (isWeb) {
     return null;
   }
-  //TODO(#113) Server-side generated nonce?
+  // TODO (#149): implement more secure nonce
+  // TODO (#163): synchronize login on microapp and web
   const request = { nonce: "Don't Hack me please" };
   return await microapps
     .getIdentity(request)
@@ -124,4 +130,17 @@ export const getNearbyPlacesTest = (
     type: PLACES_TYPES,
   };
   service.nearbySearch(request, successCallback);
+};
+
+export const getOrders = async () => {
+  return (await fetchJson("GET", {}, ORDER_LIST_API, true)) || [];
+};
+
+export const getUser = () => {
+  const user = window.localStorage.getItem("user");
+  if (user) {
+    return JSON.parse(user);
+  } else {
+    return emptyUser;
+  }
 };

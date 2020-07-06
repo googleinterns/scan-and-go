@@ -1,13 +1,15 @@
 import React from "react";
 import { waitFor } from "@testing-library/react";
 import renderer from "react-test-renderer";
-import Enzyme from "enzyme";
+import Enzyme, { shallow } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
 import Login from "./Login";
-import { Input } from "@material-ui/core";
 import * as config from "src/config";
 import { isWeb, microapps } from "src/config";
 import { HOME_PAGE } from "src/constants";
+import { AuthContext } from "src/contexts/AuthContext";
+import { User } from "src/interfaces";
+import TestRenderer from "react-test-renderer";
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -29,11 +31,23 @@ describe("Test on Web UI", () => {
 
   it("Login Page redirects on web given valid user", () => {
     const validUser = "Admin";
-    const mountedWrapper = Enzyme.mount(<Login />);
-    const input = mountedWrapper.find("#username").last();
-    input.simulate("blur", { target: { value: validUser } });
+    const useContextMockReturnValue = {
+      user: {
+        name: validUser,
+        "user-id": "",
+      },
+      setUser: (user: User) => {},
+      unsetUser: () => {},
+    };
+
+    // Wrap Login in the context provider to inject a value for testing https://stackoverflow.com/questions/54691799/how-to-test-a-react-component-that-is-dependent-on-usecontext-hook
+    const element = TestRenderer.create(
+      <AuthContext.Provider value={useContextMockReturnValue}>
+        <Login />
+      </AuthContext.Provider>
+    );
     const pushArgs = global.mockRedirectPush.mock.calls[0];
-    expect(pushArgs[0]).toHaveProperty("pathname", "/home");
+    expect(pushArgs[0]).toHaveProperty("pathname", HOME_PAGE);
   });
 });
 
