@@ -50,6 +50,11 @@ export enum DAY_PERIOD {
   EVENING = "Evening",
   NIGHT = "Night",
 }
+export enum PAYMENT_STATUS {
+  SUBMITTED = "SUBMITTED", // pending transaction
+  SUCCESS = "SUCCESS", // completed transaction
+  FAILURE = "FAILURE",
+}
 // Reducer actions
 export const SET_USER = "setUser";
 export const UNSET_USER = "unsetUser";

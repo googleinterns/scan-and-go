@@ -9,26 +9,32 @@ import NotFound from "src/pages/NotFound";
 import AppTheme from "src/theme";
 import { isWeb } from "src/config";
 import { Container } from "@material-ui/core";
+import AlertSnackbar from "./components/AlertSnackbar";
 import { ThemeProvider } from "@material-ui/core/styles";
 import { AuthContextProvider } from "src/contexts/AuthContext";
+import { AlertContextProvider } from "./contexts/AlertContext";
 
 function App() {
   return (
     <main>
-      <AuthContextProvider>
-        <ThemeProvider theme={AppTheme}>
-          <Switch>
-            <Route path="/" component={Login} exact />
-            <Route path="/home" component={Home} />
-            <Route path="/store" component={ScanStore} />
-            <Route path="/receipt" component={Receipt} />
-            <Route path="/orders" component={Orders} />
-            <Route component={NotFound} />
-          </Switch>
-        </ThemeProvider>
-      </AuthContextProvider>
+      <ThemeProvider theme={AppTheme}>
+        <AuthContextProvider>
+          <AlertContextProvider>
+            <Container disableGutters={!isWeb}>
+              <Switch>
+                <Route path="/" component={Login} exact />
+                <Route path="/home" component={Home} />
+                <Route path="/store" component={ScanStore} />
+                <Route path="/receipt" component={Receipt} />
+                <Route component={NotFound} />
+              </Switch>
+              <AlertSnackbar />
+            </Container>
+          </AlertContextProvider>
+        </AuthContextProvider>
+      </ThemeProvider>
     </main>
   );
 }
 
-export default App; 
+export default App;

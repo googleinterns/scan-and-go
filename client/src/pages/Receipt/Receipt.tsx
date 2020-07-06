@@ -1,15 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { withRouter, RouteComponentProps } from "react-router-dom";
 import Cart from "src/components/Cart";
 import { urlGetParam } from "src/utils";
-import { CartItem } from "src/interfaces";
 import { Button, Typography } from "@material-ui/core";
 import QRCode from "qrcode";
-import { toast, Zoom, Flip } from "react-toastify";
-import StyledToastContainer from "./StyledToastContainer";
-import { HOME_PAGE } from "src/constants";
+import { HOME_PAGE, PAYMENT_STATUS } from "src/constants";
+import { AlertContext } from "src/contexts/AlertContext";
 import "src/css/Receipt.css";
-import "react-toastify/dist/ReactToastify.css";
 declare const window: any;
 
 const Receipt: React.FC<RouteComponentProps> = ({ history }) => {
@@ -17,43 +14,23 @@ const Receipt: React.FC<RouteComponentProps> = ({ history }) => {
   const contents = history.location.state
     ? (history.location.state as any)?.contents
     : null;
-
-  const toastId = 0;
+  const [paymentStatus, setPaymentStatus] = useState<PAYMENT_STATUS>(
+    PAYMENT_STATUS.SUBMITTED
+  );
+  const { setOpen, setAlertSeverity, setAlertMessage } = useContext(
+    AlertContext
+  );
   const qrCodeDiv: React.RefObject<HTMLInputElement> = React.createRef();
 
-  useEffect(() => {
-    verify();
-    // TODO (#50): Call confirm() upon payflow success
-    setTimeout(() => {
-      confirm();
-    }, 3000);
-    generateQR();
-  }, []);
-
-  const returnToHome = () => {
-    history.push({
-      pathname: HOME_PAGE,
-    });
-  };
-
   const verify = () => {
-    toast("Verifying payment, please wait...", {
-      toastId: toastId,
-      position: toast.POSITION.TOP_CENTER,
-      type: toast.TYPE.INFO,
-      autoClose: 5000,
-      hideProgressBar: false,
-    });
+    setAlertSeverity("info");
+    setAlertMessage(`Verifying payment, please wait...`);
+    setOpen(true);
   };
 
   const confirm = () => {
-    toast.update(toastId, {
-      render: `Order ${orderId} Confimed!`,
-      type: toast.TYPE.SUCCESS,
-      autoClose: 3000,
-      hideProgressBar: true,
-      transition: Flip,
-    });
+    setAlertSeverity("success");
+    setAlertMessage(`Order ${orderId} Confimed!`);
   };
 
   const generateQR = () => {
@@ -72,13 +49,29 @@ const Receipt: React.FC<RouteComponentProps> = ({ history }) => {
     );
   };
 
+  useEffect(() => {
+    verify();
+    // TODO (#50): Replace timeout mock with actual payflow
+    setTimeout(() => {
+      setPaymentStatus(PAYMENT_STATUS.SUCCESS);
+    }, 3000);
+    generateQR();
+  }, [generateQR, verify]);
+
+  useEffect(() => {
+    if (paymentStatus === PAYMENT_STATUS.SUCCESS) {
+      confirm();
+    }
+  }, [paymentStatus]);
+
+  const returnToHome = () => {
+    history.push({
+      pathname: HOME_PAGE,
+    });
+  };
+
   return (
     <div className="receipt">
-      <StyledToastContainer
-        autoClose={5000}
-        pauseOnFocusLoss={false}
-        transition={Zoom}
-      />
       <Typography variant="h4">Receipt</Typography>
       <div className="qrCode" ref={qrCodeDiv}>
         <canvas id="canvas" />
