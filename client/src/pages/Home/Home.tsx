@@ -54,6 +54,8 @@ function Home(props: any) {
   };
 
   const generatePlaceholderStores = () => {
+    // Fill an array with nulls, StoreList contains logic
+    // to render StorePlaceholder if store is null
     return new Array(6).fill(null);
   };
 

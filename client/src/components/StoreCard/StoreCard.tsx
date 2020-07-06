@@ -6,8 +6,6 @@ import { useTheme } from "@material-ui/core/styles";
 import { isDebug } from "src/config";
 import { parseRawAddressNewlines } from "src/utils";
 import StoreCardMedia from "./StoreCardMedia";
-import StorePlaceholder from "src/components/StorePlaceholder";
-import "src/css/animation.css";
 
 // Specific Constants for this component
 export const MAX_CARD_HEIGHT = 100;
@@ -16,19 +14,13 @@ function StoreCard({
   store,
   redirect,
 }: {
-  store: Store | null;
+  store: Store;
   redirect: (url: string) => void;
 }) {
   // Grab the globally-defined AppTheme via useTheme hook
   const theme = useTheme();
   // .spacing([1...4]) retrieves 4 non-zero preset spacing
   const themeSpacing = theme.spacing(1);
-
-  // Logic in StoreCard to render placeholder
-  // component when given a 'null'-loading store value
-  if (!store) {
-    return <StorePlaceholder />;
-  }
 
   const redirectWrapper = () => {
     redirect("?id=" + store["store-id"] + "&mid=" + store["merchant-id"]);
@@ -42,7 +34,6 @@ function StoreCard({
         marginTop: themeSpacing,
         padding: themeSpacing,
       }}
-      className="animate-gradient"
     >
       <Grid
         container

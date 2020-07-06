@@ -21,13 +21,17 @@ function StoreList({ stores }: { stores: Store[] }) {
   return (
     <div className="StoreList">
       {stores &&
-        stores.map((store: Store | null, i: number) => (
-          <StoreCard
-            key={store ? store["store-id"] : `store-${i}`}
-            redirect={enterStore}
-            store={store}
-          />
-        ))}
+        stores.map((store: Store | null, i: number) =>
+          store ? (
+            <StoreCard
+              key={store["store-id"]}
+              redirect={enterStore}
+              store={store}
+            />
+          ) : (
+            <StorePlaceholder key={`store-${i}`} />
+          )
+        )}
     </div>
   );
 }
