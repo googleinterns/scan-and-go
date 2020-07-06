@@ -27,6 +27,7 @@ function Home(props: any) {
   const [testPlaces, setTestPlaces] = useState<GMapPlace[]>([]);
   const [placeStores, setPlaceStores] = useState<Store[]>([]);
   const [useLocation, setUseLocation] = useState(false);
+  const [loadingLocation, setLoadingLocation] = useState(false);
   const [curGeoLocation, setCurGeoLocation] = useState<GeoLocation | null>(
     null
   );
@@ -42,6 +43,7 @@ function Home(props: any) {
     // Testing trigger with searching nearby restaurants with Places API
     //TODO(#131): Replace with server call for nearby stores when implemented
     if (text === SECRET_TRIGGER && curGeoLocation) {
+      setPlaceStores(generatePlaceholderStores());
       //TODO(#127): Update testing for fetching nearby places
       getNearbyPlacesTest(curGeoLocation, (places: any, status: any) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
@@ -51,10 +53,19 @@ function Home(props: any) {
     }
   };
 
+  const generatePlaceholderStores = () => {
+    return new Array(6).fill(null);
+  };
+
   const grabLocation = (state: boolean) => {
     setUseLocation(state);
+    setLoadingLocation(state);
     if (state) {
-      getGeoLocation(locationSuccessCallback);
+      setStores(generatePlaceholderStores());
+      getGeoLocation(locationSuccessCallback, () => {
+        setUseLocation(false);
+        setLoadingLocation(false);
+      });
     } else {
       // Clear search results?
       setStores([]);
@@ -64,6 +75,7 @@ function Home(props: any) {
 
   const locationSuccessCallback = (position: GeoLocation) => {
     setCurGeoLocation(position);
+    setLoadingLocation(false);
   };
 
   const scanStoreQRCallback = (storeUrl: string) => {
@@ -115,6 +127,7 @@ function Home(props: any) {
         iconCallback={grabLocation}
         onChangeCallback={updateSearchText}
         onSubmitCallback={readySearchText}
+        isLoading={loadingLocation}
         icon={[<LocationOnIcon color="primary" />, <LocationOffIcon />]}
       />
       {!useLocation && (

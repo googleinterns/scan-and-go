@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { OutlinedInput, InputLabel, InputAdornment } from "@material-ui/core";
 import { isDebug } from "src/config";
+import "src/css/animation.css";
 
 //TODO(#32) Need to setup JSDoc + better-docs to test documentation syntax
 /**
@@ -19,11 +20,13 @@ import { isDebug } from "src/config";
  */
 function IconSearchBar({
   icon,
+  isLoading,
   iconCallback,
   onChangeCallback,
   onSubmitCallback,
 }: {
   icon: React.ReactElement[];
+  isLoading?: boolean;
   iconCallback?: (status: boolean) => void;
   onChangeCallback?: (text: string) => void;
   onSubmitCallback?: (text: string) => void;
@@ -71,6 +74,7 @@ function IconSearchBar({
             position="start"
             onClick={iconClickWrapper}
             style={{ cursor: "pointer" }}
+            className={isLoading ? "animate-flicker" : undefined}
           >
             {iconStatus ? icon[0] : icon[1]}
           </InputAdornment>

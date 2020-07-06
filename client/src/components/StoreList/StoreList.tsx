@@ -2,6 +2,7 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import { Store } from "src/interfaces";
 import StoreCard from "src/components/StoreCard";
+import StorePlaceholder from "src/components/StorePlaceholder";
 import { SCANSTORE_PAGE } from "src/constants";
 
 function StoreList({ stores }: { stores: Store[] }) {
@@ -20,9 +21,9 @@ function StoreList({ stores }: { stores: Store[] }) {
   return (
     <div className="StoreList">
       {stores &&
-        stores.map((store) => (
+        stores.map((store: Store | null, i: number) => (
           <StoreCard
-            key={store["store-id"]}
+            key={store ? store["store-id"] : `store-${i}`}
             redirect={enterStore}
             store={store}
           />

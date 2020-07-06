@@ -1,0 +1,49 @@
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes flicker {
+  0% {
+    opacity: 1;
+  }
+  40% {
+    opacity: 0;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.animate-flicker {
+  animation: flicker 2s infinite;
+}
+
+@keyframes gradientProgression {
+  0% {
+    background-position: 100% 0%;
+  }
+  100% {
+    background-position: 15% 100%;
+  }
+}
+
+.idle-gradient {
+  background: rgba(128, 128, 128, 1);
+  background: linear-gradient(
+    90deg,
+    rgba(225, 225, 225, 1) 0%,
+    rgba(225, 225, 225, 0.5) 33%,
+    rgba(225, 225, 225, 1) 66%,
+    rgba(225, 225, 225, 0.5) 100%
+  );
+  background-size: 400% 400%;
+  animation: gradientProgression 1.5s linear infinite;
+}
