@@ -7424,6 +7424,13 @@ jsbn@~0.1.0:
   resolved "https://registry.yarnpkg.com/jsbn/-/jsbn-0.1.1.tgz#a5e654c2e5a2deb5f201d96cefbca80c0ef2f513"
   integrity sha1-peZUwuWi3rXyAdls77yoDA7y9RM=
 
+jsdoc-plugin-typescript@^2.0.5:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/jsdoc-plugin-typescript/-/jsdoc-plugin-typescript-2.0.5.tgz#b1981ffa08c7914841889cfbb1ebd25e23f08fad"
+  integrity sha512-LK33RCeid7CeAgqz9kh1shcgKOF3EqkzzGUIFImuiZpRMWiS4c5siM04K7hG4TDPaixsRdJV87Dzw6jayMUI5g==
+  dependencies:
+    string.prototype.matchall "^4.0.0"
+
 jsdoc@^3.6.4:
   version "3.6.4"
   resolved "https://registry.yarnpkg.com/jsdoc/-/jsdoc-3.6.4.tgz#246b2832a0ea8b37a441b61745509cfe29e174b6"
@@ -11557,7 +11564,7 @@ string-width@^4.1.0:
     is-fullwidth-code-point "^3.0.0"
     strip-ansi "^6.0.0"
 
-string.prototype.matchall@^4.0.2:
+string.prototype.matchall@^4.0.0, string.prototype.matchall@^4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/string.prototype.matchall/-/string.prototype.matchall-4.0.2.tgz#48bb510326fb9fdeb6a33ceaa81a6ea04ef7648e"
   integrity sha512-N/jp6O5fMf9os0JU3E72Qhf590RSRZU/ungsL/qJUYVTNv7hTG0P/dbPjxINVN9jpscu3nzYwKESU3P3RY5tOg==

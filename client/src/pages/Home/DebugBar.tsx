@@ -91,10 +91,11 @@ function DebugBar({
 
   // Get user identity details
   const testLogin = async () => {
-    const userToken = loginUser();
-    if (userToken) {
-      setIdentity(userToken);
-    }
+    loginUser().then((userToken: IdentityToken | null) => {
+      if (userToken) {
+        setIdentity(userToken);
+      }
+    });
   };
 
   // Scan Store's QR code

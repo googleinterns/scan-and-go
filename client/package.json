@@ -35,7 +35,8 @@
     "test": "react-scripts test -u --env=jest-environment-jsdom-sixteen",
     "eject": "react-scripts eject",
     "create-env": "printenv | grep \"^REACT_APP_\"  > .env",
-    "create-component": "python ../tools/create_component.py"
+    "create-component": "python ../tools/create_component.py",
+    "doc": "jsdoc -c jsdoc.conf.json"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -65,6 +66,7 @@
     "enzyme-to-json": "^3.5.0",
     "jest-environment-jsdom-sixteen": "^1.0.3",
     "jsdoc": "^3.6.4",
+    "jsdoc-plugin-typescript": "^2.0.5",
     "react-test-renderer": "^16.13.1"
   }
 }
