@@ -4,7 +4,7 @@ const helmet = require("helmet");
 const cors = require("cors");
 const apiRouter = require("./routers/api-router");
 const config = require("./config");
-const { populate } = require("./emulatedFirestore.js");
+require("dotenv").config();
 
 const app = express();
 

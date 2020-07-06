@@ -1,5 +1,6 @@
 import { CartItem } from "src/interfaces";
 import { DAY_PERIOD, PRICE_FRACTION_DIGITS } from "src/constants";
+import { microapps, isWeb } from "./config";
 
 // Get json from response
 const getJson = (res: any) => {
@@ -30,36 +31,84 @@ const catchErr = (err: any) => {
   console.error("Error: " + err);
 };
 
-// fetch response from url
-const fetchRes = async (reqType: string, data: any, url: string) => {
-  if (data == null) {
-    return await fetch(url);
-  } else {
-    return await fetch(url, {
-      method: reqType,
-      mode: "cors",
-      cache: "no-cache",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      redirect: "follow",
-      referrerPolicy: "no-referrer",
-      body: JSON.stringify(data),
+const getIdToken = async () => {
+  let idToken = "";
+  if (!isWeb) {
+    // Microapp flow
+    // TODO (#149): implement more secure nonce
+    const nonce = await fetchText("GET", {}, "/api/nonce");
+    const request = { nonce: nonce };
+    idToken = microapps.getIdentity(request).catch((err: any) => {
+      return null;
     });
+  } else {
+    // Web flow with Google Sign-In https://developers.google.com/identity/sign-in/web
+    // Load and initialize the GoogleAuth object, otherwise throws gapi/auth2 is not defined error
+    await new Promise((resolve, reject) => {
+      gapi.load("auth2", resolve);
+    });
+    gapi.auth2.init({ client_id: process.env.REACT_APP_MICROAPPS_CLIENT_ID });
+
+    // Force refresh is necessary to get a non-empty AuthResponse
+    const googleUser = gapi.auth2.getAuthInstance().currentUser.get();
+    idToken = await googleUser.reloadAuthResponse().then((res) => res.id_token);
   }
+  return idToken;
+};
+
+const setHeaders = async (auth: Boolean = false) => {
+  const headers = new Headers({
+    "Content-Type": "application/json",
+  });
+  if (auth) {
+    const idToken = await getIdToken();
+    headers.append("Authorization", "Bearer " + idToken);
+  }
+  return headers;
+};
+
+// fetch response from url
+const fetchRes = async (
+  reqType: string,
+  data: Object = {},
+  url: string,
+  auth: Boolean = false
+) => {
+  const headers = await setHeaders(auth);
+  let body;
+  if (reqType === "POST") {
+    body = JSON.stringify(data);
+  }
+  return await fetch(url, {
+    method: reqType,
+    credentials: "include",
+    headers: headers,
+    redirect: "follow",
+    referrerPolicy: "no-referrer",
+    body: body,
+  });
 };
 
 // fetch json response from url
-export const fetchJson = async (reqType: string, data: any, url: string) => {
-  return fetchRes(reqType, data, url)
+export const fetchJson = async (
+  reqType: string,
+  data: any,
+  url: string,
+  auth: Boolean = false
+) => {
+  return fetchRes(reqType, data, url, auth)
     .then((res) => getJson(res))
     .catch((err) => catchErr(err));
 };
 
 // fetch text response from url
-export const fetchText = async (reqType: string, data: any, url: string) => {
-  return fetchRes(reqType, data, url)
+export const fetchText = async (
+  reqType: string,
+  data: any,
+  url: string,
+  auth: Boolean = false
+) => {
+  return fetchRes(reqType, data, url, auth)
     .then((res) => getText(res))
     .catch((err) => catchErr(err));
 };

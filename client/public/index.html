@@ -25,10 +25,17 @@
       Link to CDN for microapps.js library?
     -->
     <script src="https://microapps.google.com/apis/v1alpha/microapps.js"></script>
-    <script
-      id="mapPlacesAPIScript"
-      src="https://maps.googleapis.com/maps/api/js?key=%REACT_APP_GOOGLE_MAPS_API_KEY%&libraries=places"
-    ></script>
+    <script id="mapPlacesAPIScript" src="https://maps.googleapis.com/maps/api/js?key=%REACT_APP_GOOGLE_MAPS_API_KEY%&libraries=places"></script>
+
+    <meta name="google-signin-scope" content="profile email"/>
+    <meta name="google-signin-client_id" content="%REACT_APP_MICROAPPS_CLIENT_ID%"}/>
+    <script src="https://apis.google.com/js/platform.js?onload=triggerGoogleLoaded" async defer></script>
+    <script type="text/javascript">
+      function triggerGoogleLoaded() {
+        window.dispatchEvent(new Event('google-loaded'));
+      }
+    </script>
+
     <title>ScanAndGo GPay</title>
   </head>
   <body>
