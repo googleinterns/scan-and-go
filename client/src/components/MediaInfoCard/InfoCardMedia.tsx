@@ -12,13 +12,13 @@ function InfoCardMedia({
 }: {
   media: string;
   maxHeight?: number;
-  variant?: "rounded" | "circle" | "placeholder" | undefined;
+  variant?: "rounded" | "circle" | undefined;
   placeholder?: boolean | undefined;
 }) {
   const theme = useTheme();
   const themeSpacing = theme.spacing(1);
 
-  const DEFAULT_IMG_HEIGTH = themeConfig.default_card_img_height;
+  const DEFAULT_IMG_HEIGHT = themeConfig.default_card_img_height;
 
   let imgBorderRadius = "0%";
   // Parse css style given props
@@ -42,8 +42,8 @@ function InfoCardMedia({
     if (imgSrcRef) {
       const constrainByHeight = imgSrcRef.height <= imgSrcRef.width;
       setImgStyle({
-        height: constrainByHeight ? DEFAULT_IMG_HEIGTH : "auto",
-        width: constrainByHeight ? "auto" : DEFAULT_IMG_HEIGTH,
+        height: constrainByHeight ? DEFAULT_IMG_HEIGHT : "auto",
+        width: constrainByHeight ? "auto" : DEFAULT_IMG_HEIGHT,
         maxHeight: constrainByHeight ? maxHeight : "auto",
         maxWidth: constrainByHeight ? "auto" : maxHeight,
       });
@@ -55,8 +55,8 @@ function InfoCardMedia({
       elevation={2}
       style={{
         borderRadius: imgBorderRadius,
-        height: DEFAULT_IMG_HEIGTH,
-        width: DEFAULT_IMG_HEIGTH,
+        height: DEFAULT_IMG_HEIGHT,
+        width: DEFAULT_IMG_HEIGHT,
         maxHeight: maxHeight,
         maxWidth: maxHeight,
         overflow: "hidden",
@@ -64,13 +64,7 @@ function InfoCardMedia({
       }}
       className={placeholder ? "idle-gradient" : undefined}
     >
-      <img
-        id="info-card-media-imgSrc"
-        src={media}
-        style={{
-          ...imgStyle,
-        }}
-      />
+      <img id="info-card-media-imgSrc" src={media} style={imgStyle} />
     </Paper>
   );
 }

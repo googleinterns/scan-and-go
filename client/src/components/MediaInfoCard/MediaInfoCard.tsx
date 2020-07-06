@@ -19,7 +19,7 @@ function MediaInfoCard({
   placeholder,
 }: {
   media: string;
-  mediaVariant?: "rounded" | "circle" | "placeholder";
+  mediaVariant?: "rounded" | "circle";
   title: React.ReactElement;
   content: React.ReactElement;
   rightColumn?: React.ReactElement;
