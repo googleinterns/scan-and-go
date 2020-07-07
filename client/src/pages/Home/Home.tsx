@@ -4,6 +4,7 @@ import StoreList from "src/components/StoreList";
 import TextInputField from "src/components/TextInputField";
 import UserHeader from "src/components/UserHeader";
 import DebugBar from "./DebugBar";
+import PlaceholderStoreList from "src/components/PlaceholderStoreList";
 import IconSearchBar from "src/components/IconSearchBar";
 import LocationOnIcon from "@material-ui/icons/LocationOn";
 import LocationOffIcon from "@material-ui/icons/LocationOff";
@@ -25,9 +26,11 @@ function Home(props: any) {
   const { user, setUser } = useContext(AuthContext);
   const [userid, setUserid] = useState("");
   const [stores, setStores] = useState<Store[]>([]);
+  const [loadingStores, setLoadingStores] = useState<boolean>(false);
   const [testPlaces, setTestPlaces] = useState<GMapPlace[]>([]);
   const [placeStores, setPlaceStores] = useState<Store[]>([]);
   const [useLocation, setUseLocation] = useState(false);
+  const [loadingLocation, setLoadingLocation] = useState(false);
   const [curGeoLocation, setCurGeoLocation] = useState<GeoLocation | null>(
     null
   );
@@ -44,9 +47,11 @@ function Home(props: any) {
     //TODO(#131): Replace with server call for nearby stores when implemented
     if (text === SECRET_TRIGGER && curGeoLocation) {
       //TODO(#127): Update testing for fetching nearby places
+      setLoadingStores(true);
       getNearbyPlacesTest(curGeoLocation, (places: any, status: any) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
           setTestPlaces(places);
+          setLoadingStores(false);
         }
       });
     }
@@ -54,8 +59,14 @@ function Home(props: any) {
 
   const grabLocation = (state: boolean) => {
     setUseLocation(state);
+    setLoadingLocation(state);
+    setLoadingStores(state);
     if (state) {
-      getGeoLocation(locationSuccessCallback);
+      getGeoLocation(locationSuccessCallback, () => {
+        setUseLocation(false);
+        setLoadingLocation(false);
+        setLoadingStores(false);
+      });
     } else {
       // Clear search results?
       setStores([]);
@@ -65,6 +76,8 @@ function Home(props: any) {
 
   const locationSuccessCallback = (position: GeoLocation) => {
     setCurGeoLocation(position);
+    setLoadingLocation(false);
+    setLoadingStores(false);
   };
 
   const scanStoreQRCallback = (storeUrl: string) => {
@@ -89,7 +102,11 @@ function Home(props: any) {
 
   useEffect(() => {
     if (curGeoLocation) {
-      getStoresByLocation(curGeoLocation).then((res: any) => setStores(res));
+      setLoadingStores(true);
+      getStoresByLocation(curGeoLocation).then((res: any) => {
+        setStores(res);
+        setLoadingStores(false);
+      });
     }
   }, [curGeoLocation]);
 
@@ -116,6 +133,7 @@ function Home(props: any) {
         iconCallback={grabLocation}
         onChangeCallback={updateSearchText}
         onSubmitCallback={readySearchText}
+        isLoading={loadingLocation}
         icon={[<LocationOnIcon color="primary" />, <LocationOffIcon />]}
       />
       {!useLocation && (
@@ -125,6 +143,7 @@ function Home(props: any) {
       )}
       <StoreList stores={stores} />
       <StoreList stores={placeStores} />
+      {loadingStores && <PlaceholderStoreList length={6} />}
     </div>
   );
 }

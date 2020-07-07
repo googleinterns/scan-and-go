@@ -20,7 +20,7 @@ function StoreList({ stores }: { stores: Store[] }) {
   return (
     <div className="StoreList">
       {stores &&
-        stores.map((store) => (
+        stores.map((store: Store) => (
           <StoreCard
             key={store["store-id"]}
             redirect={enterStore}

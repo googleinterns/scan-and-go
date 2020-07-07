@@ -5,6 +5,7 @@ import ItemCard from "src/components/ItemCard";
 import Cart from "src/components/Cart";
 import CartHeader from "src/components/CartHeader";
 import TextInputField from "src/components/TextInputField";
+import PlaceholderCart from "src/components/PlaceholderCart";
 import {
   FormGroup,
   FormControlLabel,
@@ -52,6 +53,7 @@ function ScanStore() {
 
   const [curStore, setCurStore] = useState<Store>(emptyStore());
   const [cartItems, updateCart] = useState<CartItem[]>([]);
+  const [loadingItem, setLoadingItem] = useState<boolean>(false);
   const [showCompactCart, setShowCompactCart] = useState(false);
   const [showDebug, setShowDebug] = useState(false);
   const [debugBarcode, setDebugBarcode] = useState<string>("");
@@ -85,7 +87,10 @@ function ScanStore() {
   };
 
   const updateNewItem = async (barcode: string) => {
+    setLoadingItem(true);
     const item: Item = await getItem(barcode, merchantID);
+    setLoadingItem(false);
+    // Override placeholder item when we receive actual info
     if (item) {
       updateCart([
         ...cartItems,
@@ -159,6 +164,7 @@ function ScanStore() {
         collapse={showCompactCart}
         updateItemQuantity={updateItemQuantity}
       />
+      {loadingItem && <PlaceholderCart length={1} />}
       <Fab
         style={{ position: "fixed", bottom: "10px", right: "10px" }}
         color="primary"

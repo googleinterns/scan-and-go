@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Store } from "src/interfaces";
-import { GEO_PRECISION_DIGITS } from "src/constants";
-import { Box, Typography, Card, Grid } from "@material-ui/core";
+import { GEO_PRECISION_DIGITS, PLACEHOLDER_STORE_MEDIA } from "src/constants";
+import { Box, Typography, Paper, Grid } from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
 import { isDebug } from "src/config";
 import { parseRawAddressNewlines } from "src/utils";
-import StoreCardMedia from "./StoreCardMedia";
-
-// Specific Constants for this component
-export const MAX_CARD_HEIGHT = 100;
+import MediaInfoCard from "src/components/MediaInfoCard";
 
 function StoreCard({
   store,
@@ -27,47 +24,54 @@ function StoreCard({
   };
 
   return (
-    <Card
+    <MediaInfoCard
+      media={store.media ? store.media : PLACEHOLDER_STORE_MEDIA}
+      mediaVariant="circle"
+      title={
+        <Typography component="span" variant="subtitle1">
+          <Box display="inline" fontWeight="fontWeightBold">
+            {store.name}
+          </Box>
+        </Typography>
+      }
+      content={
+        <div>
+          {store.vicinity &&
+            parseRawAddressNewlines(store.vicinity).map(
+              (text: string, i: number) => (
+                <Typography
+                  key={`detail-${store["store-id"]}-${i}`}
+                  variant="body1"
+                >
+                  {text}
+                </Typography>
+              )
+            )}
+        </div>
+      }
+      rightColumn={
+        <Grid
+          item
+          container
+          style={{ height: "100%" }}
+          justify="flex-end"
+          direction="column"
+        >
+          <Grid item>
+            <Typography variant="body2" align="right">
+              {store.business_status
+                ? store.business_status
+                : "Schrödinger's Store"}
+            </Typography>
+          </Grid>
+        </Grid>
+      }
       onClick={redirectWrapper}
+      elevation={1}
       style={{
         cursor: "pointer",
-        marginTop: themeSpacing,
-        padding: themeSpacing,
       }}
-    >
-      <Grid
-        container
-        direction="row"
-        justify="space-between"
-        alignItems="center"
-      >
-        <Grid item xs={4}>
-          <StoreCardMedia media={store.media} height={MAX_CARD_HEIGHT} />
-        </Grid>
-        <Grid item xs={8}>
-          <Typography component="span" variant="subtitle1">
-            <Box display="inline" fontWeight="fontWeightBold">
-              {store.name}
-            </Box>
-          </Typography>
-          {isDebug && (
-            <Typography variant="body1">
-              [{store.latitude.toFixed(GEO_PRECISION_DIGITS)},
-              {store.longitude.toFixed(GEO_PRECISION_DIGITS)}]
-            </Typography>
-          )}
-          {store.vicinity &&
-            parseRawAddressNewlines(store.vicinity).map((text) => (
-              <Typography variant="body1">{text}</Typography>
-            ))}
-          <Typography variant="body2" align="right">
-            {store.business_status
-              ? store.business_status
-              : "Schrödinger's Store"}
-          </Typography>
-        </Grid>
-      </Grid>
-    </Card>
+    />
   );
 }
 

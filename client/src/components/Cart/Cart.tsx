@@ -23,7 +23,7 @@ function Cart({
   return (
     <div className="Cart">
       {contents.length > 0 &&
-        contents.map((cartItem) => {
+        contents.map((cartItem: CartItem) => {
           const cardProps = {
             key: cartItem.item.barcode,
             cartItem: cartItem,
