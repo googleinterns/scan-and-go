@@ -51,9 +51,7 @@ function MediaScanner({
 
   return (
     <div className="MediaScanner">
-      {React.cloneElement(button, {
-        onClick: requestMediaUpload,
-      })}
+      <div onClick={requestMediaUpload}>{button}</div>
       {uploadedImg && (
         <img
           hidden={true}
