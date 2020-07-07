@@ -13,6 +13,7 @@ import AlertSnackbar from "./components/AlertSnackbar";
 import { ThemeProvider, useTheme } from "@material-ui/core/styles";
 import { AuthContextProvider } from "src/contexts/AuthContext";
 import { AlertContextProvider } from "./contexts/AlertContext";
+import PrivateRoute from "./components/PrivateRoute";
 import "src/css/App.css";
 
 function App() {
@@ -37,7 +38,7 @@ function App() {
                 <Route path="/" component={Login} exact />
                 <Route path="/home" component={Home} />
                 <Route path="/store" component={ScanStore} />
-                <Route path="/receipt" component={Receipt} />
+                <PrivateRoute path="/receipt" component={Receipt} />
                 <Route component={NotFound} />
               </Switch>
               <AlertSnackbar />
