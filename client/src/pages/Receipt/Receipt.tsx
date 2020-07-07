@@ -56,7 +56,7 @@ const Receipt: React.FC<RouteComponentProps> = ({ history }) => {
       setPaymentStatus(PAYMENT_STATUS.SUCCESS);
     }, 3000);
     generateQR();
-  }, [generateQR, verify]);
+  }, []);
 
   useEffect(() => {
     if (paymentStatus === PAYMENT_STATUS.SUCCESS) {
