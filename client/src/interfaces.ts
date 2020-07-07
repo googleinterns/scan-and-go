@@ -77,10 +77,10 @@ export interface User {
   "user-id": string;
 }
 
-export const emptyUser: User = ({
+export const emptyUser: User = {
   name: "",
   "user-id": "",
-});
+};
 
 // results json response from PlacesAPI call using PlacesService:
 // https://developers.google.com/maps/documentation/javascript/reference/places-service#PlaceResult
