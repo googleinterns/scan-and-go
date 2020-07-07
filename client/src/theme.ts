@@ -63,7 +63,7 @@ export const LightErrorTheme = createMuiTheme({
 
 // UI config variables
 export const themeConfig = {
-  max_card_height: 100,
+  max_card_height: 120,
   default_card_img_height: "20vw",
 };
 

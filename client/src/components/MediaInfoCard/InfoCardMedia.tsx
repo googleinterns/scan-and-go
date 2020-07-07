@@ -31,14 +31,14 @@ function InfoCardMedia({
   // Default css styling
   const [imgStyle, setImgStyle] = useState({});
 
-  // This hook is to wait for image data to load from bytes
+  // This callback waits for image data to load from bytes
   // then determine which axis to constrain image
   // if height > width, constrain by width
   // else, constrain by height
-  useEffect(() => {
-    const imgSrcRef = document.getElementById(
-      "info-card-media-imgSrc"
-    ) as HTMLImageElement;
+  const imgAutoSize = (
+    event: React.SyntheticEvent<HTMLImageElement, Event>
+  ) => {
+    const imgSrcRef = event.currentTarget;
     if (imgSrcRef) {
       const constrainByHeight = imgSrcRef.height <= imgSrcRef.width;
       setImgStyle({
@@ -48,7 +48,7 @@ function InfoCardMedia({
         maxWidth: constrainByHeight ? "auto" : maxHeight,
       });
     }
-  }, []);
+  };
 
   return (
     <Paper
@@ -64,7 +64,12 @@ function InfoCardMedia({
       }}
       className={placeholder ? "idle-gradient" : undefined}
     >
-      <img id="info-card-media-imgSrc" src={media} style={imgStyle} />
+      <img
+        id="info-card-media-imgSrc"
+        src={media}
+        style={imgStyle}
+        onLoad={imgAutoSize}
+      />
     </Paper>
   );
 }

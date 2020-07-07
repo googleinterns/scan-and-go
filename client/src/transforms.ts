@@ -17,7 +17,8 @@ export const transformGMapPlaceToStore = (gMapPlace: GMapPlace): Store => {
     // From: https://developers.google.com/places/web-service/search#PlaceSearchResults
     // If any photos exist, it will only ever be [0]
     newStore.media = gMapPlace.photos[0].getUrl({
-      maxHeight: themeConfig.max_card_height,
+      maxHeight: themeConfig.max_card_height * 2,
+      maxWidth: themeConfig.max_card_height * 2,
     });
   }
   return newStore;

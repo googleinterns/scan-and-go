@@ -1,6 +1,7 @@
 import React from "react";
 import { Paper, Grid } from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
+import { themeConfig } from "src/theme";
 import InfoCardMedia from "./InfoCardMedia";
 import "src/css/animation.css";
 
@@ -48,6 +49,7 @@ function MediaInfoCard({
         <Grid item style={{ marginRight: themeSpacing }}>
           <InfoCardMedia
             media={media}
+            maxHeight={themeConfig.max_card_height}
             variant={mediaVariant}
             placeholder={placeholder}
           />

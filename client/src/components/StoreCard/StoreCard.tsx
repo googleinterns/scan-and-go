@@ -37,9 +37,16 @@ function StoreCard({
       content={
         <div>
           {store.vicinity &&
-            parseRawAddressNewlines(store.vicinity).map((text) => (
-              <Typography variant="body1">{text}</Typography>
-            ))}
+            parseRawAddressNewlines(store.vicinity).map(
+              (text: string, i: number) => (
+                <Typography
+                  key={`detail-${store["store-id"]}-${i}`}
+                  variant="body1"
+                >
+                  {text}
+                </Typography>
+              )
+            )}
         </div>
       }
       rightColumn={

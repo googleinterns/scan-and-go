@@ -31,9 +31,16 @@ function ItemCard({
       content={
         <div>
           {cartItem.item.detail &&
-            parseRawTextNewlines(cartItem.item.detail).map((line: string) => (
-              <Typography variant="subtitle2">{line}</Typography>
-            ))}
+            parseRawTextNewlines(cartItem.item.detail).map(
+              (line: string, i: number) => (
+                <Typography
+                  key={`detail-${cartItem.item.barcode}-${i}`}
+                  variant="subtitle2"
+                >
+                  {line}
+                </Typography>
+              )
+            )}
         </div>
       }
       rightColumn={
