@@ -30,7 +30,7 @@ import {
   MediaResponse,
   emptyMediaResponse,
 } from "src/interfaces";
-import { urlGetParam, emptyArray } from "src/utils";
+import { urlGetParam } from "src/utils";
 import { getStoreInfo, getItem } from "src/pages/Actions";
 import {
   HOME_PAGE,

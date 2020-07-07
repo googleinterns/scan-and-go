@@ -19,7 +19,7 @@ import {
 import { Typography } from "@material-ui/core";
 import { isWeb, isDebug, google } from "src/config";
 import { transformGMapPlaceToStore } from "src/transforms";
-import { parseUrlParam, emptyArray } from "src/utils";
+import { parseUrlParam } from "src/utils";
 
 function Home(props: any) {
   const [userid, setUserid] = useState("");
