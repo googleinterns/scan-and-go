@@ -9,12 +9,13 @@ import AppTheme from "src/theme";
 import { isWeb } from "src/config";
 import { Container } from "@material-ui/core";
 import { ThemeProvider } from "@material-ui/core/styles";
+import "src/css/App.css";
 
 function App() {
   return (
     <main>
       <ThemeProvider theme={AppTheme}>
-        <Container disableGutters={!isWeb}>
+        <Container className="AppContainer" disableGutters={!isWeb}>
           <Switch>
             <Route path="/" component={Login} exact />
             <Route path="/home" component={Home} />

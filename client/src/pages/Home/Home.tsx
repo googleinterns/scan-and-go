@@ -21,7 +21,11 @@ import { isWeb, isDebug, google } from "src/config";
 import { transformGMapPlaceToStore } from "src/transforms";
 import { parseUrlParam } from "src/utils";
 
-function Home(props: any) {
+function Home(props: {
+  location: {
+    state: any;
+  };
+}) {
   const [userid, setUserid] = useState("");
   const [curUser, setCurUser] = useState<User>(emptyUser());
   const [stores, setStores] = useState<Store[]>([]);
@@ -76,7 +80,6 @@ function Home(props: any) {
   const locationSuccessCallback = (position: GeoLocation) => {
     setCurGeoLocation(position);
     setLoadingLocation(false);
-    setLoadingStores(false);
   };
 
   const scanStoreQRCallback = (storeUrl: string) => {
@@ -101,7 +104,6 @@ function Home(props: any) {
 
   useEffect(() => {
     if (curGeoLocation) {
-      setLoadingStores(true);
       getStoresByLocation(curGeoLocation).then((res: any) => {
         setStores(res);
         setLoadingStores(false);
