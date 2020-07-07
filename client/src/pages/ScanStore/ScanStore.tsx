@@ -31,7 +31,6 @@ import {
 } from "src/interfaces";
 import { urlGetParam } from "src/utils";
 import { getStoreInfo, getItem } from "src/pages/Actions";
-import { BrowserMultiFormatReader } from "@zxing/library";
 import {
   HOME_PAGE,
   RECEIPT_PAGE,
@@ -40,7 +39,6 @@ import {
 } from "src/constants";
 import { microapps, isWeb, isDebug } from "src/config";
 import { ErrorTheme } from "src/theme";
-import SampleBarcode from "src/img/Sample_EAN8.png";
 declare const window: any;
 
 // Flag to toggle display of taken image (for debugging)
@@ -54,31 +52,9 @@ function ScanStore() {
 
   const [curStore, setCurStore] = useState<Store>(emptyStore());
   const [cartItems, updateCart] = useState<CartItem[]>([]);
-  const [showCart, setShowCart] = useState(false);
+  const [showCompactCart, setShowCompactCart] = useState(false);
   const [showDebug, setShowDebug] = useState(false);
-  const [uploadImg, setUploadImg] = useState<MediaResponse>(
-    emptyMediaResponse()
-  );
-
-  const debugImgId = "testImgSrc";
-  const uploadImgId = "uploadImgSrc";
-
-  const [curBarcode, setCurBarcode] = useState<string>("");
-
-  // TODO (#56): Separate UI and control functions
-  const addItem = async () => {
-    if (!curBarcode) {
-      // If empty, use media API
-      const imgReq = {
-        allowedMimeTypes: ["image/jpeg"],
-        allowedSources: ["camera"], // Restrict to camera scanning only
-      };
-      const imgRes = await microapps.requestMedia(imgReq);
-      setUploadImg(imgRes);
-    } else {
-      addItemToCart(curBarcode);
-    }
-  };
+  const [debugBarcode, setDebugBarcode] = useState<string>("");
 
   const addItemToCart = async (barcode: string) => {
     const existingItem = cartItems.find(
@@ -123,7 +99,7 @@ function ScanStore() {
   };
 
   const toggleCart = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setShowCart(event.target.checked);
+    setShowCompactCart(event.target.checked);
   };
 
   const toggleDebug = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -141,22 +117,6 @@ function ScanStore() {
     });
   };
 
-  const processImageBarcode = async (img: HTMLImageElement) => {
-    const codeReader = new BrowserMultiFormatReader();
-    if (img) {
-      const result = await codeReader
-        .decodeFromImage(img)
-        .then((res: any) => res.text);
-      addItemToCart(result);
-      setCurBarcode(result);
-    }
-  };
-
-  const testBarcode = () => {
-    const img = document.getElementById(debugImgId) as HTMLImageElement;
-    processImageBarcode(img);
-  };
-
   // Upon entering page, grab store details
   useEffect(() => {
     if (storeID) {
@@ -164,20 +124,11 @@ function ScanStore() {
     }
   }, []);
 
-  // When we change what image we uploaded, run extract barcode client-side
-  useEffect(() => {
-    if (uploadImg.mimeType) {
-      // Have something
-      const img = document.getElementById(uploadImgId) as HTMLImageElement;
-      processImageBarcode(img);
-    }
-  }, [uploadImg]);
-
   return (
     <div className="ScanStore">
       <CartHeader
         store={curStore}
-        scanBarcodeCallback={addItem}
+        scanBarcodeCallback={addItemToCart}
         content={
           <FormGroup row>
             <FormControlLabel
@@ -195,37 +146,17 @@ function ScanStore() {
       />
       {showDebug && [
         <TextInputField
-          text={curBarcode ? curBarcode : BARCODE_PLACEHOLDER}
-          setState={setCurBarcode}
+          text={debugBarcode ? debugBarcode : BARCODE_PLACEHOLDER}
+          setState={setDebugBarcode}
         />,
-        <button id="testScanBtn" onClick={testBarcode}>
-          Test Barcode API
+        <button id="testScanBtn" onClick={() => addItemToCart(debugBarcode)}>
+          Test Add Item
         </button>,
       ]}
-      <img
-        id={debugImgId}
-        hidden={true}
-        width="200"
-        height="200"
-        src={SampleBarcode}
-      />
-      {uploadImg.mimeType && (
-        <Grid item xs={12} justify="center">
-          <Paper elevation={2}>
-            <img
-              id={uploadImgId}
-              hidden={!debugImg}
-              width="200"
-              height="200"
-              src={"data:" + uploadImg.mimeType + ";base64," + uploadImg.bytes}
-            />
-          </Paper>
-        </Grid>
-      )}
       <Divider />
       <Cart
         contents={cartItems}
-        collapse={showCart}
+        collapse={showCompactCart}
         updateItemQuantity={updateItemQuantity}
       />
       <Fab

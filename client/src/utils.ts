@@ -1,5 +1,6 @@
 import { CartItem } from "src/interfaces";
 import { DAY_PERIOD, PRICE_FRACTION_DIGITS } from "src/constants";
+import { BrowserMultiFormatReader } from "@zxing/library";
 import { microapps, isWeb } from "./config";
 
 // Get json from response
@@ -122,10 +123,15 @@ export const extractIdentityToken = (response: string) => {
   return JSON.parse(atob(response.split(".")[1]));
 };
 
+// Parse a given url for parameters
+export const parseUrlParam = (url: string, param: string): string | null => {
+  const urlParams = new URLSearchParams(url);
+  return urlParams.get(param);
+};
+
 // Grab url parameter
 export const urlGetParam = (param: string): string | null => {
-  const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get(param);
+  return parseUrlParam(window.location.search, param);
 };
 
 // Decode json from encoded url parameter
@@ -209,4 +215,31 @@ export const deepHtmlStringMatch = (element: any, match: string) => {
   return element.props.children
     .map((child: any) => deepHtmlStringMatch(child, match))
     .reduce((accum: boolean, cur: boolean) => accum || cur);
+};
+
+// Given a HTML img element, process image data for barcode string
+export const processImageBarcode = async (img: HTMLImageElement) => {
+  const codeReader = new BrowserMultiFormatReader();
+  if (img) {
+    const result = await codeReader
+      .decodeFromImage(img)
+      .then((res: any) => res.text)
+      .catch((err: any) => null);
+    if (result) {
+      return result;
+    }
+  }
+  return false;
+};
+
+// Jest does not load up image files by default
+// in order to actually read file data, we use nodejs "fs" module
+export const jestImportImage = (imgPath: string) => {
+  const fs = require("fs");
+  // Actually read and load up the file information
+  const imgFileRaw = fs.readFileSync(imgPath);
+  const imgFileData = imgFileRaw.toString("base64");
+  const imgFileType = imgPath.split(".").pop();
+  // Format this information into src expected format
+  return `data:image/${imgFileType};base64,${imgFileData}`;
 };
