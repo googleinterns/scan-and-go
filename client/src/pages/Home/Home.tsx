@@ -21,11 +21,7 @@ import { isWeb, isDebug, google } from "src/config";
 import { transformGMapPlaceToStore } from "src/transforms";
 import { parseUrlParam } from "src/utils";
 
-function Home(props: {
-  location: {
-    state: any;
-  };
-}) {
+function Home(props: any) {
   const [userid, setUserid] = useState("");
   const [curUser, setCurUser] = useState<User>(emptyUser());
   const [stores, setStores] = useState<Store[]>([]);
