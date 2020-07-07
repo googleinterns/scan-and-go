@@ -6,6 +6,7 @@ import Cart from "src/components/Cart";
 import CartHeader from "src/components/CartHeader";
 import TextInputField from "src/components/TextInputField";
 import PlaceholderCart from "src/components/PlaceholderCart";
+import CartSummary from "src/components/CartSummary";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import {
@@ -34,13 +35,14 @@ import {
   MediaResponse,
   emptyMediaResponse,
 } from "src/interfaces";
-import { urlGetParam } from "src/utils";
+import { urlGetParam, getTotalPrice } from "src/utils";
 import { getStoreInfo, getItem } from "src/pages/Actions";
 import {
   HOME_PAGE,
   RECEIPT_PAGE,
   ITEM_LIST_API,
   BARCODE_PLACEHOLDER,
+  PRICE_FRACTION_DIGITS,
 } from "src/constants";
 import { microapps, isWeb, isDebug } from "src/config";
 import { ErrorTheme } from "src/theme";
@@ -58,6 +60,7 @@ function ScanStore() {
 
   const [curStore, setCurStore] = useState<Store>(emptyStore());
   const [cartItems, updateCart] = useState<CartItem[]>([]);
+  const [cartTotal, setCartTotal] = useState<number>(0.0);
   const [loadingItem, setLoadingItem] = useState<boolean>(false);
   const [showCompactCart, setShowCompactCart] = useState<boolean>(false);
   const [showDebug, setShowDebug] = useState<boolean>(false);
@@ -194,20 +197,20 @@ function ScanStore() {
           <Grid item container direction="row" justify="center">
             <div
               onClick={() => setShowFooter(!showFooter)}
-              style={{ zIndex: 1000, cursor: "pointer", marginTop: "-24px" }}
+              style={{ zIndex: 1000, marginTop: "-36px" }}
             >
-              {showFooter ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+              <Button>
+                {showFooter ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+              </Button>
             </div>
           </Grid>
           <Collapse in={showFooter} unmountOnExit={true}>
             <Grid item>
               <Divider />
-              <Typography variant="subtitle1" align="right">
-                Subtotal: $xx.xx
-              </Typography>
-              <Typography variant="subtitle1" align="right">
-                Total: $xxx.xx
-              </Typography>
+              <CartSummary
+                cartItems={cartItems}
+                setTotalCallback={(total: number) => setCartTotal(total)}
+              />
             </Grid>
           </Collapse>
           <Grid item style={{ paddingBottom: theme.spacing(2) }}>
@@ -217,7 +220,10 @@ function ScanStore() {
               color="primary"
               onClick={makePayment}
             >
-              Checkout
+              Checkout{" "}
+              {showFooter
+                ? ""
+                : `: $${cartTotal.toFixed(PRICE_FRACTION_DIGITS)}`}
             </Button>
           </Grid>
         </Grid>

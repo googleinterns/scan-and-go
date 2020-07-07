@@ -1,6 +1,7 @@
 import { CartItem } from "src/interfaces";
 import { DAY_PERIOD, PRICE_FRACTION_DIGITS } from "src/constants";
 import { BrowserMultiFormatReader } from "@zxing/library";
+import { priceSumArray, priceMul } from "src/priceLibrary";
 
 // Get json from response
 const getJson = (res: any) => {
@@ -119,16 +120,18 @@ export const getDayPeriod = () => {
   }
 };
 
+// UI Display price functions (return strings)
 export const getTotalPrice = (cartItems: CartItem[]) => {
-  let totPrice = 0.0;
-  for (const cartItem of cartItems) {
-    totPrice += cartItem.quantity * cartItem.item.price;
-  }
+  const totPrice = priceSumArray(
+    cartItems.map((cartItem) =>
+      priceMul(cartItem.item.price, cartItem.quantity)
+    )
+  );
   return totPrice.toFixed(PRICE_FRACTION_DIGITS);
 };
 
 export const getSubtotalPrice = (cartItem: CartItem) => {
-  return (cartItem.quantity * cartItem.item.price).toFixed(
+  return priceMul(cartItem.item.price, cartItem.quantity).toFixed(
     PRICE_FRACTION_DIGITS
   );
 };
