@@ -172,10 +172,7 @@ function ScanStore() {
               text={debugBarcode ? debugBarcode : BARCODE_PLACEHOLDER}
               setState={setDebugBarcode}
             />,
-            <button
-              id="testScanBtn"
-              onClick={() => addItemToCart(debugBarcode)}
-            >
+            <button onClick={() => addItemToCart(debugBarcode)}>
               Test Add Item
             </button>,
           ]}
@@ -220,10 +217,9 @@ function ScanStore() {
               color="primary"
               onClick={makePayment}
             >
-              Checkout{" "}
               {showFooter
-                ? ""
-                : `: $${cartTotal.toFixed(PRICE_FRACTION_DIGITS)}`}
+                ? "Checkout"
+                : `Checkout: $${cartTotal.toFixed(PRICE_FRACTION_DIGITS)}`}
             </Button>
           </Grid>
         </Grid>

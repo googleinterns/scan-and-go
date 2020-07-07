@@ -32,7 +32,6 @@ function CartSummary({
     if (setTotalCallback) setTotalCallback(cartTotal);
   }, [cartItems]);
 
-  // TODO: 2-column view for label: price
   return (
     <div className="CartSummary">
       <Grid container direction="row" justify="flex-end">
