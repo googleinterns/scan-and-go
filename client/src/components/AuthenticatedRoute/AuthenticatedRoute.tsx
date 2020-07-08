@@ -5,11 +5,15 @@ import { Redirect, RouteProps } from "react-router-dom";
 import { LOGIN_PAGE } from "src/constants";
 import { AlertContext } from "src/contexts/AlertContext";
 
-interface PrivateRouteProps extends RouteProps {
+interface AuthenticatedRouteProps extends RouteProps {
   component: any;
 }
 
-const PrivateRoute = (props: PrivateRouteProps) => {
+/**
+ * Route that wraps any component that requires user authentication,
+ * and redirects the user to the Login page otherwise.
+ */
+const AuthenticatedRoute = (props: AuthenticatedRouteProps) => {
   const { component: Component, ...rest } = props;
   const { user } = useContext(AuthContext);
   const { setOpen, setAlertMessage, setAlertSeverity } = useContext(
@@ -32,4 +36,4 @@ const PrivateRoute = (props: PrivateRouteProps) => {
   return <Component {...props} />;
 };
 
-export default PrivateRoute;
+export default AuthenticatedRoute;

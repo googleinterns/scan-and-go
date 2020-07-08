@@ -52,15 +52,20 @@ const Receipt: React.FC<RouteComponentProps> = ({ history }) => {
   const generateQR = () => {
     const text = `$Order ID: ${orderId}`;
 
-    const divHeight = parseInt(
-      window.getComputedStyle(qrCodeDiv.current)!.getPropertyValue("height"),
-      10
-    );
+    // Calculate QR code width to fit within screen (otherwise it defaults to a fixed size),
+    // taking into account space needed for text below QR code.
+    const divHeight =
+      0.8 *
+      parseInt(
+        window.getComputedStyle(qrCodeDiv.current)!.getPropertyValue("height"),
+        10
+      );
     const divWidth = parseInt(
       window.getComputedStyle(qrCodeDiv.current)!.getPropertyValue("width"),
       10
     );
-    const width = 0.8 * Math.min(divHeight, divWidth);
+    const width = Math.min(divHeight, divWidth);
+
     QRCode.toCanvas(
       document.getElementById("canvas"),
       text,
