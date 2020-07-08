@@ -32,6 +32,7 @@ export const DEFAULT_USER_HEADER_SUBTITLE =
 export const DEFAULT_CART_HEADER_TITLE = "My Cart";
 export const DEFAULT_STORE_HEADER_SUBTITLE = "Currently Shopping @";
 export const DEFAULT_BACK_BTN_TEXT = "back";
+export const DEFAULT_ALERT_DURATION = 3000;
 export const PRICE_FRACTION_DIGITS = 2;
 export const GEO_PRECISION_DIGITS = 3;
 export const PLACES_RADIUS_METERS = "5000";

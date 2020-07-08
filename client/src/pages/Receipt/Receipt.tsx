@@ -7,6 +7,7 @@ import QRCode from "qrcode";
 import { HOME_PAGE, PAYMENT_STATUS } from "src/constants";
 import { AlertContext } from "src/contexts/AlertContext";
 import "src/css/Receipt.css";
+import { CartItem } from "src/interfaces";
 declare const window: any;
 
 const Receipt: React.FC<RouteComponentProps> = ({ history }) => {
@@ -35,10 +36,16 @@ const Receipt: React.FC<RouteComponentProps> = ({ history }) => {
 
   const generateQR = () => {
     const text = `$Order ID: ${orderId}`;
-    const width = parseInt(
+
+    const divHeight = parseInt(
       window.getComputedStyle(qrCodeDiv.current)!.getPropertyValue("height"),
       10
     );
+    const divWidth = parseInt(
+      window.getComputedStyle(qrCodeDiv.current)!.getPropertyValue("width"),
+      10
+    );
+    const width = Math.min(divHeight, divWidth);
     QRCode.toCanvas(
       document.getElementById("canvas"),
       text,
@@ -56,7 +63,7 @@ const Receipt: React.FC<RouteComponentProps> = ({ history }) => {
       setPaymentStatus(PAYMENT_STATUS.SUCCESS);
     }, 3000);
     generateQR();
-  }, [generateQR, verify]);
+  }, []);
 
   useEffect(() => {
     if (paymentStatus === PAYMENT_STATUS.SUCCESS) {
@@ -70,16 +77,33 @@ const Receipt: React.FC<RouteComponentProps> = ({ history }) => {
     });
   };
 
+  const [viewQr, setViewQr] = useState(true);
+  const changeView = () => {
+    setViewQr(!viewQr);
+  };
+
   return (
     <div className="receipt">
       <Typography variant="h4">Receipt</Typography>
-      <div className="qrCode" ref={qrCodeDiv}>
+      <div
+        className="qrCode"
+        onClick={changeView}
+        style={{ display: viewQr ? "flex" : "none" }}
+        hidden={!viewQr}
+        ref={qrCodeDiv}
+      >
         <canvas id="canvas" />
+        <Typography>
+          Please show this to the cashier for verification.
+        </Typography>
+        <Typography>Tap to see order details.</Typography>
       </div>
-      <div className="contents">
-        <Typography variant="h6">Order details</Typography>
-        {contents && <Cart contents={contents} collapse={true} />}
-      </div>
+      {!viewQr && <Typography variant="h6">Order details</Typography>}
+      {!viewQr && (
+        <div className="contents" onClick={changeView} hidden={viewQr}>
+          {contents && <Cart contents={contents} collapse={true} />}
+        </div>
+      )}
       <Button
         onClick={returnToHome}
         className="button"
