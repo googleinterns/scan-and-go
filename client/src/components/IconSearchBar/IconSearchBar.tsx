@@ -49,7 +49,9 @@ function IconSearchBar({
     // Unfocus input text field to 'submit' search query on ENTER pressed
     if (event.key === "Enter") {
       const ele = document.getElementById("icon-search-bar");
-      if (ele) ele.blur();
+      if (ele) {
+        ele.blur();
+      }
     }
   };
 

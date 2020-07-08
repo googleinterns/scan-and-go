@@ -56,4 +56,13 @@ describe("IconSearchBar Component Tests", () => {
     searchBar.simulate("change", { target: { value: TEST_SEARCH_INPUT } });
     expect(searchChangeCallback).toBeCalledWith(TEST_SEARCH_INPUT);
   });
+
+  it("IconSearchBar blur triggers Submit callback", () => {
+    const wrapper = Enzyme.mount(<IconSearchBar {...props} />);
+    const searchBar = wrapper.find("#icon-search-bar").last();
+    searchBar.simulate("blur", { target: { value: TEST_SEARCH_INPUT } });
+    expect(searchSubmitCallback).toBeCalledWith(TEST_SEARCH_INPUT);
+  });
+
+  //TODO(#183): ele = document.findElementById(); ele.blur(); does not trigger
 });
