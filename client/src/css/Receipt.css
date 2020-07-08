@@ -35,6 +35,15 @@
   margin-bottom: 2%;
 }
 
+.payment {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* overflow: hidden; */
+}
+
 .button {
   width: 95%;
   font-size: "14px";
