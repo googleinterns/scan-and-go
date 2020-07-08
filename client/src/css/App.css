@@ -2,6 +2,11 @@ body {
   margin: 0px;
 }
 
+.App {
+  text-align: center;
+  vertical-align: top;
+}
+
 .AppContainer {
   height: 100vh;
   padding-top: 8px;

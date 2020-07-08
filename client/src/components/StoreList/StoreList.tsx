@@ -2,15 +2,15 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import { Store } from "src/interfaces";
 import StoreCard from "src/components/StoreCard";
-import { SCANSTORE_PAGE } from "src/constants";
 
 function StoreList({ stores }: { stores: Store[] }) {
   const history = useHistory();
 
   const enterStore = (url: string) => {
+    const [urlPath, urlParams] = url.split("?");
     history.push({
-      pathname: SCANSTORE_PAGE,
-      search: url,
+      pathname: urlPath,
+      search: urlParams,
       state: {
         stores: stores,
       },

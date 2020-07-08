@@ -30,9 +30,18 @@ steps:
   - name: node:10
     entrypoint: yarn
     args:
+      - create-env
+    id: "server-env"
+    dir: "server/"
+    env:
+      - "EXPRESS_SERVER_MICROAPPS_CLIENT_ID=${_MICROAPPS_CLIENT_ID}"
+  - name: node:10
+    entrypoint: yarn
+    args:
       - install
     id: "server-build"
     dir: "server/"
+    waitFor: ["server-env"]
   - name: "gcr.io/cloud-builders/gcloud"
     args: ["app", "deploy"]
     dir: "server/"

@@ -32,6 +32,7 @@ export const DEFAULT_USER_HEADER_SUBTITLE =
 export const DEFAULT_CART_HEADER_TITLE = "My Cart";
 export const DEFAULT_STORE_HEADER_SUBTITLE = "Currently Shopping @";
 export const DEFAULT_BACK_BTN_TEXT = "back";
+export const DEFAULT_ALERT_DURATION = 3000;
 export const PRICE_FRACTION_DIGITS = 2;
 export const GEO_PRECISION_DIGITS = 3;
 export const PLACES_RADIUS_METERS = "5000";
@@ -40,6 +41,7 @@ export const DEFAULT_STORE_RADIUS = 10000;
 export const PLACEHOLDER_ITEM_MEDIA = "http://placekitten.com/200/200";
 export const PLACEHOLDER_STORE_MEDIA = "http://placekitten.com/300/300";
 // Test variables
+export const TEST_ORDER_ID = "TEST ORDER";
 export const TEST_STORE_ID = "WPANCUD-1";
 export const TEST_STORE_MERCHANT_ID = "WPANCUD";
 // Enums
@@ -50,3 +52,11 @@ export enum DAY_PERIOD {
   EVENING = "Evening",
   NIGHT = "Night",
 }
+export enum PAYMENT_STATUS {
+  SUBMITTED = "SUBMITTED", // pending transaction
+  SUCCESS = "SUCCESS", // completed transaction
+  FAILURE = "FAILURE",
+}
+// Reducer actions
+export const SET_USER = "setUser";
+export const UNSET_USER = "unsetUser";

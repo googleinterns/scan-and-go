@@ -1,14 +1,23 @@
 {
+  "plugins": ["plugins/markdown", "jsdoc-plugin-typescript"],
+  "typescript": {
+    "moduleRoot": "src"
+  },
   "tags": {
     "allowUnknownTags": true,
     "dictionaries": ["jsdoc"]
   },
   "source": {
     "include": ["src"],
-    "includePattern": ".+\\.ts(doc|x)?$"
+    "includePattern": ".+\\.ts(doc|x)?$",
+    "excludePattern": "(node_modules/|docs)"
   },
   "opts": {
     "destination": "docs",
     "recurse": true
+  },
+  "templates": {
+    "cleverLinks": false,
+    "monospaceLinks": false
   }
 }

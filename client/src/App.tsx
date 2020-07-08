@@ -4,11 +4,15 @@ import Login from "src/pages/Login";
 import Home from "src/pages/Home";
 import ScanStore from "src/pages/ScanStore";
 import Receipt from "src/pages/Receipt";
+import Orders from "src/pages/Orders";
 import NotFound from "src/pages/NotFound";
 import AppTheme from "src/theme";
 import { isWeb } from "src/config";
 import { Container } from "@material-ui/core";
+import AlertSnackbar from "./components/AlertSnackbar";
 import { ThemeProvider, useTheme } from "@material-ui/core/styles";
+import { AuthContextProvider } from "src/contexts/AuthContext";
+import { AlertContextProvider } from "./contexts/AlertContext";
 import "src/css/App.css";
 
 function App() {
@@ -22,22 +26,27 @@ function App() {
   return (
     <main>
       <ThemeProvider theme={AppTheme}>
-        <Container
-          className="AppContainer"
-          disableGutters={!isWeb}
-          style={microappStyling}
-        >
-          <Switch>
-            <Route path="/" component={Login} exact />
-            <Route path="/home" component={Home} />
-            <Route path="/store" component={ScanStore} />
-            <Route path="/receipt" component={Receipt} />
-            <Route component={NotFound} />
-          </Switch>
-        </Container>
+        <AuthContextProvider>
+          <AlertContextProvider>
+            <Container
+              className="AppContainer"
+              disableGutters={!isWeb}
+              style={microappStyling}
+            >
+              <Switch>
+                <Route path="/" component={Login} exact />
+                <Route path="/home" component={Home} />
+                <Route path="/store" component={ScanStore} />
+                <Route path="/receipt" component={Receipt} />
+                <Route component={NotFound} />
+              </Switch>
+              <AlertSnackbar />
+            </Container>
+          </AlertContextProvider>
+        </AuthContextProvider>
       </ThemeProvider>
     </main>
   );
 }
 
-export default App; // Exports the 'App' function as a React DOM component
+export default App;
