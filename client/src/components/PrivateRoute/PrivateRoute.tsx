@@ -12,11 +12,15 @@ interface PrivateRouteProps extends RouteProps {
 const PrivateRoute = (props: PrivateRouteProps) => {
   const { component: Component, ...rest } = props;
   const { user } = useContext(AuthContext);
-  const { setAlertMessage, setAlertSeverity } = useContext(AlertContext);
+  const { setOpen, setAlertMessage, setAlertSeverity } = useContext(
+    AlertContext
+  );
 
   if (user === emptyUser) {
     setAlertMessage("Please login to access this page");
     setAlertSeverity("error");
+    setOpen(true);
+    console.log(rest.location);
     return (
       <Redirect
         to={{

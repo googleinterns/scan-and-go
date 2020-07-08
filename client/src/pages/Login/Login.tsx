@@ -36,14 +36,15 @@ function Login() {
   };
 
   useEffect(() => {
-    const { from, search } = history.location.state as any;
+    const { from } = history.location.state as any;
     if (user.name !== "EMPTY" && user.name !== "") {
       history.push({
         pathname: from ? from.pathname : HOME_PAGE,
+        search: from ? from.search : "",
         state: {
           user: user,
+          ...from.state,
         },
-        search: search,
       });
     }
   }, [user]);
