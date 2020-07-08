@@ -201,7 +201,7 @@ function ScanStore() {
               </Button>
             </div>
           </Grid>
-          <Collapse in={showFooter} unmountOnExit={true}>
+          <Collapse in={showFooter}>
             <Grid item>
               <Divider />
               <CartSummary
