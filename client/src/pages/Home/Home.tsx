@@ -15,6 +15,7 @@ import {
   getGeoLocation,
   getStoresByLocation,
   getNearbyPlacesTest,
+  getStoreRedirectUrl,
 } from "src/pages/Actions";
 import { Typography } from "@material-ui/core";
 import { isWeb, isDebug, google } from "src/config";
@@ -86,7 +87,7 @@ function Home(props: any) {
     const merchantId = parseUrlParam(storeUrl, "mid");
     // If valid extraction, push us to new site
     if (storeId && merchantId) {
-      history.push(SCANSTORE_PAGE + "?id=" + storeId + "&mid=" + merchantId);
+      history.push(getStoreRedirectUrl(storeId, merchantId));
     } else {
       //TODO(#65) Let user know that QR is malformed
     }
