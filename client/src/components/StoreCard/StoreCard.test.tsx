@@ -4,6 +4,7 @@ import Enzyme from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
 import StoreCard from "./StoreCard";
 import { Store } from "src/interfaces";
+import { getStoreRedirectUrl } from "src/pages/Actions";
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -31,7 +32,7 @@ describe("StoreCard Component Tests", () => {
     const wrapper = Enzyme.shallow(<StoreCard {...props} />);
     wrapper.simulate("click");
     expect(mockedCallback).toBeCalledWith(
-      "?id=" + TEST_STORE["store-id"] + "&mid=" + TEST_STORE["merchant-id"]
+      getStoreRedirectUrl(TEST_STORE["store-id"], TEST_STORE["merchant-id"])
     );
   });
 });

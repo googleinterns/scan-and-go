@@ -116,9 +116,9 @@ describe("API POST Data", () => {
       a.name.localeCompare(b.name)
     ).slice(0, testQueryLimit);
     expect(res.body).toHaveLength(expectedStores.length);
-    for (const [i, _] of res.body.entries()) {
-      expect(res.body[i]["store-id"]).toEqual(expectedStores[i]["store-id"]);
-    }
+    res.body.map((store, i) =>
+      expect(store["store-id"]).toEqual(expectedStores[i]["store-id"])
+    );
   });
   it("should display list of items given barcodes", async () => {
     const testMerchant = "WPANCUD";

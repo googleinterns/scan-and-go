@@ -9,6 +9,7 @@ import {
   GOOGLE_MAP_PLACEHOLDER_ID,
   GOOGLE_PLACES_SCRIPT_ID,
   ORDER_LIST_API,
+  SCANSTORE_PAGE,
 } from "src/constants";
 import { fetchJson, extractIdentityToken } from "src/utils";
 import { isWeb, google, microapps } from "src/config";
@@ -143,4 +144,8 @@ export const getUser = () => {
   } else {
     return emptyUser;
   }
+};
+
+export const getStoreRedirectUrl = (storeId: string, merchantId: string) => {
+  return `${SCANSTORE_PAGE}?id=${storeId}&mid=${merchantId}`;
 };

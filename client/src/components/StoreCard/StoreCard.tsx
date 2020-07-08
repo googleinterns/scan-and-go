@@ -5,6 +5,7 @@ import { Box, Typography, Paper, Grid } from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
 import { isDebug } from "src/config";
 import { parseRawAddressNewlines } from "src/utils";
+import { getStoreRedirectUrl } from "src/pages/Actions";
 import MediaInfoCard from "src/components/MediaInfoCard";
 
 function StoreCard({
@@ -20,7 +21,7 @@ function StoreCard({
   const themeSpacing = theme.spacing(1);
 
   const redirectWrapper = () => {
-    redirect("?id=" + store["store-id"] + "&mid=" + store["merchant-id"]);
+    redirect(getStoreRedirectUrl(store["store-id"], store["merchant-id"]));
   };
 
   return (

@@ -21,6 +21,7 @@ import {
   getStoresByLocation,
   loginUser,
   getNearbyPlacesTest,
+  getStoreRedirectUrl,
 } from "src/pages/Actions";
 import { BrowserMultiFormatReader } from "@zxing/library";
 import SampleStoreQR from "src/img/Sample_StoreQR.png";
@@ -149,7 +150,7 @@ function DebugBar({
       )}
       <img hidden={true} id={debugImgId} src={SampleStoreQR} />
       <button>
-        <a href={`/store?id=${TEST_STORE_ID}&mid=${TEST_STORE_MERCHANT_ID}`}>
+        <a href={getStoreRedirectUrl(TEST_STORE_ID, TEST_STORE_MERCHANT_ID)}>
           Test Store
         </a>
       </button>
