@@ -9,6 +9,7 @@ import { loginUser } from "src/pages/Actions";
 import { AuthContext } from "src/contexts/AuthContext";
 import Logo from "src/img/Logo.png";
 import "src/css/Login.css";
+import "src/css/animation.css";
 declare const window: any;
 
 function Login() {
@@ -16,7 +17,6 @@ function Login() {
 
   const history = useHistory();
 
-  // Flag for us to manually run login on mobile
   const [loginError, setLoginError] = useState(false);
   const { user, setUser } = useContext(AuthContext);
 
@@ -36,14 +36,18 @@ function Login() {
   };
 
   useEffect(() => {
-    const { from } = history.location.state as any;
+    const redirect = (history.location?.state as any)?.from || {
+      pathname: HOME_PAGE,
+      search: "",
+      state: "",
+    };
     if (user.name !== "EMPTY" && user.name !== "") {
       history.push({
-        pathname: from ? from.pathname : HOME_PAGE,
-        search: from ? from.search : "",
+        pathname: redirect.pathname,
+        search: redirect.search,
         state: {
           user: user,
-          ...from.state,
+          ...redirect.state,
         },
       });
     }
@@ -118,14 +122,18 @@ function Login() {
             />
           </Grid>
           <Grid item>
-            <Typography variant="body1">
+            <Typography
+              variant="body1"
+              className={loginError ? undefined : "trailing-dots"}
+              align="center"
+            >
               Please wait while we log in using your Google account associated
-              with GPay.
+              with GPay
             </Typography>
           </Grid>
           {loginError && [
             <Grid item>
-              <Typography variant="body1">
+              <Typography variant="body1" align="center">
                 Something has gone wrong, please use the button below to login!
               </Typography>
             </Grid>,

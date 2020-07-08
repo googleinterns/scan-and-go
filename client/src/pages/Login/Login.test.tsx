@@ -1,15 +1,17 @@
 import React from "react";
-import { waitFor } from "@testing-library/react";
+import { waitFor, waitForElement } from "@testing-library/react";
 import renderer from "react-test-renderer";
 import Enzyme, { shallow } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
 import Login from "./Login";
 import * as config from "src/config";
 import { isWeb, microapps } from "src/config";
-import { HOME_PAGE } from "src/constants";
+import { HOME_PAGE, RECEIPT_PAGE } from "src/constants";
 import { AuthContext } from "src/contexts/AuthContext";
 import { User } from "src/interfaces";
 import TestRenderer from "react-test-renderer";
+import * as router from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -24,12 +26,15 @@ describe("Test on Web UI", () => {
     config.isWeb = origIsWeb;
   });
 
-  it("Login Page renders web UI correctly", () => {
-    const tree = renderer.create(<Login />).toJSON();
+  it("Login Page renders web UI correctly", async () => {
+    let tree;
+    await TestRenderer.act(async () => {
+      tree = renderer.create(<Login />).toJSON();
+    });
     expect(tree).toMatchSnapshot();
   });
 
-  it("Login Page redirects on web given valid user", () => {
+  it("Login Page on web redirects to home page by default, given valid user", async () => {
     const validUser = "Admin";
     const useContextMockReturnValue = {
       user: {
@@ -46,7 +51,14 @@ describe("Test on Web UI", () => {
         <Login />
       </AuthContext.Provider>
     );
-    const pushArgs = global.mockRedirectPush.mock.calls[0];
+    await TestRenderer.act(async () => {
+      TestRenderer.create(
+        <AuthContext.Provider value={useContextMockReturnValue}>
+          <Login />
+        </AuthContext.Provider>
+      );
+    });
+    const pushArgs = await waitFor(() => global.mockRedirectPush.mock.calls[0]);
     expect(pushArgs[0]).toHaveProperty("pathname", HOME_PAGE);
   });
 });

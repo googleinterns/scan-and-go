@@ -20,7 +20,6 @@ const PrivateRoute = (props: PrivateRouteProps) => {
     setAlertMessage("Please login to access this page");
     setAlertSeverity("error");
     setOpen(true);
-    console.log(rest.location);
     return (
       <Redirect
         to={{

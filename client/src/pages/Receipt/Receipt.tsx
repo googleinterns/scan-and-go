@@ -60,7 +60,7 @@ const Receipt: React.FC<RouteComponentProps> = ({ history }) => {
       window.getComputedStyle(qrCodeDiv.current)!.getPropertyValue("width"),
       10
     );
-    const width = Math.min(divHeight, divWidth);
+    const width = 0.8 * Math.min(divHeight, divWidth);
     QRCode.toCanvas(
       document.getElementById("canvas"),
       text,
