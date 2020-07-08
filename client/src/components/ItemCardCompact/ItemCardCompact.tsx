@@ -5,7 +5,13 @@ import { getSubtotalPrice } from "src/utils";
 import { Typography, Card, Grid, Divider } from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
 
-function ItemCard({ cartItem }: { cartItem: CartItem }) {
+function ItemCard({
+  cartItem,
+  showMedia = true,
+}: {
+  cartItem: CartItem;
+  showMedia?: boolean;
+}) {
   const theme = useTheme();
   const themeSpacing = theme.spacing(1);
 
@@ -21,9 +27,11 @@ function ItemCard({ cartItem }: { cartItem: CartItem }) {
         justify="space-between"
         alignItems="center"
       >
-        <Grid item xs={3}>
-          <p>Media</p>
-        </Grid>
+        {showMedia && (
+          <Grid item xs={3}>
+            <p>Media</p>
+          </Grid>
+        )}
         <Grid item xs={3}>
           <Typography variant="body1">{cartItem.item.name}</Typography>
         </Grid>

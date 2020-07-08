@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { withRouter, RouteComponentProps } from "react-router-dom";
 import Cart from "src/components/Cart";
 import { urlGetParam } from "src/utils";
-import { Button, Typography } from "@material-ui/core";
+import { Button, Typography, Grid } from "@material-ui/core";
 import QRCode from "qrcode";
 import { HOME_PAGE, PAYMENT_STATUS } from "src/constants";
 import { AlertContext } from "src/contexts/AlertContext";
@@ -12,9 +12,26 @@ declare const window: any;
 
 const Receipt: React.FC<RouteComponentProps> = ({ history }) => {
   const orderId = urlGetParam("id");
-  const contents = history.location.state
-    ? (history.location.state as any)?.contents
-    : null;
+  const cheese: CartItem = {
+    item: {
+      name: "cheese",
+      price: 3.2,
+      "merchant-id": "WPANCUD",
+      barcode: "93245036",
+    },
+    quantity: 2,
+  };
+  const milk: CartItem = {
+    item: {
+      name: "milk",
+      price: 5.6,
+      "merchant-id": "WPANCUD",
+      barcode: "93202411",
+    },
+    quantity: 1,
+  };
+  const contents = [milk];
+  // const contents = [milk, cheese, milk, cheese, milk, cheese, milk, cheese, milk, cheese, milk, cheese, milk, cheese, milk, cheese, milk, cheese, milk, cheese, milk, cheese, milk, cheese, milk, cheese, milk, cheese, milk];
   const [paymentStatus, setPaymentStatus] = useState<PAYMENT_STATUS>(
     PAYMENT_STATUS.SUBMITTED
   );
@@ -77,7 +94,7 @@ const Receipt: React.FC<RouteComponentProps> = ({ history }) => {
     });
   };
 
-  const [viewQr, setViewQr] = useState(true);
+  const [viewQr, setViewQr] = useState(false);
   const changeView = () => {
     setViewQr(!viewQr);
   };
@@ -98,10 +115,37 @@ const Receipt: React.FC<RouteComponentProps> = ({ history }) => {
         </Typography>
         <Typography>Tap to see order details.</Typography>
       </div>
-      {!viewQr && <Typography variant="h6">Order details</Typography>}
+      {/* {!viewQr && } */}
       {!viewQr && (
-        <div className="contents" onClick={changeView} hidden={viewQr}>
-          {contents && <Cart contents={contents} collapse={true} />}
+        <div className="order" hidden={viewQr}>
+          <Typography variant="h6">Order details</Typography>
+          <Grid
+            container
+            direction="row"
+            justify="space-between"
+            alignItems="center"
+            style={{ borderBottom: "2px solid" }}
+          >
+            <Grid item xs={3}>
+              <Typography variant="body1">Item</Typography>
+            </Grid>
+            <Grid item xs={2}>
+              <Typography variant="body1">Price</Typography>
+            </Grid>
+            <Grid item xs={2}>
+              <Typography variant="body1">Subtotal</Typography>
+            </Grid>
+            <Grid item xs={2}>
+              <Typography variant="body1" align="center">
+                Quantity
+              </Typography>
+            </Grid>
+          </Grid>
+          <div className="details" onClick={changeView}>
+            {contents && (
+              <Cart contents={contents} collapse={true} showMedia={false} />
+            )}
+          </div>
         </div>
       )}
       <Button
