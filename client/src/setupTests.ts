@@ -1,13 +1,17 @@
+import { useHistory } from "react-router-dom";
+import { TEST_USER } from "./constants";
+
 // Mocking GPay Microapps API
 global.microapps = {
   getIdentity: (request: any) =>
     new Promise((resolve, reject) => {
       const fakeIdentity = {
         iss: "", // Issuer Identification
-        sub: "faked API Identity", // Unique identifier for google account
+        sub: TEST_USER["user-id"], // Unique identifier for google account
         aud: "", // Audience response is intended for
         iat: -1, // Time token is issued (Unix int seconds)
         exp: 0, // Token expiry time (Unix int seconds)
+        name: TEST_USER.name,
       };
       const fakeEncodedResponse =
         btoa(JSON.stringify({})) + "." + btoa(JSON.stringify(fakeIdentity));
@@ -26,9 +30,10 @@ global.microapps = {
 global.mockRedirectPush = jest.fn();
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
-  useHistory: () => ({
-    push: global.mockRedirectPush,
-  }),
+  useHistory: jest.fn(),
+}));
+useHistory.mockImplementation(() => ({
+  push: global.mockRedirectPush,
 }));
 
 // Try to capture the zxing scanner call to verify
