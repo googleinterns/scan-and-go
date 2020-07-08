@@ -20,6 +20,7 @@ const AlertSnackbar = () => {
   };
 
   const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
+    // don't close the alert if the user clicks on any part outside the alert snackbar
     if (reason === "clickaway") {
       return;
     }
