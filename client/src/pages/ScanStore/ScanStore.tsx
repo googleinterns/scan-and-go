@@ -100,7 +100,7 @@ function ScanStore() {
     const item: Item = await getItem(barcode, merchantID);
     setLoadingItem(false);
     // Override placeholder item when we receive actual info
-    if (item) {
+    if (item.barcode) {
       updateCart([
         ...cartItems,
         {
