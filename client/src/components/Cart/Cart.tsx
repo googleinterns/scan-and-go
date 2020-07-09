@@ -15,10 +15,12 @@ function Cart({
   contents,
   collapse,
   updateItemQuantity,
+  showMedia = true,
 }: {
   contents: CartItem[];
   collapse: boolean;
   updateItemQuantity?: (barcode: string, quantity: number) => void;
+  showMedia?: boolean;
 }) {
   return (
     <div className="Cart">
@@ -32,7 +34,7 @@ function Cart({
               : () => {},
           };
           return collapse ? (
-            <ItemCardCompact {...cardProps} />
+            <ItemCardCompact {...cardProps} showMedia={showMedia} />
           ) : (
             <ItemCard {...cardProps} />
           );
