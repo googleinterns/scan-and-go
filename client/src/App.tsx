@@ -13,6 +13,7 @@ import AlertSnackbar from "./components/AlertSnackbar";
 import { ThemeProvider, useTheme } from "@material-ui/core/styles";
 import { AuthContextProvider } from "src/contexts/AuthContext";
 import { AlertContextProvider } from "./contexts/AlertContext";
+import AuthenticatedRoute from "./components/AuthenticatedRoute";
 import "src/css/App.css";
 
 function App() {
@@ -34,10 +35,10 @@ function App() {
               style={microappStyling}
             >
               <Switch>
-                <Route path="/" component={Login} exact />
-                <Route path="/home" component={Home} />
+                <Route path="/" component={Home} exact />
+                <Route path="/login" component={Login} />
                 <Route path="/store" component={ScanStore} />
-                <Route path="/receipt" component={Receipt} />
+                <AuthenticatedRoute path="/receipt" component={Receipt} />
                 <Route component={NotFound} />
               </Switch>
               <AlertSnackbar />
