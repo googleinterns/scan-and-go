@@ -78,7 +78,6 @@ function Home(props: any) {
   const locationSuccessCallback = (position: GeoLocation) => {
     setCurGeoLocation(position);
     setLoadingLocation(false);
-    setLoadingStores(false);
   };
 
   const scanStoreQRCallback = (storeUrl: string) => {
@@ -103,7 +102,6 @@ function Home(props: any) {
 
   useEffect(() => {
     if (curGeoLocation) {
-      setLoadingStores(true);
       getStoresByLocation(curGeoLocation).then((res: any) => {
         setStores(res);
         setLoadingStores(false);

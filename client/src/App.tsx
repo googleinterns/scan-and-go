@@ -10,17 +10,29 @@ import AppTheme from "src/theme";
 import { isWeb } from "src/config";
 import { Container } from "@material-ui/core";
 import AlertSnackbar from "./components/AlertSnackbar";
-import { ThemeProvider } from "@material-ui/core/styles";
+import { ThemeProvider, useTheme } from "@material-ui/core/styles";
 import { AuthContextProvider } from "src/contexts/AuthContext";
 import { AlertContextProvider } from "./contexts/AlertContext";
+import "src/css/App.css";
 
 function App() {
+  const theme = useTheme();
+  // Add spacing around page borders if in microapp environment
+  const microappStyling = isWeb
+    ? undefined
+    : {
+        padding: theme.spacing(1),
+      };
   return (
     <main>
       <ThemeProvider theme={AppTheme}>
         <AuthContextProvider>
           <AlertContextProvider>
-            <Container disableGutters={!isWeb}>
+            <Container
+              className="AppContainer"
+              disableGutters={!isWeb}
+              style={microappStyling}
+            >
               <Switch>
                 <Route path="/" component={Login} exact />
                 <Route path="/home" component={Home} />

@@ -6,6 +6,9 @@ import Cart from "src/components/Cart";
 import CartHeader from "src/components/CartHeader";
 import TextInputField from "src/components/TextInputField";
 import PlaceholderCart from "src/components/PlaceholderCart";
+import CartSummary from "src/components/CartSummary";
+import ExpandLessIcon from "@material-ui/icons/ExpandLess";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import {
   FormGroup,
   FormControlLabel,
@@ -16,8 +19,10 @@ import {
   Grid,
   Paper,
   Typography,
+  Button,
+  Collapse,
 } from "@material-ui/core";
-import { MuiThemeProvider } from "@material-ui/core/styles";
+import { MuiThemeProvider, useTheme } from "@material-ui/core/styles";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import EditIcon from "@material-ui/icons/Edit";
 import PaymentIcon from "@material-ui/icons/Payment";
@@ -30,13 +35,14 @@ import {
   MediaResponse,
   emptyMediaResponse,
 } from "src/interfaces";
-import { urlGetParam } from "src/utils";
+import { urlGetParam, getTotalPrice } from "src/utils";
 import { getStoreInfo, getItem } from "src/pages/Actions";
 import {
   HOME_PAGE,
   RECEIPT_PAGE,
   ITEM_LIST_API,
   BARCODE_PLACEHOLDER,
+  PRICE_FRACTION_DIGITS,
 } from "src/constants";
 import { microapps, isWeb, isDebug } from "src/config";
 import { ErrorTheme } from "src/theme";
@@ -49,13 +55,16 @@ function ScanStore() {
   const storeID = urlGetParam("id");
   const merchantID = urlGetParam("mid");
 
+  const theme = useTheme();
   const history = useHistory();
 
   const [curStore, setCurStore] = useState<Store>(emptyStore());
   const [cartItems, updateCart] = useState<CartItem[]>([]);
+  const [cartTotal, setCartTotal] = useState<number>(0.0);
   const [loadingItem, setLoadingItem] = useState<boolean>(false);
-  const [showCompactCart, setShowCompactCart] = useState(false);
-  const [showDebug, setShowDebug] = useState(false);
+  const [showCompactCart, setShowCompactCart] = useState<boolean>(false);
+  const [showDebug, setShowDebug] = useState<boolean>(false);
+  const [showFooter, setShowFooter] = useState<boolean>(true);
   const [debugBarcode, setDebugBarcode] = useState<string>("");
 
   const addItemToCart = async (barcode: string) => {
@@ -91,7 +100,7 @@ function ScanStore() {
     const item: Item = await getItem(barcode, merchantID);
     setLoadingItem(false);
     // Override placeholder item when we receive actual info
-    if (item) {
+    if (item.barcode) {
       updateCart([
         ...cartItems,
         {
@@ -130,48 +139,91 @@ function ScanStore() {
   }, []);
 
   return (
-    <div className="ScanStore">
-      <CartHeader
-        store={curStore}
-        scanBarcodeCallback={addItemToCart}
-        content={
-          <FormGroup row>
-            <FormControlLabel
-              control={<Switch onChange={toggleCart} color="primary" />}
-              label="Compact View"
-            />
-            <MuiThemeProvider theme={ErrorTheme}>
-              <FormControlLabel
-                control={<Switch onChange={toggleDebug} color="secondary" />}
-                label="Debug"
-              />
-            </MuiThemeProvider>
-          </FormGroup>
-        }
-      />
-      {showDebug && [
-        <TextInputField
-          text={debugBarcode ? debugBarcode : BARCODE_PLACEHOLDER}
-          setState={setDebugBarcode}
-        />,
-        <button id="testScanBtn" onClick={() => addItemToCart(debugBarcode)}>
-          Test Add Item
-        </button>,
-      ]}
-      <Divider />
-      <Cart
-        contents={cartItems}
-        collapse={showCompactCart}
-        updateItemQuantity={updateItemQuantity}
-      />
-      {loadingItem && <PlaceholderCart length={1} />}
-      <Fab
-        style={{ position: "fixed", bottom: "10px", right: "10px" }}
-        color="primary"
-        onClick={makePayment}
+    <div className="ScanStore" style={{ height: "100%" }}>
+      <Grid
+        container
+        direction="column"
+        style={{ height: "100%" }}
+        alignItems="stretch"
       >
-        <PaymentIcon />
-      </Fab>
+        <Grid item>
+          <CartHeader
+            store={curStore}
+            scanBarcodeCallback={addItemToCart}
+            content={
+              <FormGroup row>
+                <FormControlLabel
+                  control={<Switch onChange={toggleCart} color="primary" />}
+                  label="Compact View"
+                />
+                <MuiThemeProvider theme={ErrorTheme}>
+                  <FormControlLabel
+                    control={
+                      <Switch onChange={toggleDebug} color="secondary" />
+                    }
+                    label="Debug"
+                  />
+                </MuiThemeProvider>
+              </FormGroup>
+            }
+          />
+          {showDebug && [
+            <TextInputField
+              text={debugBarcode ? debugBarcode : BARCODE_PLACEHOLDER}
+              setState={setDebugBarcode}
+            />,
+            <button onClick={() => addItemToCart(debugBarcode)}>
+              Test Add Item
+            </button>,
+          ]}
+          <Divider />
+        </Grid>
+        <Grid item xs style={{ overflow: "scroll" }}>
+          <Grid item container direction="column">
+            <Grid item>
+              <Cart
+                contents={cartItems}
+                collapse={showCompactCart}
+                updateItemQuantity={updateItemQuantity}
+              />
+            </Grid>
+            <Grid item>{loadingItem && <PlaceholderCart length={1} />}</Grid>
+          </Grid>
+        </Grid>
+        <Grid item>
+          <Grid item container direction="row" justify="center">
+            <div
+              onClick={() => setShowFooter(!showFooter)}
+              style={{ zIndex: 1000, marginTop: "-36px" }}
+            >
+              <Button>
+                {showFooter ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+              </Button>
+            </div>
+          </Grid>
+          <Collapse in={showFooter}>
+            <Grid item>
+              <Divider />
+              <CartSummary
+                cartItems={cartItems}
+                setTotalCallback={(total: number) => setCartTotal(total)}
+              />
+            </Grid>
+          </Collapse>
+          <Grid item style={{ paddingBottom: theme.spacing(2) }}>
+            <Button
+              fullWidth={true}
+              variant="contained"
+              color="primary"
+              onClick={makePayment}
+            >
+              {showFooter
+                ? "Checkout"
+                : `Checkout: $${cartTotal.toFixed(PRICE_FRACTION_DIGITS)}`}
+            </Button>
+          </Grid>
+        </Grid>
+      </Grid>
     </div>
   );
 }

@@ -20,7 +20,7 @@ function UserHeader({
 }) {
   const curHour = new Date().getHours();
   const curMin = new Date().getMinutes();
-  const [curSec, setCurSec] = useState();
+  const [curSec, setCurSec] = useState<number>(0);
 
   let componentIsMounted = false;
 
