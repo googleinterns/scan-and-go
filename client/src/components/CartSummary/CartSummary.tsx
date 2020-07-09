@@ -19,9 +19,11 @@ function CartSummary({
   setTotalCallback?: (total: number) => void;
 }) {
   const cartSubtotal = priceSumArray(
-    cartItems.map((cartItem) =>
-      priceMul(cartItem.item.price, cartItem.quantity)
-    )
+    cartItems && cartItems.length
+      ? cartItems.map((cartItem) =>
+          priceMul(cartItem.item.price, cartItem.quantity)
+        )
+      : []
   );
   const cartGST = priceGetGST(cartSubtotal);
   const cartTotal = priceSum(cartSubtotal, cartGST);
