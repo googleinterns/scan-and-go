@@ -35,8 +35,8 @@ function App() {
               style={microappStyling}
             >
               <Switch>
-                <Route path="/" component={Login} exact />
-                <Route path="/home" component={Home} />
+                <Route path="/" component={Home} exact />
+                <Route path="/login" component={Login} />
                 <Route path="/store" component={ScanStore} />
                 <AuthenticatedRoute path="/receipt" component={Receipt} />
                 <Route component={NotFound} />

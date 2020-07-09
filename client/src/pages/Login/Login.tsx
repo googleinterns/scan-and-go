@@ -51,7 +51,6 @@ function Login() {
         pathname: redirect.pathname,
         search: redirect.search,
         state: {
-          user: user,
           ...redirect.state,
         },
       });
