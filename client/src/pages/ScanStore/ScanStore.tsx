@@ -7,6 +7,7 @@ import CartHeader from "src/components/CartHeader";
 import TextInputField from "src/components/TextInputField";
 import PlaceholderCart from "src/components/PlaceholderCart";
 import CartSummary from "src/components/CartSummary";
+import Page from "src/pages/Page";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import {
@@ -139,14 +140,10 @@ function ScanStore() {
   }, []);
 
   return (
-    <div className="ScanStore" style={{ height: "100%" }}>
-      <Grid
-        container
-        direction="column"
-        style={{ height: "100%" }}
-        alignItems="stretch"
-      >
-        <Grid item>
+    <Page
+      className="ScanStore"
+      header={
+        <div className="ScanStore-header">
           <CartHeader
             store={curStore}
             scanBarcodeCallback={addItemToCart}
@@ -177,20 +174,22 @@ function ScanStore() {
             </button>,
           ]}
           <Divider />
-        </Grid>
-        <Grid item xs style={{ overflow: "scroll" }}>
-          <Grid item container direction="column">
-            <Grid item>
-              <Cart
-                contents={cartItems}
-                collapse={showCompactCart}
-                updateItemQuantity={updateItemQuantity}
-              />
-            </Grid>
-            <Grid item>{loadingItem && <PlaceholderCart length={1} />}</Grid>
+        </div>
+      }
+      content={
+        <Grid item container direction="column">
+          <Grid item>
+            <Cart
+              contents={cartItems}
+              collapse={showCompactCart}
+              updateItemQuantity={updateItemQuantity}
+            />
           </Grid>
+          <Grid item>{loadingItem && <PlaceholderCart length={1} />}</Grid>
         </Grid>
-        <Grid item>
+      }
+      footer={
+        <div className="ScanStore-footer">
           <Grid item container direction="row" justify="center">
             <div
               onClick={() => setShowFooter(!showFooter)}
@@ -210,7 +209,7 @@ function ScanStore() {
               />
             </Grid>
           </Collapse>
-          <Grid item style={{ paddingBottom: theme.spacing(2) }}>
+          <Grid item>
             <Button
               fullWidth={true}
               variant="contained"
@@ -222,9 +221,9 @@ function ScanStore() {
                 : `Checkout: $${cartTotal.toFixed(PRICE_FRACTION_DIGITS)}`}
             </Button>
           </Grid>
-        </Grid>
-      </Grid>
-    </div>
+        </div>
+      }
+    />
   );
 }
 

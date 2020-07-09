@@ -10,6 +10,7 @@ import {
 } from "@material-ui/core";
 import ItemCard from "src/components/ItemCard";
 import ItemCardCompact from "src/components/ItemCardCompact";
+import ReceiptHeader from "src/components/ReceiptHeader";
 
 function Cart({
   contents,
@@ -24,6 +25,7 @@ function Cart({
 }) {
   return (
     <div className="Cart">
+      {contents.length > 0 && collapse && <ReceiptHeader />}
       {contents.length > 0 &&
         contents.map((cartItem: CartItem) => {
           const cardProps = {
@@ -34,7 +36,7 @@ function Cart({
               : () => {},
           };
           return collapse ? (
-            <ItemCardCompact {...cardProps} showMedia={showMedia} />
+            <ItemCardCompact {...cardProps} showMedia={false} />
           ) : (
             <ItemCard {...cardProps} />
           );
