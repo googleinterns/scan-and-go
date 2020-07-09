@@ -52,7 +52,6 @@ const Receipt: React.FC<RouteComponentProps> = ({ history }) => {
   const generateQR = () => {
     const text = `$Order ID: ${orderId}`;
 
-    console.log(qrCodeDiv);
     const divHeight = parseInt(
       window.getComputedStyle(qrCodeDiv.current)!.getPropertyValue("height"),
       10
@@ -93,7 +92,9 @@ const Receipt: React.FC<RouteComponentProps> = ({ history }) => {
           <Typography variant="h6">Order details</Typography>
           <ReceiptHeader />
           <div className="details" onClick={changeView}>
-            <Cart contents={contents} collapse={true} showMedia={false} />
+            {contents && (
+              <Cart contents={contents} collapse={true} showMedia={false} />
+            )}
             {/* TODO: uncomment below after merging #178 */}
             {/* <CartSummary cartItems={contents}></CartSummary> */}
           </div>
