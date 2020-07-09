@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { AuthContext } from "src/contexts/AuthContext";
 import { emptyUser } from "src/interfaces";
 import { Redirect, RouteProps } from "react-router-dom";
@@ -20,10 +20,15 @@ const AuthenticatedRoute = (props: AuthenticatedRouteProps) => {
     AlertContext
   );
 
+  useEffect(() => {
+    if (user === emptyUser) {
+      setAlertMessage("Please login to access this page");
+      setAlertSeverity("error");
+      setOpen(true);
+    }
+  }, [user]);
+
   if (user === emptyUser) {
-    setAlertMessage("Please login to access this page");
-    setAlertSeverity("error");
-    setOpen(true);
     return (
       <Redirect
         to={{
