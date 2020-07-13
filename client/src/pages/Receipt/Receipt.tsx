@@ -106,20 +106,20 @@ const Receipt: React.FC<RouteComponentProps> = ({ history }) => {
         />
       }
       content={
-        <div className="receipt-content">
+        <Grid container item xs className="receipt-content">
           {!viewQr && (
-            <div className="order">
+            <Grid item xs className="order">
               <Typography variant="h6">Order details</Typography>
               <div className="details" onClick={changeView}>
                 {contents && (
                   <Cart contents={contents} collapse={true} showMedia={false} />
                 )}
-                <CartSummary cartItems={contents}></CartSummary>
               </div>
-            </div>
+              <CartSummary cartItems={contents}></CartSummary>
+            </Grid>
           )}
           {paymentStatus === PAYMENT_STATUS.SUBMITTED && (
-            <div className="payment">
+            <Grid item xs className="payment">
               <Typography
                 variant="h5"
                 align="center"
@@ -127,10 +127,12 @@ const Receipt: React.FC<RouteComponentProps> = ({ history }) => {
               >
                 Verifying payment, please wait
               </Typography>
-            </div>
+            </Grid>
           )}
           {paymentStatus === PAYMENT_STATUS.SUCCESS && (
-            <div
+            <Grid
+              item
+              xs
               className="qrCode"
               onClick={changeView}
               style={{ display: viewQr ? "flex" : "none" }}
@@ -144,9 +146,9 @@ const Receipt: React.FC<RouteComponentProps> = ({ history }) => {
               <Typography align="center" color="textSecondary">
                 Tap to see order details.
               </Typography>
-            </div>
+            </Grid>
           )}
-        </div>
+        </Grid>
       }
       footer={
         <Button
@@ -161,7 +163,7 @@ const Receipt: React.FC<RouteComponentProps> = ({ history }) => {
           fullWidth={true}
         >
           {paymentStatus === PAYMENT_STATUS.AWAITING
-            ? "Confirm Checkout"
+            ? "Confirm Receipt"
             : "Return to home"}
         </Button>
       }
