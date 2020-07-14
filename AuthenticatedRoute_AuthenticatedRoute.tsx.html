@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,7 +7,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title> Home</title>
+  <title> AuthenticatedRoute/AuthenticatedRoute.tsx</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -73,33 +75,63 @@
         <div class="core" id="main-content-wrapper">
             <div class="content">
                 <header class="page-title">
-                    <p></p>
-                    <h1>Home</h1>
+                    <p>Source</p>
+                    <h1>AuthenticatedRoute/AuthenticatedRoute.tsx</h1>
                 </header>
                 
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useContext, useEffect } from "react";
+import { AuthContext } from "src/contexts/AuthContext";
+import { emptyUser } from "src/interfaces";
+import { Redirect, RouteProps } from "react-router-dom";
+import { LOGIN_PAGE } from "src/constants";
+import { AlertContext } from "src/contexts/AlertContext";
 
+interface AuthenticatedRouteProps extends RouteProps {
+  component: any;
+}
 
-    <h3> </h3>
+/**
+ * Route that wraps any component that requires user authentication,
+ * and redirects the user to the Login page otherwise.
+ */
+const AuthenticatedRoute = (props: AuthenticatedRouteProps) => {
+  const { component: Component, ...rest } = props;
+  const { user } = useContext(AuthContext);
+  const { setOpen, setAlertMessage, setAlertSeverity } = useContext(
+    AlertContext
+  );
 
+  useEffect(() => {
+    if (user === emptyUser) {
+      setAlertMessage("Please login to access this page");
+      setAlertSeverity("error");
+      setOpen(true);
+    }
+  }, [user]);
 
+  if (user === emptyUser) {
+    return (
+      &lt;Redirect
+        to={{
+          pathname: LOGIN_PAGE,
+          state: { from: rest.location },
+        }}
+      />
+    );
+  }
+  return &lt;Component {...props} />;
+};
 
-
-
-
-
-
-
-
-    
-
-
-
-
-
+export default AuthenticatedRoute;
+</code></pre>
+        </article>
+    </section>
 
 
 
