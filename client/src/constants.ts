@@ -1,8 +1,8 @@
 // Client Site Pages
-export const HOME_PAGE = "/home";
+export const HOME_PAGE = "/";
 export const SCANSTORE_PAGE = "/store";
 export const RECEIPT_PAGE = "/receipt";
-export const LOGIN_PAGE = "/";
+export const LOGIN_PAGE = "/login";
 // API endpoints
 export const API = "/api/";
 export const CART_API = "/api/cart";
@@ -44,6 +44,7 @@ export const PLACEHOLDER_STORE_MEDIA = "http://placekitten.com/300/300";
 export const TEST_ORDER_ID = "TEST ORDER";
 export const TEST_STORE_ID = "WPANCUD-1";
 export const TEST_STORE_MERCHANT_ID = "WPANCUD";
+export const TEST_USER = { name: "TEST USER", "user-id": "TEST USER ID" };
 // Enums
 export enum DAY_PERIOD {
   MORNING = "Morning",

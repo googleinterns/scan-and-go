@@ -89,10 +89,7 @@ export const loginUser = async () => {
   const request = { nonce: "Don't Hack me please" };
   return await microapps
     .getIdentity(request)
-    .then((res: any) => extractIdentityToken(res))
-    .catch((err: any) => {
-      return null;
-    });
+    .then((res: any) => extractIdentityToken(res));
 };
 
 export const getGeoLocation = (

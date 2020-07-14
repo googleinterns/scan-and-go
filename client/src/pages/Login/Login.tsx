@@ -2,13 +2,14 @@ import React, { useEffect, useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import TextInputField from "src/components/TextInputField";
 import { Grid, Typography, Button } from "@material-ui/core";
-import { User, emptyUser, IdentityToken } from "src/interfaces";
+import { emptyUser, IdentityToken } from "src/interfaces";
 import { HOME_PAGE, TITLE_TEXT } from "src/constants";
 import { isWeb, isDebug } from "src/config";
 import { loginUser } from "src/pages/Actions";
 import { AuthContext } from "src/contexts/AuthContext";
 import Logo from "src/img/Logo.png";
 import "src/css/Login.css";
+import "src/css/animation.css";
 declare const window: any;
 
 function Login() {
@@ -16,31 +17,41 @@ function Login() {
 
   const history = useHistory();
 
-  // Flag for us to manually run login on mobile
   const [loginError, setLoginError] = useState(false);
   const { user, setUser } = useContext(AuthContext);
 
   const login = () => {
-    loginUser().then((decodedIdentity: IdentityToken | null) => {
-      if (decodedIdentity) {
-        setUser(
-          Object.assign({}, emptyUser, {
-            name: decodedIdentity.name,
-            "user-id": decodedIdentity.sub,
-          })
-        );
-      } else {
+    loginUser()
+      .then((decodedIdentity: IdentityToken | null) => {
+        if (decodedIdentity) {
+          setUser(
+            Object.assign({}, emptyUser, {
+              name: decodedIdentity.name,
+              "user-id": decodedIdentity.sub,
+            })
+          );
+        } else {
+          setLoginError(true);
+        }
+      })
+      .catch((err) => {
         setLoginError(true);
-      }
-    });
+        console.error("Error logging in: ", err);
+      });
   };
 
   useEffect(() => {
+    const redirect = (history.location?.state as any)?.from || {
+      pathname: HOME_PAGE,
+      search: "",
+      state: "",
+    };
     if (user.name !== "EMPTY" && user.name !== "") {
       history.push({
-        pathname: HOME_PAGE,
+        pathname: redirect.pathname,
+        search: redirect.search,
         state: {
-          user: user,
+          ...redirect.state,
         },
       });
     }
@@ -48,8 +59,13 @@ function Login() {
 
   useEffect(() => {
     if (isWeb) {
-      // Wait for gapi to be initialized stackoverflow.com/questions/31640234/using-google-sign-in-button-with-react-2
-      https: window.addEventListener("google-loaded", renderGSigninButton);
+      // Render Google Sign-in button
+      if (window.gapi) {
+        renderGSigninButton();
+      } else {
+        // Wait for gapi to be initialized stackoverflow.com/questions/31640234/using-google-sign-in-button-with-react-2
+        window.addEventListener("google-loaded", renderGSigninButton);
+      }
     }
     // TODO (#163): synchronize login on microapp and web
     // Initial login if on microapp
@@ -67,7 +83,7 @@ function Login() {
 
   // Render Google Sign-in button in React component https://stackoverflow.com/a/59039972/
   const renderGSigninButton = () => {
-    gapi.signin2.render("g-signin2", {
+    window.gapi.signin2.render("g-signin2", {
       scope: "https://www.googleapis.com/auth/plus.login",
       longtitle: true,
       theme: "dark",
@@ -115,14 +131,18 @@ function Login() {
             />
           </Grid>
           <Grid item>
-            <Typography variant="body1">
+            <Typography
+              variant="body1"
+              className={loginError ? undefined : "trailing-dots"}
+              align="center"
+            >
               Please wait while we log in using your Google account associated
-              with GPay.
+              with GPay
             </Typography>
           </Grid>
           {loginError && [
             <Grid item>
-              <Typography variant="body1">
+              <Typography variant="body1" align="center">
                 Something has gone wrong, please use the button below to login!
               </Typography>
             </Grid>,

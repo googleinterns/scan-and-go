@@ -93,9 +93,7 @@ function Home(props: any) {
   };
 
   useEffect(() => {
-    // Initially set user based on passed props
     if (props.location.state) {
-      setUser(props.location.state.user);
       setStores(props.location.state.stores);
     }
   }, []);
