@@ -1,3 +1,6 @@
+// Jest workaround for not able to find globalThis in nodeJS
+global.globalThis = global;
+
 // Mocking GPay Microapps API
 global.microapps = {
   getIdentity: (request: any) =>
