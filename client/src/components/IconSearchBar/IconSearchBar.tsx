@@ -13,10 +13,10 @@ import "src/css/animation.css";
  *   icon={[<OnIcon />, <OffIcon />]}
  *   iconCallback={iconStateCallback}
  * />
- * @prop {@material-ui/icons[]}     icon - List of 2 icons to render depending on the state of toggle
- * @prop {(state: boolean) => void} iconCallback - Function invoked when a click event is triggered in SearchBar
- * @prop {(text: string) => void}   onChangeCallback - Pass the current string entered in SearchBar when a change is detected
- * @prop {(text: string) => void}   onSubmitCallback - Pass final user input string entered to specified trigger function, fires on ENTER key or onBlur
+ * @prop {React.ReactElement[]}     icon - List of 2 icons to render depending on the state of toggle
+ * @prop {function(boolean)} iconCallback - Function invoked when a click event is triggered in SearchBar
+ * @prop {function(string)}   onChangeCallback - Pass the current string entered in SearchBar when a change is detected
+ * @prop {function(string)}   onSubmitCallback - Pass final user input string entered to specified trigger function, fires on ENTER key or onBlur
  */
 function IconSearchBar({
   icon,
