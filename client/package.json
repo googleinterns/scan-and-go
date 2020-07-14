@@ -29,7 +29,7 @@
     "react-scripts": "3.4.1",
     "serve": "^11.3.1",
     "styled-components": "^5.1.1",
-    "typescript": "^3.7.5"
+    "typescript": "^3.9.6"
   },
   "proxy": "http://127.0.0.1:3143",
   "homepage": ".",
