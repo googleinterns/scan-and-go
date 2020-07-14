@@ -1,9 +1,6 @@
 import { useHistory } from "react-router-dom";
 import { TEST_USER } from "./constants";
 
-// Jest workaround for not able to find globalThis in nodeJS
-global.globalThis = global;
-
 // Mocking GPay Microapps API
 global.microapps = {
   getIdentity: (request: any) =>
