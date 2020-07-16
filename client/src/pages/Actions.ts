@@ -16,6 +16,9 @@ import {
   PRICE_FRACTION_DIGITS,
   TEST_ORDER_ID,
   TEST_PAYMENT_ID,
+  ORDER_UPDATE_API,
+  ORDER_ADD_API,
+  TEST_ORDER_NAME,
 } from "src/constants";
 import { fetchJson, extractIdentityToken, getTotalPrice } from "src/utils";
 import { isWeb, google, microapps } from "src/config";
@@ -161,7 +164,8 @@ export const getOrderContents = async (orderName: string) => {
   // retrieve order items
   const order = await fetchJson("GET", {}, `${ORDER_API}/${orderName}`, true);
   let contents: CartItem[] = [];
-  if (order) {
+  console.log(order);
+  if (order?.items) {
     const itemBarcodes = order.items.map(
       (orderItem: OrderItem) => orderItem.subtitle
     );
@@ -182,14 +186,18 @@ export const getOrderContents = async (orderName: string) => {
 
 /**
  * Creates an order in the Spot database.
+ * Returns the Spot Order response if successful.
  *
  * @param {Store} store - The store at which the order is made.
  * @param {CartItem[]} cartItems - The list of items in the order.
  */
 export const createOrder = async (store: Store, cartItems: CartItem[]) => {
-  // TODO (#): handle currency code in items and price utility functions
+  if (isWeb) {
+    return { name: TEST_ORDER_NAME, id: TEST_ORDER_ID }; // placeholder order for web flow
+  }
+  // TODO (#): add currency code in items and price utility functions
   const currencyCode = DEFAULT_CURRENCY_CODE;
-  const order = {
+  const orderReq = {
     title: `Order @ ${store.name}`,
     items: cartItems.map((cartItem) => {
       return {
@@ -207,18 +215,22 @@ export const createOrder = async (store: Store, cartItems: CartItem[]) => {
       value: getTotalPrice(cartItems),
     },
     status: { type: "COMPLETED" },
-    payments: [
-      {
-        id: "ac6d65fa-e427-47c7-8631-21bd976b09c6",
-      },
-    ], // must be set for server-side
   };
-  const body = {
-    order: order,
-    merchantId: process.env.REACT_APP_SPOT_MERCHANT_ID,
-  };
-  // return await microapps.createOrder(order);
-  return await fetchJson("POST", body, ORDER_API, true);
+  let orderRes = await microapps.createOrder(orderReq);
+  if (orderRes) {
+    orderRes = await fetchJson(
+      "POST",
+      { orderName: orderRes.name },
+      ORDER_UPDATE_API,
+      true
+    );
+    const data = {
+      merchantId: process.env.REACT_APP_SPOT_MERCHANT_ID,
+      orderId: orderRes.orderId,
+    };
+    await fetchJson("POST", data, ORDER_API, true);
+  }
+  return orderRes;
 };
 
 export const getUser = () => {

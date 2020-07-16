@@ -1,11 +1,10 @@
 const jwt = require("jsonwebtoken");
 const jwksClient = require("jwks-rsa");
 
-const client = jwksClient({
-  jwksUri: "https://www.googleapis.com/oauth2/v3/certs",
-});
-
 const getKey = (header, keyCallback) => {
+  const client = jwksClient({
+    jwksUri: "https://www.googleapis.com/oauth2/v3/certs",
+  });
   client.getSigningKey(header.kid, function (err, key) {
     if (key) {
       keyCallback(null, key.publicKey || key.rsaPublicKey);
