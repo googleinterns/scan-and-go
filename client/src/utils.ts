@@ -41,6 +41,7 @@ const getIdToken = async () => {
     const nonce = await fetchText("GET", {}, "/api/nonce");
     const request = { nonce: nonce };
     idToken = microapps.getIdentity(request).catch((err: any) => {
+      catchErr(err);
       return null;
     });
   } else {

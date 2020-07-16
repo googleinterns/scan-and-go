@@ -4,7 +4,6 @@ import Login from "src/pages/Login";
 import Home from "src/pages/Home";
 import ScanStore from "src/pages/ScanStore";
 import Receipt from "src/pages/Receipt";
-import Orders from "src/pages/Orders";
 import NotFound from "src/pages/NotFound";
 import AppTheme from "src/theme";
 import { isWeb } from "src/config";

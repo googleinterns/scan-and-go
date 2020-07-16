@@ -3,6 +3,7 @@
 // https://stackoverflow.com/questions/58831968/simple-way-to-test-middleware-in-express-without-creating-recreating-server/58834073#58834073
 // https://stackoverflow.com/questions/41995464/how-to-mock-middleware-in-express-to-skip-authentication-for-unit-test
 jest.mock("./../authentication", () => jest.fn());
+jest.mock("google-auth-library");
 
 const request = require("supertest");
 const { app, server } = require("./../server");
@@ -20,6 +21,7 @@ const {
 const { sortUsers, sortItems, sortStores, sortOrders } = require("./testUtils");
 const { populate, clearDB } = require("./../emulatedFirestore.js");
 const authenticateUser = require("./../authentication");
+const { JWT } = require("google-auth-library");
 
 beforeEach(async () => {
   await populate();
@@ -137,7 +139,7 @@ describe("API POST Data", () => {
   });
 });
 
-describe("API GET Nonce", () => {
+describe("Test api/nonce endpoint", () => {
   it("should get a static nonce", async () => {
     const res = await request(app).get("/api/nonce");
     expect(res.text).toEqual("static nonce");
@@ -145,30 +147,62 @@ describe("API GET Nonce", () => {
 });
 
 describe("Test api/order endpoints", () => {
-  const testUserId = TEST_USERS[0]["user-id"];
-  authenticateUser.mockImplementation((req, res, next) => {
-    req.userId = testUserId;
-    next();
+  const testOrder = {
+    name: CONSTANTS.TEST_ORDER_NAME,
+    id: CONSTANTS.TEST_ORDER_ID,
+  };
+
+  beforeAll(() => {
+    // Mock user authentication
+    authenticateUser.mockImplementation((req, res, next) => {
+      req.userId = CONSTANTS.TEST_USER_ID;
+      next();
+    });
+
+    // Mock Google API OAuth 2.0 authorization
+    JWT.mockImplementation(() => ({
+      authorize() {
+        return true;
+      },
+      request() {
+        return new Promise((resolve, _) => {
+          resolve({ data: testOrder });
+        });
+      },
+    }));
   });
 
   it("should add a new order", async () => {
-    const testUserId = TEST_USERS[0]["user-id"];
     const res = await request(app).post("/api/order/add").send({
-      merchantId: "TEST_MERCHANT",
-      orderId: "TEST_ORDER",
+      merchantId: CONSTANTS.TEST_MERCHANT_ID,
+      orderId: CONSTANTS.TEST_ORDER_ID,
     });
     expect(res.statusCode).toEqual(CONSTANTS.HTTP_SUCCESS);
-    expect(res.text).toEqual("TEST_ORDER");
+    expect(res.text).toEqual(CONSTANTS.TEST_ORDER_ID);
   });
 
-  it("should get TEST_USER orders", async () => {
+  it("should list TEST_USER orders", async () => {
     const expectedOrders = TEST_ORDERS.filter(
-      (order) => order["user-id"] === testUserId
+      (order) => order["user-id"] === CONSTANTS.TEST_USER_ID
     );
     const res = await request(app).get("/api/order/list");
     expect(res.body).toHaveLength(expectedOrders.length);
-    expect(res.body.every((order) => order["user-id"] === testUserId)).toBe(
-      true
+    expect(
+      res.body.every((order) => order["user-id"] === CONSTANTS.TEST_USER_ID)
+    ).toBe(true);
+  });
+
+  it("should get the TEST_ORDER_NAME Spot order", async () => {
+    const res = await request(app).get(
+      `/api/order/${CONSTANTS.TEST_ORDER_NAME}`
     );
+    expect(res.body).toEqual(testOrder);
+  });
+
+  it("should update the TEST_ORDER_NAME Spot order", async () => {
+    const res = await request(app).post("/api/order/update").send({
+      orderName: CONSTANTS.TEST_ORDER_NAME,
+    });
+    expect(res.body).toEqual(testOrder);
   });
 });

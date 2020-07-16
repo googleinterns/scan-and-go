@@ -20,7 +20,12 @@ import {
   ORDER_ADD_API,
   TEST_ORDER_NAME,
 } from "src/constants";
-import { fetchJson, extractIdentityToken, getTotalPrice } from "src/utils";
+import {
+  fetchJson,
+  extractIdentityToken,
+  getTotalPrice,
+  fetchText,
+} from "src/utils";
 import { isWeb, google, microapps } from "src/config";
 import {
   IdentityToken,
@@ -150,7 +155,7 @@ export const getOrders = async () => {
 /**
  * Retrieves the list of items in an order.
  *
- * @param {string} orderName - The order name in the form of {merchants/*\/orders/*}.
+ * @param {string} orderName - The Spot order name in the form of {merchants/*\/orders/*}.
  * @returns {CartItem[]} contents - The items in the order.
  */
 export const getOrderContents = async (orderName: string) => {
@@ -164,7 +169,6 @@ export const getOrderContents = async (orderName: string) => {
   // retrieve order items
   const order = await fetchJson("GET", {}, `${ORDER_API}/${orderName}`, true);
   let contents: CartItem[] = [];
-  console.log(order);
   if (order?.items) {
     const itemBarcodes = order.items.map(
       (orderItem: OrderItem) => orderItem.subtitle
@@ -216,19 +220,26 @@ export const createOrder = async (store: Store, cartItems: CartItem[]) => {
     },
     status: { type: "COMPLETED" },
   };
-  let orderRes = await microapps.createOrder(orderReq);
+
+  let orderRes = await microapps
+    .createOrder(orderReq)
+    .catch((err: any) => console.error(err));
+
   if (orderRes) {
+    // update the order actions for the newly created order
     orderRes = await fetchJson(
       "POST",
       { orderName: orderRes.name },
       ORDER_UPDATE_API,
       true
     );
+
+    // add the order to the ScanAndGo database
     const data = {
       merchantId: process.env.REACT_APP_SPOT_MERCHANT_ID,
       orderId: orderRes.orderId,
     };
-    await fetchJson("POST", data, ORDER_API, true);
+    await fetchText("POST", data, ORDER_ADD_API, true);
   }
   return orderRes;
 };

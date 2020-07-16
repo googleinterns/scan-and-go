@@ -34,7 +34,6 @@ const Checkout: React.FC = () => {
 
   const confirm = async () => {
     const orderRes = await createOrder(store, contents);
-    console.log(orderRes);
     if (orderRes) {
       goToReceipt(orderRes.name);
       setAlertSeverity("success");

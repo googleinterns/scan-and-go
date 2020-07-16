@@ -14,4 +14,9 @@ module.exports = {
 
   SPOT_BASE_URL: "https://microapps.googleapis.com/v1alpha",
   SPOT_ORDERS_SCOPE: "https://www.googleapis.com/auth/microapps.orders",
+
+  TEST_USER_ID: "93IRJIDF01LDKS0",
+  TEST_ORDER_ID: "TEST_ORDER",
+  TEST_MERCHANT_ID: "TEST_MERCHANT",
+  TEST_ORDER_NAME: "merchants/TEST_MERCHANT/orders/TEST_ORDER",
 };

@@ -13,8 +13,8 @@ const { JWT } = require("google-auth-library");
  */
 const request = (scope, url, method, body) => {
   const client = new JWT({
-    email: process.env.EXPRESS_SERVER_SERIVCE_ACCOUNT_CLIENT_EMAIL,
-    key: process.env.EXPRESS_SERVER_SERVICE_ACCOUNT_PRIVATE_KEY.replace(
+    email: process.env.EXPRESS_SERVER_SERVICE_ACCOUNT_CLIENT_EMAIL,
+    key: (process.env.EXPRESS_SERVER_SERVICE_ACCOUNT_PRIVATE_KEY || "").replace(
       new RegExp("\\\\n", "g"),
       "\n"
     ), // https://github.com/googleapis/google-api-nodejs-client/issues/1110
