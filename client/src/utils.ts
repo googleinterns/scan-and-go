@@ -47,7 +47,9 @@ const getIdToken = async () => {
     // Web flow with Google Sign-In https://developers.google.com/identity/sign-in/web
     // Load and initialize the GoogleAuth object, otherwise throws gapi/auth2 is not defined error
     await new Promise((resolve, reject) => {
-      gapi.load("auth2", resolve);
+      window.addEventListener("google-loaded", () => {
+        gapi.load("auth2", resolve);
+      });
     });
     gapi.auth2.init({ client_id: process.env.REACT_APP_MICROAPPS_CLIENT_ID });
 

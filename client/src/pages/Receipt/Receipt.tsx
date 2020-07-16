@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { withRouter, RouteComponentProps } from "react-router-dom";
+import { withRouter, RouteComponentProps, useHistory } from "react-router-dom";
 import Cart from "src/components/Cart";
 import { urlGetParam } from "src/utils";
 import { Button, Typography, Grid } from "@material-ui/core";
@@ -10,43 +10,50 @@ import { CartItem } from "src/interfaces";
 import Page from "src/pages/Page";
 import Header from "src/components/Header";
 import CartSummary from "src/components/CartSummary";
+import { getOrderContents } from "../Actions";
 declare const window: any;
 
-const Receipt: React.FC<RouteComponentProps> = ({ history }) => {
-  const orderId = urlGetParam("id");
-  const { contents } = (history.location.state as any) || [];
-  const qrCodeDiv: React.RefObject<HTMLInputElement> = React.createRef();
+const Receipt: React.FC = () => {
+  const history = useHistory();
+  const orderName = urlGetParam("order") || "";
+  const [contents, setContents] = useState<CartItem[]>([]);
+  const qrCodeDiv: React.RefObject<HTMLDivElement> = React.createRef();
   const [viewQr, setViewQr] = useState(true);
 
   useEffect(() => {
+    getOrderContents(orderName).then((res) => setContents(res));
     generateQR();
   }, []);
 
   const generateQR = () => {
-    const text = `$Order ID: ${orderId}`;
+    const text = `$Order ID: ${orderName}`;
 
     // Calculate QR code width to fit within screen (otherwise it defaults to a fixed size),
     // taking into account space needed for text below QR code.
-    const divHeight =
-      0.8 *
-      parseInt(
-        window.getComputedStyle(qrCodeDiv.current)!.getPropertyValue("height"),
+    if (qrCodeDiv.current) {
+      const divHeight =
+        0.8 *
+        parseInt(
+          window
+            .getComputedStyle(qrCodeDiv.current)!
+            .getPropertyValue("height"),
+          10
+        );
+      const divWidth = parseInt(
+        window.getComputedStyle(qrCodeDiv.current)!.getPropertyValue("width"),
         10
       );
-    const divWidth = parseInt(
-      window.getComputedStyle(qrCodeDiv.current)!.getPropertyValue("width"),
-      10
-    );
-    const width = Math.min(divHeight, divWidth);
+      const width = Math.min(divHeight, divWidth);
 
-    QRCode.toCanvas(
-      document.getElementById("canvas"),
-      text,
-      { width: width },
-      (err) => {
-        if (err) console.error(err);
-      }
-    );
+      QRCode.toCanvas(
+        document.getElementById("canvas"),
+        text,
+        { width: width },
+        (err) => {
+          if (err) console.error(err);
+        }
+      );
+    }
   };
 
   const returnToHome = () => {
@@ -61,9 +68,7 @@ const Receipt: React.FC<RouteComponentProps> = ({ history }) => {
 
   return (
     <Page
-      header={
-        <Header title={<Typography variant="h4">Order Summary</Typography>} />
-      }
+      header={<Header title={<Typography variant="h4">Receipt</Typography>} />}
       content={
         <Grid container item xs>
           {!viewQr && (
@@ -85,6 +90,7 @@ const Receipt: React.FC<RouteComponentProps> = ({ history }) => {
             style={{ display: viewQr ? "flex" : "none" }}
             hidden={!viewQr}
             ref={qrCodeDiv}
+            id="qrGrid"
           >
             <canvas id="canvas" />
             <Typography align="center" color="textSecondary">

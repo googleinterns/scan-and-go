@@ -10,14 +10,24 @@ import {
   GOOGLE_PLACES_SCRIPT_ID,
   ORDER_LIST_API,
   SCANSTORE_PAGE,
+  ITEM_LIST_API,
+  ORDER_API,
+  DEFAULT_CURRENCY_CODE,
+  PRICE_FRACTION_DIGITS,
+  TEST_ORDER_ID,
+  TEST_PAYMENT_ID,
 } from "src/constants";
-import { fetchJson, extractIdentityToken } from "src/utils";
+import { fetchJson, extractIdentityToken, getTotalPrice } from "src/utils";
 import { isWeb, google, microapps } from "src/config";
 import {
   IdentityToken,
   GeoLocation,
   emptyGeoLocation,
   emptyUser,
+  CartItem,
+  Store,
+  OrderItem,
+  Item,
 } from "src/interfaces";
 
 // Load up Google Maps Places API Service
@@ -132,6 +142,83 @@ export const getNearbyPlacesTest = (
 
 export const getOrders = async () => {
   return (await fetchJson("GET", {}, ORDER_LIST_API, true)) || [];
+};
+
+/**
+ * Retrieves the list of items in an order.
+ *
+ * @param {string} orderName - The order name in the form of {merchants/*\/orders/*}.
+ * @returns {CartItem[]} contents - The items in the order.
+ */
+export const getOrderContents = async (orderName: string) => {
+  // parse merchant ID from order name
+  let merchantId = "";
+  const matches = orderName.match(/(?<=merchants\/)(.*?)(?=\/orders)/gi);
+  if (matches) {
+    merchantId = matches[0];
+  }
+
+  // retrieve order items
+  const order = await fetchJson("GET", {}, `${ORDER_API}/${orderName}`, true);
+  let contents: CartItem[] = [];
+  if (order) {
+    const itemBarcodes = order.items.map(
+      (orderItem: OrderItem) => orderItem.subtitle
+    );
+    const data = {
+      "merchant-id": merchantId,
+      barcode: itemBarcodes,
+    };
+    const items = await fetchJson("POST", data, ITEM_LIST_API);
+    contents = order.items.map((orderItem: OrderItem) => {
+      return {
+        item: items.filter((item: Item) => item.barcode == orderItem.subtitle),
+        quantity: orderItem.quantity,
+      };
+    });
+  }
+  return contents;
+};
+
+/**
+ * Creates an order in the Spot database.
+ *
+ * @param {Store} store - The store at which the order is made.
+ * @param {CartItem[]} cartItems - The list of items in the order.
+ */
+export const createOrder = async (store: Store, cartItems: CartItem[]) => {
+  // TODO (#): handle currency code in items and price utility functions
+  const currencyCode = DEFAULT_CURRENCY_CODE;
+  const order = {
+    title: `Order @ ${store.name}`,
+    items: cartItems.map((cartItem) => {
+      return {
+        title: cartItem.item.name,
+        subtitle: cartItem.item.barcode,
+        quantity: cartItem.quantity,
+        price: {
+          currency: currencyCode,
+          value: cartItem.item.price.toFixed(PRICE_FRACTION_DIGITS),
+        },
+      };
+    }),
+    total: {
+      currency: currencyCode,
+      value: getTotalPrice(cartItems),
+    },
+    status: { type: "COMPLETED" },
+    payments: [
+      {
+        id: "ac6d65fa-e427-47c7-8631-21bd976b09c6",
+      },
+    ], // must be set for server-side
+  };
+  const body = {
+    order: order,
+    merchantId: process.env.REACT_APP_SPOT_MERCHANT_ID,
+  };
+  // return await microapps.createOrder(order);
+  return await fetchJson("POST", body, ORDER_API, true);
 };
 
 export const getUser = () => {
