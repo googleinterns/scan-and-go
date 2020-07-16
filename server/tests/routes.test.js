@@ -135,16 +135,6 @@ describe("API POST Data", () => {
       res.body.every((item) => testBarcodes.includes(item["barcode"]))
     ).toBe(true);
   });
-  it("should add a new order", async () => {
-    const testUserId = TEST_USERS[0]["user-id"];
-    const res = await request(app).post("/api/order").send({
-      "merchant-id": "TEST_MERCHANT",
-      "order-id": "TEST_ORDER",
-      "user-id": "TEST_USER",
-    });
-    expect(res.statusCode).toEqual(CONSTANTS.HTTP_SUCCESS);
-    expect(res.text).toEqual("TEST_ORDER");
-  });
 });
 
 describe("API GET Nonce", () => {
@@ -154,11 +144,21 @@ describe("API GET Nonce", () => {
   });
 });
 
-describe("API GET User Data", () => {
+describe("Test api/order endpoints", () => {
   const testUserId = TEST_USERS[0]["user-id"];
   authenticateUser.mockImplementation((req, res, next) => {
     req.userId = testUserId;
     next();
+  });
+
+  it("should add a new order", async () => {
+    const testUserId = TEST_USERS[0]["user-id"];
+    const res = await request(app).post("/api/order/add").send({
+      merchantId: "TEST_MERCHANT",
+      orderId: "TEST_ORDER",
+    });
+    expect(res.statusCode).toEqual(CONSTANTS.HTTP_SUCCESS);
+    expect(res.text).toEqual("TEST_ORDER");
   });
 
   it("should get TEST_USER orders", async () => {

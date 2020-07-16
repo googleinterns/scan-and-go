@@ -1,10 +1,16 @@
 const { ordersCollection } = require("./../firestore");
 const { SPOT_BASE_URL, SPOT_ORDERS_SCOPE } = require("./../constants");
-const { flatMap } = require("./../utils");
 
 const { JWT } = require("google-auth-library");
-// const {GoogleAuth} = require('google-auth-library');
 
+/**
+ * Sends a HTTPS request to the specified endpoint
+ *
+ * @param {string} scope - the authorization scope required for the OAuth token.
+ * @param {string} url - the request URL.
+ * @param {string} method - the request method.
+ * @param {string} body - the request payload.
+ */
 const request = (scope, url, method, body) => {
   const client = new JWT({
     email: process.env.EXPRESS_SERVER_SERIVCE_ACCOUNT_CLIENT_EMAIL,
@@ -15,11 +21,6 @@ const request = (scope, url, method, body) => {
     scopes: [scope],
   });
   return client.request({ url: url, method: method, data: body });
-  // .then(response => {
-  //   callback(null, response.data);
-  // }).catch(err => {
-  //   callback(err, null);
-  // });
 };
 
 /**
@@ -63,7 +64,6 @@ exports.addOrder = async (req, res) => {
  *
  * @param {Object} req - The request.
  * @param {Object} res - The response.
- * @param {String} req.params.userId - The user id query passed as /api/order/list/<userId>
  */
 exports.listOrders = async (req, res) => {
   const userId = req.userId;
@@ -122,6 +122,14 @@ exports.updateOrder = async (req, res) => {
   }
 };
 
+/**
+ * Gets the Spot order identified by its merchant ID and order ID.
+ *
+ * @param {Object} req - The request.
+ * @param {Object} res - The response.
+ * @param {String} req.params.merchantId - The merchant id parameter passed as /api/order/merchants/:merchantId/orders/*
+ * @param {String} req.params.orderId - The order id parameter passed as /api/order/merchants/*\/orders/:orderId
+ */
 exports.getOrder = async (req, res) => {
   const merchantId = req.params.merchantId;
   const orderId = req.params.orderId;
