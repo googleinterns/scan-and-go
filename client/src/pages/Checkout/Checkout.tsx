@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { withRouter, RouteComponentProps } from "react-router-dom";
+import { withRouter, RouteComponentProps, useHistory } from "react-router-dom";
 import Cart from "src/components/Cart";
 import { urlGetParam } from "src/utils";
 import { Button, Typography, Grid } from "@material-ui/core";
@@ -15,9 +15,10 @@ import CartSummary from "src/components/CartSummary";
 import { createOrder } from "../Actions";
 declare const window: any;
 
-const Checkout: React.FC<RouteComponentProps> = ({ history }) => {
+const Checkout: React.FC = () => {
+  const history = useHistory();
   const { store, contents }: { store: Store; contents: CartItem[] } =
-    (history.location.state as any) || [];
+    (history.location?.state as any) || [];
   const [paymentStatus, setPaymentStatus] = useState<PAYMENT_STATUS>(
     PAYMENT_STATUS.AWAITING
   );
@@ -35,10 +36,9 @@ const Checkout: React.FC<RouteComponentProps> = ({ history }) => {
     const orderRes = await createOrder(store, contents);
     console.log(orderRes);
     if (orderRes) {
-      const { orderName, orderId } = orderRes;
-      goToReceipt(orderName);
+      goToReceipt(orderRes.name);
       setAlertSeverity("success");
-      setAlertMessage(`Order ${orderId} Confimed!`);
+      setAlertMessage(`Order ${orderRes.orderId} Confimed!`);
       setOpen(true);
     }
   };
