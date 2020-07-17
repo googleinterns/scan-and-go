@@ -8,7 +8,7 @@ module.exports = {
   ITEMS_COLLECTION: "items",
   STORES_COLLECTION: "stores",
   ORDERS_COLLECTION: "orders",
-
+  MERCHANTS_COLLECTION: "merchants",
   DEFAULT_SEARCH_RADIUS_METERS: 2000,
   DEFAULT_QUERY_LIMIT: 10,
 };

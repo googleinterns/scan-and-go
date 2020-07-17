@@ -17,6 +17,7 @@ const usersCollection = firestore.collection("users");
 const itemsCollection = firestore.collection("items");
 const storesCollection = firestore.collection("stores");
 const ordersCollection = firestore.collection("orders");
+const merchantsCollection = firestore.collection("merchants");
 
 module.exports = {
   firestore,
@@ -24,4 +25,5 @@ module.exports = {
   itemsCollection,
   storesCollection,
   ordersCollection,
+  merchantsCollection,
 };

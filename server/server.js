@@ -3,6 +3,7 @@ const compression = require("compression");
 const helmet = require("helmet");
 const cors = require("cors");
 const apiRouter = require("./routers/api-router");
+const ingestionRouter = require("./routers/ingestion-router");
 const config = require("./config");
 require("dotenv").config();
 
@@ -27,6 +28,7 @@ app.use(express.urlencoded({ extended: false }));
 
 // Main API Router
 app.use("/api", apiRouter);
+app.use("/ingest", ingestionRouter);
 
 // Error Fallback 404
 app.use((err, req, res, next) => {
