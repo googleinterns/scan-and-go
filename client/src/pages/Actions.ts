@@ -10,7 +10,6 @@ import {
   GOOGLE_PLACES_SCRIPT_ID,
   ORDER_LIST_API,
   SCANSTORE_PAGE,
-  ITEM_LIST_API,
   ORDER_API,
   DEFAULT_CURRENCY_CODE,
   PRICE_FRACTION_DIGITS,
@@ -95,7 +94,8 @@ export const getItem = async (
     "merchant-id": merchantId,
     barcode: barcode,
   };
-  return await fetchJson("POST", data, ITEM_API);
+  const [item] = (await fetchJson("POST", data, ITEM_API)) || [];
+  return item;
 };
 
 export const loginUser = async () => {
@@ -177,7 +177,7 @@ export const getOrderContents = async (orderName: string) => {
       "merchant-id": merchantId,
       barcode: itemBarcodes,
     };
-    const items = await fetchJson("POST", data, ITEM_LIST_API);
+    const items = await fetchJson("POST", data, ITEM_API);
     contents = order.items.map((orderItem: OrderItem) => {
       return {
         item: items.filter((item: Item) => item.barcode == orderItem.subtitle),

@@ -23,8 +23,7 @@ router.post("/store/list", storesController.listStores); //Batch Operation
 router.post("/user", usersController.getUser);
 
 // Items API
-router.post("/item", itemsController.getItem);
-router.post("/item/list", itemsController.listItems); //Batch Operation
+router.post("/item", itemsController.getItems); //Batch Operation
 
 // Order API
 router.post("/order/add", authenticateUser, ordersController.addOrder);

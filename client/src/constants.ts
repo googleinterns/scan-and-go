@@ -8,7 +8,6 @@ export const LOGIN_PAGE = "/login";
 export const API = "/api/";
 export const CART_API = "/api/cart";
 export const ITEM_API = "/api/item";
-export const ITEM_LIST_API = "/api/item/list";
 export const ORDER_API = "/api/order";
 export const ORDER_ADD_API = "/api/order/add";
 export const ORDER_UPDATE_API = "/api/order/update";
