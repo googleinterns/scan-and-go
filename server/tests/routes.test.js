@@ -71,14 +71,32 @@ describe("API POST Data", () => {
   });
   it("should get TEST_ITEM details", async () => {
     const testItem = TEST_ITEMS[0];
-    const res = await request(app).post("/api/item").send({
-      "merchant-id": testItem["merchant-id"],
-      barcode: testItem["barcode"],
-    });
+    const res = await request(app)
+      .post("/api/item")
+      .send({
+        "merchant-id": testItem["merchant-id"],
+        barcode: [testItem["barcode"]],
+      });
     expect(res.statusCode).toEqual(CONSTANTS.HTTP_SUCCESS);
     for (let field in testItem) {
-      expect(res.body).toHaveProperty(field, testItem[field]);
+      expect(res.body[0]).toHaveProperty(field, testItem[field]);
     }
+  });
+  it("should get a list of >10 items given their barcodes", async () => {
+    const testMerchant = "WPANCUD";
+    const testBarcodes = TEST_ITEMS.filter(
+      (item) => item["merchant-id"] === testMerchant
+    ).map((item) => item["barcode"]);
+    expect(testBarcodes.length > CONSTANTS.MAX_NUM_CLAUSES).toBe(true);
+    const res = await request(app).post("/api/item").send({
+      "merchant-id": testMerchant,
+      barcode: testBarcodes,
+    });
+    expect(res.statusCode).toEqual(CONSTANTS.HTTP_SUCCESS);
+    expect(res.body).toHaveLength(testBarcodes.length);
+    expect(
+      res.body.every((item) => testBarcodes.includes(item["barcode"]))
+    ).toBe(true);
   });
   it("should get TEST_STORE details", async () => {
     const testStore = TEST_STORES[0];
@@ -121,21 +139,6 @@ describe("API POST Data", () => {
     res.body.map((store, i) =>
       expect(store["store-id"]).toEqual(expectedStores[i]["store-id"])
     );
-  });
-  it("should display list of items given barcodes", async () => {
-    const testMerchant = "WPANCUD";
-    const testBarcodes = TEST_ITEMS.filter(
-      (item) => item["merchant-id"] === testMerchant
-    ).map((item) => item["barcode"]);
-    const res = await request(app).post("/api/item/list").send({
-      "merchant-id": testMerchant,
-      barcode: testBarcodes,
-    });
-    expect(res.statusCode).toEqual(CONSTANTS.HTTP_SUCCESS);
-    expect(res.body).toHaveLength(testBarcodes.length);
-    expect(
-      res.body.every((item) => testBarcodes.includes(item["barcode"]))
-    ).toBe(true);
   });
 });
 

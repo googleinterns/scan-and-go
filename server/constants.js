@@ -11,6 +11,7 @@ module.exports = {
 
   DEFAULT_SEARCH_RADIUS_METERS: 2000,
   DEFAULT_QUERY_LIMIT: 10,
+  FIRESTORE_MAX_NUM_CLAUSES: 10,
 
   SPOT_BASE_URL: "https://microapps.googleapis.com/v1alpha",
   SPOT_ORDERS_SCOPE: "https://www.googleapis.com/auth/microapps.orders",
