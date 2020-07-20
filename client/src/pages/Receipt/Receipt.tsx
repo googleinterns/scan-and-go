@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { withRouter, RouteComponentProps, useHistory } from "react-router-dom";
+import React, { useEffect, useState, useContext } from "react";
+import { withRouter, useHistory } from "react-router-dom";
+import { AlertContext } from "src/contexts/AlertContext";
 import Cart from "src/components/Cart";
 import { urlGetParam } from "src/utils";
 import { Button, Typography, Grid } from "@material-ui/core";
@@ -19,14 +20,22 @@ const Receipt: React.FC = () => {
   const [contents, setContents] = useState<CartItem[]>([]);
   const qrCodeDiv: React.RefObject<HTMLDivElement> = React.createRef();
   const [viewQr, setViewQr] = useState(true);
+  const { setAlert } = useContext(AlertContext);
 
   useEffect(() => {
-    getOrderContents(orderName).then((res) => setContents(res));
-    generateQR();
+    getOrderContents(orderName).then((res) => {
+      setContents(res);
+    });
   }, []);
 
+  useEffect(() => {
+    if (contents && contents.length > 0) {
+      generateQR();
+    }
+  }, [contents]);
+
   const generateQR = () => {
-    const text = `$Order ID: ${orderName}`;
+    const text = `$Order: ${orderName}.\n Contents: ${contents}`;
 
     // Calculate QR code width to fit within screen (otherwise it defaults to a fixed size),
     // taking into account space needed for text below QR code.
@@ -50,7 +59,9 @@ const Receipt: React.FC = () => {
         text,
         { width: width },
         (err) => {
-          if (err) console.error(err);
+          if (err) {
+            setAlert("error", `Unable to generate QR code `);
+          }
         }
       );
     }

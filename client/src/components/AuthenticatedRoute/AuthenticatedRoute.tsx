@@ -16,15 +16,11 @@ interface AuthenticatedRouteProps extends RouteProps {
 const AuthenticatedRoute = (props: AuthenticatedRouteProps) => {
   const { component: Component, ...rest } = props;
   const { user } = useContext(AuthContext);
-  const { setOpen, setAlertMessage, setAlertSeverity } = useContext(
-    AlertContext
-  );
+  const { setAlert } = useContext(AlertContext);
 
   useEffect(() => {
     if (user === emptyUser) {
-      setAlertMessage("Please login to access this page");
-      setAlertSeverity("error");
-      setOpen(true);
+      setAlert("error", "Please login to access this page");
     }
   }, [user]);
 

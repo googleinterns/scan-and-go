@@ -22,9 +22,7 @@ const Checkout: React.FC = () => {
   const [paymentStatus, setPaymentStatus] = useState<PAYMENT_STATUS>(
     PAYMENT_STATUS.AWAITING
   );
-  const { setOpen, setAlertSeverity, setAlertMessage } = useContext(
-    AlertContext
-  );
+  const { setAlert } = useContext(AlertContext);
 
   useEffect(() => {
     if (paymentStatus === PAYMENT_STATUS.SUCCESS) {
@@ -36,9 +34,7 @@ const Checkout: React.FC = () => {
     const orderRes = await createOrder(store, contents);
     if (orderRes) {
       goToReceipt(orderRes.name);
-      setAlertSeverity("success");
-      setAlertMessage(`Order ${orderRes.orderId} Confimed!`);
-      setOpen(true);
+      setAlert("success", `Order ${orderRes.orderId} Confirmed!`);
     }
   };
 
