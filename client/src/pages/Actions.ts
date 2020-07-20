@@ -36,6 +36,7 @@ import {
   Store,
   OrderItem,
   Item,
+  emptyCartItem,
 } from "src/interfaces";
 
 // Load up Google Maps Places API Service
@@ -93,7 +94,7 @@ export const getItem = async (
   }
   const data = {
     "merchant-id": merchantId,
-    barcode: barcode,
+    barcode: [barcode],
   };
   const [item] = (await fetchJson("POST", data, ITEM_API)) || [];
   return item;
@@ -193,7 +194,7 @@ export const getOrderContents = async (orderName: string) => {
  */
 export const createOrder = async (store: Store, cartItems: CartItem[]) => {
   if (isWeb) {
-    return { name: TEST_ORDER_NAME, id: TEST_ORDER_ID }; // placeholder order for web flow
+    return { name: TEST_ORDER_NAME, orderId: TEST_ORDER_ID }; // placeholder order for web flow
   }
   // TODO (#191): add currency code in items and price utility functions
   const currencyCode = DEFAULT_CURRENCY_CODE;

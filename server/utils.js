@@ -29,7 +29,8 @@ exports.chunk = (array, chunkSize) => {
   const res = [];
   let i = 0;
   while (i < array.length) {
-    res.push(array.slice(i, (i += chunkSize)));
+    res.push(array.slice(i, i + chunkSize));
+    i += chunkSize;
   }
   return res;
 };
