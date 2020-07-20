@@ -13,6 +13,8 @@ import {
 } from "src/constants";
 import { emptyCartItem } from "src/interfaces";
 import * as Actions from "../Actions";
+import AlertSnackbar from "src/components/AlertSnackbar";
+import { AlertContext } from "src/contexts/AlertContext";
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -45,16 +47,22 @@ it("Checkout renders correctly", async () => {
   expect(tree).toMatchSnapshot();
 });
 
-it("Checkout redirects to Receipt upon successful order", async () => {
+it("Checkout redirects to Receipt and sets successs alert upon successful order", async () => {
   jest
     .spyOn(Actions, "createOrder")
     .mockReturnValue({ name: TEST_ORDER_NAME, orderId: TEST_ORDER_ID });
+  const mockSetAlert = jest.fn();
+  const mockAlertContext = {
+    setAlert: mockSetAlert,
+  };
 
   await act(async () => {
     const wrapper = Enzyme.mount(
-      <Router>
-        <Checkout />
-      </Router>
+      <AlertContext.Provider value={mockAlertContext}>
+        <Router>
+          <Checkout />
+        </Router>
+      </AlertContext.Provider>
     );
     const btns = wrapper.find("button");
     expect(btns).toHaveLength(1);
@@ -66,4 +74,8 @@ it("Checkout redirects to Receipt upon successful order", async () => {
   const pushArgs = global.mockRedirectPush.mock.calls.pop();
   expect(pushArgs[0]).toHaveProperty("pathname", RECEIPT_PAGE);
   expect(pushArgs[0]).toHaveProperty("search", `?order=${TEST_ORDER_NAME}`);
+  expect(mockSetAlert).toBeCalledWith(
+    "success",
+    `Order ${TEST_ORDER_ID} Confirmed!`
+  );
 });
