@@ -5,7 +5,7 @@ import { priceSumArray, priceMul } from "src/priceLibrary";
 import { microapps, isWeb } from "./config";
 
 // Get json from response
-const getJson = (res: any) => {
+const getJson = (res: Response) => {
   if (res.ok) {
     let res_json = res.json();
     return res_json;
@@ -248,4 +248,27 @@ export const jestImportImage = (imgPath: string) => {
   const imgFileType = imgPath.split(".").pop();
   // Format this information into src expected format
   return `data:image/${imgFileType};base64,${imgFileData}`;
+};
+
+// Parses the merchant ID and orderID from the Spot order name, which should be in the form of
+// {merchants/:merchantId\/orders/:orderId}. Returns empty IDs if either ID is not found.
+export const parseOrderName = (orderName: string) => {
+  const merchantIdMatches = orderName.match(
+    /(?<=^merchants\/)(.*?)(?=\/orders)/gi
+  );
+  const orderIdMatches = orderName.match(/(?<=\/orders\/)(.*)$/gi);
+  const orderIds = { merchantId: "", orderId: "" };
+  if (
+    merchantIdMatches &&
+    merchantIdMatches.length == 1 &&
+    orderIdMatches &&
+    orderIdMatches.length == 1
+  ) {
+    Object.assign(
+      orderIds,
+      { merchantId: merchantIdMatches[0] },
+      { orderId: orderIdMatches[0] }
+    );
+  }
+  return orderIds;
 };

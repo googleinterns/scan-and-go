@@ -87,7 +87,9 @@ describe("API POST Data", () => {
     const testBarcodes = TEST_ITEMS.filter(
       (item) => item["merchant-id"] === testMerchant
     ).map((item) => item["barcode"]);
-    expect(testBarcodes.length > CONSTANTS.MAX_NUM_CLAUSES).toBe(true);
+    expect(testBarcodes.length > CONSTANTS.FIRESTORE_MAX_NUM_CLAUSES).toBe(
+      true
+    );
     const res = await request(app).post("/api/item").send({
       "merchant-id": testMerchant,
       barcode: testBarcodes,

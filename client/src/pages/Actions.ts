@@ -15,7 +15,7 @@ import {
   PRICE_FRACTION_DIGITS,
   TEST_ORDER_ID,
   TEST_PAYMENT_ID,
-  ORDER_UPDATE_API,
+  MICROAPPS_ORDER_UPDATE_API,
   ORDER_ADD_API,
   TEST_ORDER_NAME,
 } from "src/constants";
@@ -24,6 +24,7 @@ import {
   extractIdentityToken,
   getTotalPrice,
   fetchText,
+  parseOrderName,
 } from "src/utils";
 import { isWeb, google, microapps } from "src/config";
 import {
@@ -159,20 +160,15 @@ export const getOrders = async () => {
  * @returns {CartItem[]} contents - The items in the order.
  */
 export const getOrderContents = async (orderName: string) => {
-  // parse merchant ID from order name
-  let merchantId = "";
-  const matches = orderName.match(/(?<=merchants\/)(.*?)(?=\/orders)/gi);
-  if (matches) {
-    merchantId = matches[0];
-  }
-
-  // retrieve order items
-  const order = await fetchJson("GET", {}, `${ORDER_API}/${orderName}`, true);
   let contents: CartItem[] = [];
+
+  // retrieve order items from backend
+  const order = await fetchJson("GET", {}, `${ORDER_API}/${orderName}`, true);
   if (order?.items) {
     const itemBarcodes = order.items.map(
       (orderItem: OrderItem) => orderItem.subtitle
     );
+    const { merchantId } = parseOrderName(orderName);
     const data = {
       "merchant-id": merchantId,
       barcode: itemBarcodes,
@@ -199,7 +195,7 @@ export const createOrder = async (store: Store, cartItems: CartItem[]) => {
   if (isWeb) {
     return { name: TEST_ORDER_NAME, id: TEST_ORDER_ID }; // placeholder order for web flow
   }
-  // TODO (#): add currency code in items and price utility functions
+  // TODO (#191): add currency code in items and price utility functions
   const currencyCode = DEFAULT_CURRENCY_CODE;
   const orderReq = {
     title: `Order @ ${store.name}`,
@@ -221,16 +217,14 @@ export const createOrder = async (store: Store, cartItems: CartItem[]) => {
     status: { type: "COMPLETED" },
   };
 
-  let orderRes = await microapps
-    .createOrder(orderReq)
-    .catch((err: any) => console.error(err));
+  let orderRes = await microapps.createOrder(orderReq);
 
   if (orderRes) {
-    // update the order actions for the newly created order
+    // update the order actions for the newly created microapps order
     orderRes = await fetchJson(
       "POST",
       { orderName: orderRes.name },
-      ORDER_UPDATE_API,
+      MICROAPPS_ORDER_UPDATE_API,
       true
     );
 

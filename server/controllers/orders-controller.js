@@ -17,7 +17,7 @@ const request = (scope, url, method, body) => {
     key: (process.env.EXPRESS_SERVER_SERVICE_ACCOUNT_PRIVATE_KEY || "").replace(
       new RegExp("\\\\n", "g"),
       "\n"
-    ), // https://github.com/googleapis/google-api-nodejs-client/issues/1110
+    ), // Nodejs replaces "\n" with "\\n", so we need to revert this https://github.com/googleapis/google-api-nodejs-client/issues/1110
     scopes: [scope],
   });
   return client.request({ url: url, method: method, data: body });

@@ -6,8 +6,10 @@ import Adapter from "enzyme-adapter-react-16";
 import Receipt from "./Receipt";
 import { BrowserRouter as Router, useHistory } from "react-router-dom";
 import QRCode from "qrcode";
-import { TEST_ORDER_NAME, HOME_PAGE } from "src/constants";
+import { TEST_ORDER_NAME, HOME_PAGE, ITEM_API } from "src/constants";
 import { waitFor } from "@testing-library/react";
+import * as Actions from "../Actions";
+import { emptyCartItem } from "src/interfaces";
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -32,10 +34,14 @@ it("Receipt renders correctly", async () => {
 });
 
 it("Receipt renders QR code with order ID", async () => {
-  const testQRText = `$Order ID: ${TEST_ORDER_NAME}`;
+  const testContents = [emptyCartItem()];
+  const testQRText = `$Order: ${TEST_ORDER_NAME}.\n Contents: ${testContents}`;
   const toCanvasStub = jest
     .spyOn(QRCode, "toCanvas")
     .mockImplementation(jest.fn());
+  jest
+    .spyOn(Actions, "getOrderContents")
+    .mockReturnValueOnce(new Promise((resolve, _) => resolve(testContents)));
 
   await act(async () => {
     const wrapper = Enzyme.mount(
