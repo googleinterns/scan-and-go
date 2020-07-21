@@ -21,7 +21,7 @@ const getKey = (header, keyCallback) => {
   });
 };
 
-const authenticateUser = (req, res, next) => {
+const authUser = (req, res, next) => {
   if (
     !req.headers.authorization ||
     req.headers.authorization.split(" ")[0] !== "Bearer"
@@ -45,7 +45,7 @@ const authenticateUser = (req, res, next) => {
   });
 };
 
-const CronAuth = (req, res, next) => {
+const authCron = (req, res, next) => {
   // https://cloud.google.com/appengine/docs/flexible/nodejs/scheduling-jobs-with-cron-yaml#validating_cron_requests
   // 'X-Appengine-Cron' is a trusted header which is stripped from
   // client requests external to AppEngine. Therefore, we can use
@@ -67,7 +67,7 @@ const CronAuth = (req, res, next) => {
   return next();
 };
 
-const DebugAuth = (req, res, next) => {
+const authDebug = (req, res, next) => {
   // Ensure we protect endpoints behind a local config
   if (
     req.connection.remoteAddress !== IPv6_LOOPBACK &&
@@ -78,6 +78,8 @@ const DebugAuth = (req, res, next) => {
   return next();
 };
 
-module.exports = authenticateUser;
-module.exports.CronAuth = CronAuth;
-module.exports.DebugAuth = DebugAuth;
+module.exports = {
+  authUser: authUser,
+  authCron: authCron,
+  authDebug: authDebug,
+};

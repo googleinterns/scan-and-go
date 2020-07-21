@@ -17,6 +17,9 @@
     "extends": "prettier"
   },
   "jest": {
+    "setupFiles": [
+      "<rootDir>/setupTests.js"
+    ],
     "testEnvironment": "node",
     "coveragePathIgnorePatterns": [
       "/node_modules/"
