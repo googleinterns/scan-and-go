@@ -2,7 +2,6 @@ const firebase = require("@firebase/testing");
 
 // Restart emulators first
 firebase.apps().map((app) => {
-  console.log(app);
   app.delete();
 });
 
@@ -24,7 +23,7 @@ const setupSimulatedDB = async () => {
     STORES_COLLECTION,
     ORDERS_COLLECTION,
     MERCHANTS_COLLECTION,
-  } = require("./constants");
+  } = require("./config");
 
   // Add our dummy data into emulated firestore
   for (const user of TEST_USERS) {
