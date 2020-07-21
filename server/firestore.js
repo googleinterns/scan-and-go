@@ -1,5 +1,14 @@
 const { Firestore } = require("@google-cloud/firestore");
-const { ENV, TEST } = require("./config");
+const {
+  ENV,
+  TEST,
+  USERS_COLLECTION,
+  ITEMS_COLLECTION,
+  STORES_COLLECTION,
+  ORDERS_COLLECTION,
+  MERCHANTS_COLLECTION,
+  INGESTION_COLLECTION,
+} = require("./config");
 
 // Determine which database to use, testing local? or remote live
 // Emulated:  Load up our emulated firestore object after
@@ -13,11 +22,12 @@ const firestore =
 //        `firebase emulators:start --only firestore`
 
 // Expose handlers to our DB objects
-const usersCollection = firestore.collection("users");
-const itemsCollection = firestore.collection("items");
-const storesCollection = firestore.collection("stores");
-const ordersCollection = firestore.collection("orders");
-const merchantsCollection = firestore.collection("merchants");
+const usersCollection = firestore.collection(USERS_COLLECTION);
+const itemsCollection = firestore.collection(ITEMS_COLLECTION);
+const storesCollection = firestore.collection(STORES_COLLECTION);
+const ordersCollection = firestore.collection(ORDERS_COLLECTION);
+const merchantsCollection = firestore.collection(MERCHANTS_COLLECTION);
+const ingestionCollection = firestore.collection(INGESTION_COLLECTION);
 
 module.exports = {
   firestore,
@@ -26,4 +36,5 @@ module.exports = {
   storesCollection,
   ordersCollection,
   merchantsCollection,
+  ingestionCollection,
 };

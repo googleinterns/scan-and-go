@@ -6,6 +6,7 @@ const path = require("path");
 const { csvToJson, writeJsonToCsv, arrayEqual } = require("./../utils");
 const { HTTP_INTERNALERROR } = require("./../constants");
 const { MERCHANTS_INGESTION_CSV } = require("./../config");
+const { merchantsCollection, ingestionCollection } = require("./../firestore");
 const cloudStorage = require("./../cloud-storage");
 
 const bucket = cloudStorage.bucket;
@@ -18,6 +19,28 @@ exports.sync = async (req, res) => {
     const merchantsConfigFile = await bucket.file(MERCHANTS_INGESTION_CSV);
     if (merchantsConfigFile) {
       const merchants = await csvToJson(merchantsConfigFile.createReadStream());
+      // Look into currently available merchants
+      const availMerchantsQuery = await merchantsCollection.get();
+      const availMerchants = availMerchantsQuery.docs
+        .map((doc) => doc.data())
+        .map((merchant) => merchant["merchant-id"]);
+      // Filter merchants to be onboarded
+      const onboardMerchants = merchants.data.filter((merchant) => {
+        if (!availMerchants.includes(merchant["Merchant ID"])) return true;
+        //TODO: Verify if changes to item/store files were made since last update
+        return false;
+      });
+      if (onboardMerchants.length > 0) {
+        //TODO: Parse files and Begin merchant onboarding flow
+      }
+      // Log ingest sync request
+      ingestionCollection.add({
+        timestamp: Date.now(),
+        status: "SUCCESS",
+        merchants: onboardMerchants.length
+          ? onboardMerchants.map((merchant) => merchant["Merchant ID"])
+          : [],
+      });
       res.send(merchants);
     } else {
       res.send(`Error: ${MERCHANTS_INGESTION_CSV} Not Found`);
@@ -25,12 +48,6 @@ exports.sync = async (req, res) => {
   } catch (err) {
     res.send(`Error: ${err}`);
   }
-};
-
-//
-exports.update = async (req, res) => {
-  // Based on POST body details, update specified merchants
-  res.send("SUCCESS");
 };
 
 exports.addMerchant = async (req, res) => {

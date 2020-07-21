@@ -11,9 +11,6 @@ const upload = multer({ dest: "/tmp" });
 // curl -H "X-Appengine-Cron:true" localhost:3143/ingest/sync
 router.get("/sync", authCron, ingestionController.sync);
 
-// Update (necessary?)
-router.post("/update", ingestionController.update);
-
 // DEBUGGING ENDPOINTS //
 // Add merchant for onboarding (debugging ONLY)
 // curl -X POST -d "@filename" localhost:3143/ingest/merchant
