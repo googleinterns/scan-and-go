@@ -1,0 +1,369 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> pages/Actions.ts</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Global</h3><ul><li><a href="global.html#AuthenticatedRoute">AuthenticatedRoute</a></li><li><a href="global.html#createOrder">createOrder</a></li><li><a href="global.html#getOrderContents">getOrderContents</a></li><li><a href="global.html#IconSearchBar">IconSearchBar</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>pages/Actions.ts</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {
+  STORE_API,
+  STORE_LIST_API,
+  USER_API,
+  ITEM_API,
+  DEFAULT_STORE_RADIUS,
+  PLACES_RADIUS_METERS,
+  PLACES_TYPES,
+  GOOGLE_MAP_PLACEHOLDER_ID,
+  GOOGLE_PLACES_SCRIPT_ID,
+  ORDER_LIST_API,
+  SCANSTORE_PAGE,
+  ORDER_API,
+  DEFAULT_CURRENCY_CODE,
+  PRICE_FRACTION_DIGITS,
+  TEST_ORDER_ID,
+  TEST_PAYMENT_ID,
+  MICROAPPS_ORDER_UPDATE_API,
+  ORDER_ADD_API,
+  TEST_ORDER_NAME,
+} from "src/constants";
+import {
+  fetchJson,
+  extractIdentityToken,
+  getTotalPrice,
+  fetchText,
+  parseOrderName,
+} from "src/utils";
+import { isWeb, google, microapps } from "src/config";
+import {
+  IdentityToken,
+  GeoLocation,
+  emptyGeoLocation,
+  emptyUser,
+  CartItem,
+  Store,
+  OrderItem,
+  Item,
+  emptyCartItem,
+} from "src/interfaces";
+
+// Load up Google Maps Places API Service
+let map: any;
+let service: any;
+
+const loadGooglePlacesService = () => {
+  map = new google.maps.Map(document.getElementById(GOOGLE_MAP_PLACEHOLDER_ID));
+  service = new google.maps.places.PlacesService(map);
+};
+
+// Depending on when Actions.ts is loaded, we may not have retrieved
+// google Places API Script yet. If so, watch &lt;script> for load prior to init
+if (google) {
+  loadGooglePlacesService();
+} else {
+  const googleScript = document.getElementById(GOOGLE_PLACES_SCRIPT_ID);
+  if (googleScript) {
+    googleScript.addEventListener("load", loadGooglePlacesService);
+  }
+}
+
+export const getStoreInfo = async (storeId: string) => {
+  const data = {
+    "store-id": storeId,
+  };
+  return await fetchJson("POST", data, STORE_API);
+};
+
+export const getStoresByLocation = async (
+  position: GeoLocation,
+  distance?: number
+) => {
+  const data = {
+    distance: DEFAULT_STORE_RADIUS,
+    latitude: position.coords.latitude,
+    longitude: position.coords.longitude,
+  };
+  return await fetchJson("POST", data, STORE_LIST_API);
+};
+
+export const getUserInfo = async (userId: string) => {
+  const data = {
+    "user-id": userId,
+  };
+  return await fetchJson("POST", data, USER_API);
+};
+
+export const getItem = async (
+  barcode: string | null,
+  merchantId: string | null
+) => {
+  if (!barcode || !merchantId) {
+    return null;
+  }
+  const data = {
+    "merchant-id": merchantId,
+    barcode: [barcode],
+  };
+  const [item] = (await fetchJson("POST", data, ITEM_API)) || [];
+  return item;
+};
+
+export const loginUser = async () => {
+  if (isWeb) {
+    return null;
+  }
+  // TODO (#149): implement more secure nonce
+  // TODO (#163): synchronize login on microapp and web
+  const request = { nonce: "Don't Hack me please" };
+  return await microapps
+    .getIdentity(request)
+    .then((res: any) => extractIdentityToken(res));
+};
+
+export const getGeoLocation = (
+  successCallback: (position: GeoLocation) => void,
+  errorCallback?: (error: any) => void
+) => {
+  if (isWeb) {
+    // Use browser navigator
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        successCallback,
+        errorCallback ? errorCallback : () => {}
+      );
+    }
+  } else {
+    // Use microapps API
+    microapps
+      .getCurrentLocation()
+      .then((loc: any) => Object.assign(emptyGeoLocation(), { coords: loc }))
+      .then((pos: GeoLocation) => successCallback(pos))
+      .catch((err: any) => (errorCallback ? errorCallback(err) : null));
+  }
+};
+
+export const getNearbyPlacesTest = (
+  position: GeoLocation,
+  successCallback: (places: any, status: any) => void
+) => {
+  const curLoc = new google.maps.LatLng(
+    position.coords.latitude,
+    position.coords.longitude
+  );
+  const request = {
+    location: curLoc,
+    radius: PLACES_RADIUS_METERS,
+    type: PLACES_TYPES,
+  };
+  service.nearbySearch(request, successCallback);
+};
+
+export const getOrders = async () => {
+  return (await fetchJson("GET", {}, ORDER_LIST_API, true)) || [];
+};
+
+/**
+ * Retrieves the list of items in an order.
+ *
+ * @param {string} orderName - The Spot order name in the form of {merchants/*\/orders/*}.
+ * @returns {CartItem[]} contents - The items in the order.
+ */
+export const getOrderContents = async (orderName: string) => {
+  let contents: CartItem[] = [];
+
+  // retrieve order items from backend
+  const order = await fetchJson("GET", {}, `${ORDER_API}/${orderName}`, true);
+  if (order?.items) {
+    const itemBarcodes = order.items.map(
+      (orderItem: OrderItem) => orderItem.subtitle
+    );
+    const { merchantId } = parseOrderName(orderName);
+    const data = {
+      "merchant-id": merchantId,
+      barcode: itemBarcodes,
+    };
+    const items = await fetchJson("POST", data, ITEM_API);
+    contents = order.items.map((orderItem: OrderItem) => {
+      return {
+        item: items.filter((item: Item) => item.barcode == orderItem.subtitle),
+        quantity: orderItem.quantity,
+      };
+    });
+  }
+  return contents;
+};
+
+/**
+ * Creates an order in the Spot database.
+ * Returns the Spot Order response if successful.
+ *
+ * @param {Store} store - The store at which the order is made.
+ * @param {CartItem[]} cartItems - The list of items in the order.
+ */
+export const createOrder = async (store: Store, cartItems: CartItem[]) => {
+  if (isWeb) {
+    return { name: TEST_ORDER_NAME, orderId: TEST_ORDER_ID }; // placeholder order for web flow
+  }
+  // TODO (#191): add currency code in items and price utility functions
+  const currencyCode = DEFAULT_CURRENCY_CODE;
+  const orderReq = {
+    title: `Order @ ${store.name}`,
+    items: cartItems.map((cartItem) => {
+      return {
+        title: cartItem.item.name,
+        subtitle: cartItem.item.barcode,
+        quantity: cartItem.quantity,
+        price: {
+          currency: currencyCode,
+          value: cartItem.item.price.toFixed(PRICE_FRACTION_DIGITS),
+        },
+      };
+    }),
+    total: {
+      currency: currencyCode,
+      value: getTotalPrice(cartItems),
+    },
+    status: { type: "COMPLETED" },
+  };
+
+  let orderRes = await microapps.createOrder(orderReq);
+
+  if (orderRes) {
+    // update the order actions for the newly created microapps order
+    orderRes = await fetchJson(
+      "POST",
+      { orderName: orderRes.name },
+      MICROAPPS_ORDER_UPDATE_API,
+      true
+    );
+
+    // add the order to the ScanAndGo database
+    const data = {
+      merchantId: process.env.REACT_APP_SPOT_MERCHANT_ID,
+      orderId: orderRes.orderId,
+    };
+    await fetchText("POST", data, ORDER_ADD_API, true);
+  }
+  return orderRes;
+};
+
+export const getUser = () => {
+  const user = window.localStorage.getItem("user");
+  if (user) {
+    return JSON.parse(user);
+  } else {
+    return emptyUser;
+  }
+};
+
+export const getStoreRedirectUrl = (storeId: string, merchantId: string) => {
+  return `${SCANSTORE_PAGE}?id=${storeId}&amp;mid=${merchantId}`;
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a></p>
+                    <p class="sidebar-created-by">
+                        <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by 
+                        <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+                    </p>
+                </div>
+            </footer>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+</body>
+</html>

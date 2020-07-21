@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,7 +7,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title> Home</title>
+  <title> components/IconSearchBar/IconSearchBar.tsx</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -73,33 +75,113 @@
         <div class="core" id="main-content-wrapper">
             <div class="content">
                 <header class="page-title">
-                    <p></p>
-                    <h1>Home</h1>
+                    <p>Source</p>
+                    <h1>components/IconSearchBar/IconSearchBar.tsx</h1>
                 </header>
                 
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useEffect, useState } from "react";
+import { OutlinedInput, InputLabel, InputAdornment } from "@material-ui/core";
+import { isDebug } from "src/config";
+import "src/css/animation.css";
 
+//TODO(#32) Need to setup JSDoc + better-docs to test documentation syntax
+/**
+ * Generic Text SearchBar with Toggleable Icon
+ *
+ * @component
+ * @example
+ * &lt;IconSearchBar
+ *   icon={[&lt;OnIcon />, &lt;OffIcon />]}
+ *   iconCallback={iconStateCallback}
+ * />
+ * @prop {React.ReactElement[]}     icon - List of 2 icons to render depending on the state of toggle
+ * @prop {function(boolean)} iconCallback - Function invoked when a click event is triggered in SearchBar
+ * @prop {function(string)}   onChangeCallback - Pass the current string entered in SearchBar when a change is detected
+ * @prop {function(string)}   onSubmitCallback - Pass final user input string entered to specified trigger function, fires on ENTER key or onBlur
+ */
+function IconSearchBar({
+  icon,
+  isLoading,
+  iconCallback,
+  onChangeCallback,
+  onSubmitCallback,
+}: {
+  icon: React.ReactElement[];
+  isLoading?: boolean;
+  iconCallback?: (status: boolean) => void;
+  onChangeCallback?: (text: string) => void;
+  onSubmitCallback?: (text: string) => void;
+}) {
+  const [iconStatus, setIconStatus] = useState(false);
 
-    <h3> </h3>
+  const iconClickWrapper = () => {
+    setIconStatus(!iconStatus);
+  };
 
+  const updateTextWrapper = (
+    event: React.ChangeEvent&lt;HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    if (onChangeCallback) {
+      onChangeCallback(event.target.value);
+    }
+  };
 
+  const keyPressWrapper = (event: React.KeyboardEvent&lt;HTMLDivElement>) => {
+    // Unfocus input text field to 'submit' search query on ENTER pressed
+    if (event.key === "Enter") {
+      const ele = document.getElementById("icon-search-bar");
+      if (ele) {
+        ele.blur();
+      }
+    }
+  };
 
+  const blurWrapper = (
+    event: React.FocusEvent&lt;HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    if (onSubmitCallback) {
+      onSubmitCallback(event.target.value);
+    }
+  };
 
+  useEffect(() => {
+    if (iconCallback) iconCallback(iconStatus);
+  }, [iconStatus]);
 
+  return (
+    &lt;div className="DebugBar">
+      &lt;OutlinedInput
+        id="icon-search-bar"
+        startAdornment={
+          &lt;InputAdornment
+            id="icon-search-icon"
+            position="start"
+            onClick={iconClickWrapper}
+            style={{ cursor: "pointer" }}
+            className={isLoading ? "animate-flicker" : undefined}
+          >
+            {iconStatus ? icon[0] : icon[1]}
+          &lt;/InputAdornment>
+        }
+        fullWidth={true}
+        onChange={updateTextWrapper}
+        onKeyPress={keyPressWrapper}
+        onBlur={blurWrapper}
+      />
+    &lt;/div>
+  );
+}
 
-
-
-
-
-    
-
-
-
-
-
+export default IconSearchBar;
+</code></pre>
+        </article>
+    </section>
 
 
 
