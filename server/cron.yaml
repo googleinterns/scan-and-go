@@ -1,0 +1,4 @@
+cron:
+- description: "Onboarding Sync"
+  url: /ingest/sync
+  schedule: every 12 hours

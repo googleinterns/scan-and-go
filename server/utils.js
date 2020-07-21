@@ -26,7 +26,24 @@ exports.flatMap = (listVals, defaultVal = null) => {
   return listVals.length > 0 ? listVals[0] : defaultVal;
 };
 
-// CSV row to json objects
+// Compare contents of two arrays for equality
+exports.arrayEqual = (arr1, arr2) => {
+  if (arr1 === arr2) return true;
+  if (arr1.length != arr2.length) return false;
+  return arr1
+    .map((content, i) => {
+      return content === arr2[i];
+    })
+    .reduce((accum, cur) => accum && cur);
+};
+
+/*
+ * CSV row to json objects
+ * {
+ *   "header": [], // Heading (if present)
+ *   "data": [], // data rows
+ * }
+ */
 exports.csvToJson = async (file, options) => {
   // Verify file exists
   // wrap with filestream to read if param file is type string (file path)
@@ -47,29 +64,51 @@ exports.csvToJson = async (file, options) => {
   if (!options) options = {};
   if (options.noheader) {
     // Parse row as json list
-    jsonObj = [];
+    jsonObj = { data: [] };
     for await (line of fileLines) {
-      jsonObj.push(line.split(","));
+      jsonObj.data.push(line.split(","));
     }
   } else {
     // Parse first row as key
-    let header;
     for await (line of fileLines) {
       if (!jsonObj) {
         // Initialize keys
-        header = line.split(",").map((cell) => cell.trim());
-        jsonObj = [];
+        jsonObj = { header: [], data: [] };
+        jsonObj.header = line.split(",").map((cell) => cell.trim());
       } else {
         const curRow = {};
         // Ensure we have sufficient entries, else ignore row
         const columns = line.split(",").map((cell) => cell.trim());
-        if (columns.length < header.length) continue;
+        if (columns.length < jsonObj.header.length) continue;
         columns.map((col, i) => {
-          curRow[header[i]] = col;
+          curRow[jsonObj.header[i]] = col;
         });
-        jsonObj.push(curRow);
+        jsonObj.data.push(curRow);
       }
     }
   }
   return jsonObj;
+};
+
+/*
+ * Json object to CSV format writing into stream
+ * {
+ *   "header": [], // Use as first row if present
+ *   "data": [], // otherwise, dump rows separated by ','
+ * }
+ */
+exports.writeJsonToCsv = async (obj, outputStream) => {
+  if (obj.header) {
+    const header = obj.header.join(",");
+    await outputStream.write(`${header}\n`);
+    for (row of obj.data) {
+      const rowArr = obj.header.map((key) => row[key]);
+      await outputStream.write(`${rowArr.join(",")}\n`);
+    }
+  } else {
+    for (row of obj.data) {
+      await outputStream.write(`${Object.values(row)}\n`);
+    }
+  }
+  return true;
 };

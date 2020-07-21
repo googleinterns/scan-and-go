@@ -28,6 +28,13 @@ app.use(express.urlencoded({ extended: false }));
 
 // Main API Router
 app.use("/api", apiRouter);
+
+// Backend Ingestion Router (not visible to client)
+// client requests from scan-and-go-for-gpay frontend
+// will reach 404 NotFound instead due to dispatch.yaml rules
+// requests made directly to api-dot-scan-and-go-for-gpay
+// will have to pass through authentication checks described
+// in authentication.js -> CronAuth and DebugAuth
 app.use("/ingest", ingestionRouter);
 
 // Error Fallback 404
