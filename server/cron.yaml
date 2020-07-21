@@ -1,0 +1,5 @@
+cron:
+- description: "Onboarding Sync"
+  url: /ingest/sync
+  schedule: every day 23:00
+  timezone: Asia/Singapore

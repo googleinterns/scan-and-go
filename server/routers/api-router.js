@@ -4,7 +4,7 @@ const usersController = require("./../controllers/users-controller");
 const itemsController = require("./../controllers/items-controller");
 const storesController = require("./../controllers/stores-controller");
 const ordersController = require("./../controllers/orders-controller");
-const authenticateUser = require("./../authentication");
+const { authUser } = require("./../authentication");
 const router = express.Router();
 
 // Debugging Endpoints
@@ -26,12 +26,12 @@ router.post("/user", usersController.getUser);
 router.post("/item", itemsController.getItems); //Batch Operation
 
 // Order API
-router.post("/order/add", authenticateUser, ordersController.addOrder);
-router.post("/order/update", authenticateUser, ordersController.updateOrder);
-router.get("/order/list", authenticateUser, ordersController.listOrders);
+router.post("/order/add", authUser, ordersController.addOrder);
+router.post("/order/update", authUser, ordersController.updateOrder);
+router.get("/order/list", authUser, ordersController.listOrders);
 router.get(
   "/order/merchants/:merchantId/orders/:orderId",
-  authenticateUser,
+  authUser,
   ordersController.getOrder
 );
 

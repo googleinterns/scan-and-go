@@ -1,10 +1,3 @@
-// Mock any middlewares before creating the express server
-// so that express stores a reference to the mocked module
-// https://stackoverflow.com/questions/58831968/simple-way-to-test-middleware-in-express-without-creating-recreating-server/58834073#58834073
-// https://stackoverflow.com/questions/41995464/how-to-mock-middleware-in-express-to-skip-authentication-for-unit-test
-jest.mock("./../authentication", () => jest.fn());
-jest.mock("google-auth-library");
-
 const request = require("supertest");
 const { app, server } = require("./../server");
 const CONSTANTS = require("./../constants");
@@ -20,7 +13,7 @@ const {
 } = require("./../firestore");
 const { sortUsers, sortItems, sortStores, sortOrders } = require("./testUtils");
 const { populate, clearDB } = require("./../emulatedFirestore.js");
-const authenticateUser = require("./../authentication");
+const { authUser } = require("./../authentication");
 const { JWT } = require("google-auth-library");
 
 beforeEach(async () => {
@@ -159,7 +152,7 @@ describe("Test api/order endpoints", () => {
 
   beforeAll(() => {
     // Mock user authentication
-    authenticateUser.mockImplementation((req, res, next) => {
+    authUser.mockImplementation((req, res, next) => {
       req.userId = CONSTANTS.TEST_USER_ID;
       next();
     });
@@ -175,6 +168,10 @@ describe("Test api/order endpoints", () => {
         });
       },
     }));
+  });
+
+  afterAll(() => {
+    authUser.mockRestore();
   });
 
   it("should add a new order", async () => {

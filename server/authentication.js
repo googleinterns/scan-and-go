@@ -1,5 +1,11 @@
 const jwt = require("jsonwebtoken");
 const jwksClient = require("jwks-rsa");
+const {
+  HTTP_UNAUTHORIZED,
+  IPv4_LOOPBACK,
+  IPv6_LOOPBACK,
+  GAE_PRIVATE_IP,
+} = require("./constants");
 
 const client = jwksClient({
   jwksUri: "https://www.googleapis.com/oauth2/v3/certs",
@@ -15,7 +21,7 @@ const getKey = (header, keyCallback) => {
   });
 };
 
-const authenticateUser = (req, res, next) => {
+const authUser = (req, res, next) => {
   if (
     !req.headers.authorization ||
     req.headers.authorization.split(" ")[0] !== "Bearer"
@@ -39,4 +45,41 @@ const authenticateUser = (req, res, next) => {
   });
 };
 
-module.exports = authenticateUser;
+const authCron = (req, res, next) => {
+  // https://cloud.google.com/appengine/docs/flexible/nodejs/scheduling-jobs-with-cron-yaml#validating_cron_requests
+  // 'X-Appengine-Cron' is a trusted header which is stripped from
+  // client requests external to AppEngine. Therefore, we can use
+  // this check to verify that we are calling an endpoint from CronJob
+  if (req.header("X-Appengine-Cron") !== "true") {
+    return res.sendStatus(HTTP_UNAUTHORIZED);
+  }
+  // Furthermore, requests from CronJob are send from the IP 10.0.0.1
+  // which is a private IP address invalid for external routing
+  // We can make a further check here to be sure requester is CronJob
+  // ::1 is for local IPv6 loopback address when debugging using curl
+  if (
+    req.connection.remoteAddress !== IPv6_LOOPBACK &&
+    req.connection.remoteAddress !== IPv4_LOOPBACK &&
+    req.connection.remoteAddress !== GAE_PRIVATE_IP
+  ) {
+    return res.sendStatus(HTTP_UNAUTHORIZED);
+  }
+  return next();
+};
+
+const authDebug = (req, res, next) => {
+  // Ensure we protect endpoints behind a local config
+  if (
+    req.connection.remoteAddress !== IPv6_LOOPBACK &&
+    req.connection.remoteAddress !== IPv4_LOOPBACK
+  ) {
+    return res.sendStatus(HTTP_UNAUTHORIZED);
+  }
+  return next();
+};
+
+module.exports = {
+  authUser: authUser,
+  authCron: authCron,
+  authDebug: authDebug,
+};
