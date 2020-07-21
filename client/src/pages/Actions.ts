@@ -10,14 +10,33 @@ import {
   GOOGLE_PLACES_SCRIPT_ID,
   ORDER_LIST_API,
   SCANSTORE_PAGE,
+  ORDER_API,
+  DEFAULT_CURRENCY_CODE,
+  PRICE_FRACTION_DIGITS,
+  TEST_ORDER_ID,
+  TEST_PAYMENT_ID,
+  MICROAPPS_ORDER_UPDATE_API,
+  ORDER_ADD_API,
+  TEST_ORDER_NAME,
 } from "src/constants";
-import { fetchJson, extractIdentityToken } from "src/utils";
+import {
+  fetchJson,
+  extractIdentityToken,
+  getTotalPrice,
+  fetchText,
+  parseOrderName,
+} from "src/utils";
 import { isWeb, google, microapps } from "src/config";
 import {
   IdentityToken,
   GeoLocation,
   emptyGeoLocation,
   emptyUser,
+  CartItem,
+  Store,
+  OrderItem,
+  Item,
+  emptyCartItem,
 } from "src/interfaces";
 
 // Load up Google Maps Places API Service
@@ -75,9 +94,10 @@ export const getItem = async (
   }
   const data = {
     "merchant-id": merchantId,
-    barcode: barcode,
+    barcode: [barcode],
   };
-  return await fetchJson("POST", data, ITEM_API);
+  const [item] = (await fetchJson("POST", data, ITEM_API)) || [];
+  return item;
 };
 
 export const loginUser = async () => {
@@ -132,6 +152,91 @@ export const getNearbyPlacesTest = (
 
 export const getOrders = async () => {
   return (await fetchJson("GET", {}, ORDER_LIST_API, true)) || [];
+};
+
+/**
+ * Retrieves the list of items in an order.
+ *
+ * @param {string} orderName - The Spot order name in the form of {merchants/*\/orders/*}.
+ * @returns {CartItem[]} contents - The items in the order.
+ */
+export const getOrderContents = async (orderName: string) => {
+  let contents: CartItem[] = [];
+
+  // retrieve order items from backend
+  const order = await fetchJson("GET", {}, `${ORDER_API}/${orderName}`, true);
+  if (order?.items) {
+    const itemBarcodes = order.items.map(
+      (orderItem: OrderItem) => orderItem.subtitle
+    );
+    const { merchantId } = parseOrderName(orderName);
+    const data = {
+      "merchant-id": merchantId,
+      barcode: itemBarcodes,
+    };
+    const items = await fetchJson("POST", data, ITEM_API);
+    contents = order.items.map((orderItem: OrderItem) => {
+      return {
+        item: items.filter((item: Item) => item.barcode == orderItem.subtitle),
+        quantity: orderItem.quantity,
+      };
+    });
+  }
+  return contents;
+};
+
+/**
+ * Creates an order in the Spot database.
+ * Returns the Spot Order response if successful.
+ *
+ * @param {Store} store - The store at which the order is made.
+ * @param {CartItem[]} cartItems - The list of items in the order.
+ */
+export const createOrder = async (store: Store, cartItems: CartItem[]) => {
+  if (isWeb) {
+    return { name: TEST_ORDER_NAME, orderId: TEST_ORDER_ID }; // placeholder order for web flow
+  }
+  // TODO (#191): add currency code in items and price utility functions
+  const currencyCode = DEFAULT_CURRENCY_CODE;
+  const orderReq = {
+    title: `Order @ ${store.name}`,
+    items: cartItems.map((cartItem) => {
+      return {
+        title: cartItem.item.name,
+        subtitle: cartItem.item.barcode,
+        quantity: cartItem.quantity,
+        price: {
+          currency: currencyCode,
+          value: cartItem.item.price.toFixed(PRICE_FRACTION_DIGITS),
+        },
+      };
+    }),
+    total: {
+      currency: currencyCode,
+      value: getTotalPrice(cartItems),
+    },
+    status: { type: "COMPLETED" },
+  };
+
+  let orderRes = await microapps.createOrder(orderReq);
+
+  if (orderRes) {
+    // update the order actions for the newly created microapps order
+    orderRes = await fetchJson(
+      "POST",
+      { orderName: orderRes.name },
+      MICROAPPS_ORDER_UPDATE_API,
+      true
+    );
+
+    // add the order to the ScanAndGo database
+    const data = {
+      merchantId: process.env.REACT_APP_SPOT_MERCHANT_ID,
+      orderId: orderRes.orderId,
+    };
+    await fetchText("POST", data, ORDER_ADD_API, true);
+  }
+  return orderRes;
 };
 
 export const getUser = () => {

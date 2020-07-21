@@ -1,8 +1,9 @@
 const config = require("./../config");
 const { itemsCollection } = require("./../firestore");
-const { flatMap } = require("./../utils");
+const { chunk } = require("./../utils");
+const CONSTANTS = require("./../constants");
 
-exports.listItems = async (req, res) => {
+exports.getItems = async (req, res) => {
   const reqProps = req.body;
   let retItems = [];
 
@@ -11,39 +12,25 @@ exports.listItems = async (req, res) => {
 
   try {
     if (queryMerchant && queryBarcodes) {
-      //TODO(#58) We need to batch this into max 10 barcodes per query
-      const itemsQueryRef = await itemsCollection
-        .where("merchant-id", "==", queryMerchant)
-        .where("barcode", "in", queryBarcodes)
-        .get();
-      retItems = itemsQueryRef.docs.map((doc) => doc.data());
+      // Batch into queries of up to 10 barcodes to meet Firestore in operator limit
+      const queryBarcodesBatched = chunk(
+        queryBarcodes,
+        CONSTANTS.FIRESTORE_MAX_NUM_CLAUSES
+      );
+      const retItemsBatched = await Promise.all(
+        queryBarcodesBatched.map(async (queryBarcodesBatch) => {
+          const itemsQueryRef = await itemsCollection
+            .where("merchant-id", "==", queryMerchant)
+            .where("barcode", "in", queryBarcodesBatch)
+            .get();
+          return itemsQueryRef.docs.map((doc) => doc.data());
+        })
+      );
+      retItems = [].concat(...retItemsBatched);
     }
   } catch (err) {
     console.error(err);
   } finally {
     res.json(retItems);
-  }
-};
-
-exports.getItem = async (req, res) => {
-  const reqProps = req.body;
-  let retItem = {};
-
-  const queryMerchant = reqProps["merchant-id"];
-  const queryBarcode = reqProps["barcode"];
-
-  try {
-    if (queryMerchant && queryBarcode) {
-      const itemQueryRef = await itemsCollection
-        .where("merchant-id", "==", queryMerchant)
-        .where("barcode", "==", queryBarcode)
-        .get();
-      const items = itemQueryRef.docs.map((doc) => doc.data());
-      retItem = flatMap(items, {});
-    }
-  } catch (err) {
-    console.error(err);
-  } finally {
-    res.json(retItem);
   }
 };

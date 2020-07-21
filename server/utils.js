@@ -112,3 +112,15 @@ exports.writeJsonToCsv = async (obj, outputStream) => {
   }
   return true;
 };
+  
+// Split an array into sub-arrays of up to length chunkSize.
+// Returns an arry of the sub-arrays.
+exports.chunk = (array, chunkSize) => {
+  const res = [];
+  let i = 0;
+  while (i < array.length) {
+    res.push(array.slice(i, i + chunkSize));
+    i += chunkSize;
+  }
+  return res;
+};

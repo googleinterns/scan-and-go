@@ -30,14 +30,10 @@ const AlertSnackbar = () => {
   React.useEffect(() => {
     if (!open) {
       setDuration(0);
-    }
-  }, [open]);
-
-  React.useEffect(() => {
-    if (open && alertMessage) {
+    } else if (open && alertMessage) {
       setDuration(duration + DEFAULT_ALERT_DURATION);
     }
-  }, [alertMessage, alertSeverity]);
+  }, [open, alertMessage, alertSeverity]);
 
   return (
     <Snackbar

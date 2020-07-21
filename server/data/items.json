@@ -24,6 +24,48 @@
     "barcode": "93293846"
   },
   {
+    "name": "chicken",
+    "price": 10.0,
+    "merchant-id": "WPANCUD",
+    "barcode": "93293847"
+  },
+  {
+    "name": "eggs",
+    "price": 10.0,
+    "merchant-id": "WPANCUD",
+    "barcode": "93293848"
+  },
+  {
+    "name": "rice",
+    "price": 10.0,
+    "merchant-id": "WPANCUD",
+    "barcode": "93293849"
+  },
+  {
+    "name": "bread",
+    "price": 10.0,
+    "merchant-id": "WPANCUD",
+    "barcode": "93293850"
+  },
+  {
+    "name": "beef",
+    "price": 10.0,
+    "merchant-id": "WPANCUD",
+    "barcode": "93293851"
+  },
+  {
+    "name": "pork",
+    "price": 10.0,
+    "merchant-id": "WPANCUD",
+    "barcode": "93293852"
+  },
+  {
+    "name": "fish",
+    "price": 10.0,
+    "merchant-id": "WPANCUD",
+    "barcode": "93293853"
+  },
+  {
     "name": "coffee",
     "price": 20.0,
     "merchant-id": "QOIRBNF",

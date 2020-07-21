@@ -14,4 +14,11 @@ module.exports = {
   IPv6_LOOPBACK: "::1",
   IPv4_LOOPBACK: "127.0.0.1",
   GAE_PRIVATE_IP: "10.0.0.1",
+  FIRESTORE_MAX_NUM_CLAUSES: 10,
+  SPOT_BASE_URL: "https://microapps.googleapis.com/v1alpha",
+  SPOT_ORDERS_SCOPE: "https://www.googleapis.com/auth/microapps.orders",
+  TEST_USER_ID: "93IRJIDF01LDKS0",
+  TEST_ORDER_ID: "TEST_ORDER",
+  TEST_MERCHANT_ID: "TEST_MERCHANT",
+  TEST_ORDER_NAME: "merchants/TEST_MERCHANT/orders/TEST_ORDER",
 };

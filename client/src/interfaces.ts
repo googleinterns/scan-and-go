@@ -33,6 +33,17 @@ export const emptyCartItem = (): CartItem => ({
   quantity: 0,
 });
 
+// OrderItem describes a Spot Order
+export interface OrderItem {
+  title: string;
+  subtitle: string;
+  quantity: number;
+  price: {
+    currency: string;
+    value: string;
+  };
+}
+
 export interface Store {
   "store-id": string; // Unique store-id -> Can match GMaps place_id
   "merchant-id": string; // Merchant this store belongs to (for payment info)
