@@ -23,7 +23,12 @@ function Page({
         alignItems="stretch"
       >
         <Grid item>{header}</Grid>
-        <Grid item xs style={{ overflowY: "scroll", overflowX: "hidden" }}>
+        <Grid
+          container
+          item
+          xs
+          style={{ overflowY: "scroll", overflowX: "hidden" }}
+        >
           {content}
         </Grid>
         <Grid item style={{ marginBottom: theme.spacing(2) }}>

@@ -1,82 +1,70 @@
 import React, { useEffect, useState, useContext } from "react";
-import { withRouter, RouteComponentProps } from "react-router-dom";
+import { withRouter, useHistory } from "react-router-dom";
+import { AlertContext } from "src/contexts/AlertContext";
 import Cart from "src/components/Cart";
 import { urlGetParam } from "src/utils";
 import { Button, Typography, Grid } from "@material-ui/core";
 import QRCode from "qrcode";
-import { HOME_PAGE, PAYMENT_STATUS } from "src/constants";
-import { AlertContext } from "src/contexts/AlertContext";
+import { HOME_PAGE } from "src/constants";
 import "src/css/Receipt.css";
-import "src/css/animation.css";
 import { CartItem } from "src/interfaces";
 import Page from "src/pages/Page";
 import Header from "src/components/Header";
 import CartSummary from "src/components/CartSummary";
+import { getOrderContents } from "../Actions";
 declare const window: any;
 
-const Receipt: React.FC<RouteComponentProps> = ({ history }) => {
-  const orderId = urlGetParam("id");
-  const { contents } = (history.location.state as any) || [];
-  const [paymentStatus, setPaymentStatus] = useState<PAYMENT_STATUS>(
-    PAYMENT_STATUS.AWAITING
-  );
-  const { setOpen, setAlertSeverity, setAlertMessage } = useContext(
-    AlertContext
-  );
-  const qrCodeDiv: React.RefObject<HTMLInputElement> = React.createRef();
-  const [viewQr, setViewQr] = useState(false);
+const Receipt: React.FC = () => {
+  const history = useHistory();
+  const orderName = urlGetParam("order") || "";
+  const [contents, setContents] = useState<CartItem[]>();
+  const qrCodeDiv: React.RefObject<HTMLDivElement> = React.createRef();
+  const [viewQr, setViewQr] = useState(true);
+  const { setAlert } = useContext(AlertContext);
 
   useEffect(() => {
-    if (paymentStatus === PAYMENT_STATUS.SUCCESS) {
-      confirm();
+    getOrderContents(orderName).then((res) => {
+      setContents(res);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (contents) {
       generateQR();
     }
-  }, [paymentStatus]);
-
-  const makePayment = () => {
-    verify();
-    // TODO (#50): Replace timeout mock with actual payflow
-    setTimeout(() => {
-      setPaymentStatus(PAYMENT_STATUS.SUCCESS);
-    }, 3000);
-  };
-
-  const verify = () => {
-    setViewQr(true);
-    setPaymentStatus(PAYMENT_STATUS.SUBMITTED);
-  };
-
-  const confirm = () => {
-    setAlertSeverity("success");
-    setAlertMessage(`Order ${orderId} Confimed!`);
-    setOpen(true);
-  };
+  }, [contents]);
 
   const generateQR = () => {
-    const text = `$Order ID: ${orderId}`;
+    const text = `$Order: ${orderName}.\n Contents: ${contents}`;
 
     // Calculate QR code width to fit within screen (otherwise it defaults to a fixed size),
     // taking into account space needed for text below QR code.
-    const divHeight =
-      0.8 *
-      parseInt(
-        window.getComputedStyle(qrCodeDiv.current)!.getPropertyValue("height"),
+    if (qrCodeDiv.current) {
+      const divHeight =
+        0.8 *
+        parseInt(
+          window
+            .getComputedStyle(qrCodeDiv.current)!
+            .getPropertyValue("height"),
+          10
+        );
+      const divWidth = parseInt(
+        window.getComputedStyle(qrCodeDiv.current)!.getPropertyValue("width"),
         10
       );
-    const divWidth = parseInt(
-      window.getComputedStyle(qrCodeDiv.current)!.getPropertyValue("width"),
-      10
-    );
-    const width = Math.min(divHeight, divWidth);
+      const width = Math.min(divHeight, divWidth);
 
-    QRCode.toCanvas(
-      document.getElementById("canvas"),
-      text,
-      { width: width },
-      (err) => {
-        if (err) console.error(err);
-      }
-    );
+      QRCode.toCanvas(
+        document.getElementById("canvas"),
+        text,
+        { width: width },
+        (err) => {
+          if (err) {
+            setAlert("error", `Unable to generate QR code `);
+          }
+        }
+      );
+    }
   };
 
   const returnToHome = () => {
@@ -86,83 +74,53 @@ const Receipt: React.FC<RouteComponentProps> = ({ history }) => {
   };
 
   const changeView = () => {
-    if (paymentStatus === PAYMENT_STATUS.AWAITING) {
-      return;
-    }
     setViewQr(!viewQr);
   };
 
   return (
     <Page
-      header={
-        <Header
-          title={
-            <Typography variant="h4">
-              {paymentStatus === PAYMENT_STATUS.SUCCESS
-                ? "Receipt"
-                : "Order Summary"}
-            </Typography>
-          }
-        />
-      }
+      header={<Header title={<Typography variant="h4">Receipt</Typography>} />}
       content={
-        <div className="receipt-content">
+        <Grid container item xs>
           {!viewQr && (
-            <div className="order">
+            <Grid item xs className="order">
               <Typography variant="h6">Order details</Typography>
               <div className="details" onClick={changeView}>
                 {contents && (
                   <Cart contents={contents} collapse={true} showMedia={false} />
                 )}
-                <CartSummary cartItems={contents}></CartSummary>
               </div>
-            </div>
+              <CartSummary cartItems={contents}></CartSummary>
+            </Grid>
           )}
-          {paymentStatus === PAYMENT_STATUS.SUBMITTED && (
-            <div className="payment">
-              <Typography
-                variant="h5"
-                align="center"
-                className={"trailing-dots"}
-              >
-                Verifying payment, please wait
-              </Typography>
-            </div>
-          )}
-          {paymentStatus === PAYMENT_STATUS.SUCCESS && (
-            <div
-              className="qrCode"
-              onClick={changeView}
-              style={{ display: viewQr ? "flex" : "none" }}
-              hidden={!viewQr}
-              ref={qrCodeDiv}
-            >
-              <canvas id="canvas" />
-              <Typography align="center" color="textSecondary">
-                Please show this to the cashier for verification.
-              </Typography>
-              <Typography align="center" color="textSecondary">
-                Tap to see order details.
-              </Typography>
-            </div>
-          )}
-        </div>
+          <Grid
+            item
+            xs
+            className="qrCode"
+            onClick={changeView}
+            style={{ display: viewQr ? "flex" : "none" }}
+            hidden={!viewQr}
+            ref={qrCodeDiv}
+            id="qrGrid"
+          >
+            <canvas id="canvas" />
+            <Typography align="center" color="textSecondary">
+              Please show this to the cashier for verification.
+            </Typography>
+            <Typography align="center" color="textSecondary">
+              Tap to see order details.
+            </Typography>
+          </Grid>
+        </Grid>
       }
       footer={
         <Button
-          onClick={
-            paymentStatus === PAYMENT_STATUS.AWAITING
-              ? makePayment
-              : returnToHome
-          }
-          className="button"
+          onClick={returnToHome}
           variant="contained"
           color="primary"
           fullWidth={true}
         >
-          {paymentStatus === PAYMENT_STATUS.AWAITING
-            ? "Confirm Checkout"
-            : "Return to home"}
+          Return to home
         </Button>
       }
     />

@@ -1,14 +1,16 @@
 // Client Site Pages
 export const HOME_PAGE = "/";
 export const SCANSTORE_PAGE = "/store";
+export const CHECKOUT_PAGE = "/checkout";
 export const RECEIPT_PAGE = "/receipt";
 export const LOGIN_PAGE = "/login";
 // API endpoints
 export const API = "/api/";
 export const CART_API = "/api/cart";
 export const ITEM_API = "/api/item";
-export const ITEM_LIST_API = "/api/item/list";
 export const ORDER_API = "/api/order";
+export const ORDER_ADD_API = "/api/order/add";
+export const MICROAPPS_ORDER_UPDATE_API = "/api/order/update";
 export const ORDER_LIST_API = "/api/order/list";
 export const PAY_API = "/api/pay";
 export const STORE_API = "/api/store";
@@ -40,11 +42,14 @@ export const PLACES_TYPES = ["restaurant"];
 export const DEFAULT_STORE_RADIUS = 10000;
 export const PLACEHOLDER_ITEM_MEDIA = "http://placekitten.com/200/200";
 export const PLACEHOLDER_STORE_MEDIA = "http://placekitten.com/300/300";
+export const DEFAULT_CURRENCY_CODE = "INR";
 // Test variables
 export const TEST_ORDER_ID = "TEST ORDER";
+export const TEST_ORDER_NAME = "merchants/TEST MERCHANT/orders/TEST ORDER";
 export const TEST_STORE_ID = "WPANCUD-1";
 export const TEST_STORE_MERCHANT_ID = "WPANCUD";
 export const TEST_USER = { name: "TEST USER", "user-id": "TEST USER ID" };
+export const TEST_PAYMENT_ID = "TEST PAYMENT";
 // Enums
 export enum DAY_PERIOD {
   MORNING = "Morning",

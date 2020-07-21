@@ -3,20 +3,18 @@ import { Color } from "@material-ui/lab/Alert";
 
 interface AlertContextIface {
   open: boolean;
-  setOpen: (open: boolean) => void;
   alertSeverity: Color;
-  setAlertSeverity: (severity: Color) => void;
   alertMessage: string;
-  setAlertMessage: (message: string) => void;
+  setOpen: (open: boolean) => void;
+  setAlert: (severity: Color, message: string) => void;
 }
 
 export const AlertContext = createContext<AlertContextIface>({
   open: false,
-  setOpen: (open: boolean) => {},
   alertSeverity: "info",
-  setAlertSeverity: (severity: Color) => {},
   alertMessage: "",
-  setAlertMessage: (message: string) => {},
+  setOpen: (open: boolean) => {},
+  setAlert: (severity: Color, message: string) => {},
 });
 
 export const AlertContextProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -26,15 +24,20 @@ export const AlertContextProvider: React.FC<{ children: React.ReactNode }> = ({
   const [alertSeverity, setAlertSeverity] = useState<Color>("info");
   const [alertMessage, setAlertMessage] = useState<string>("");
 
+  const setAlert = (severity: Color, message: string) => {
+    setAlertSeverity(severity);
+    setAlertMessage(message);
+    setOpen(true);
+  };
+
   return (
     <AlertContext.Provider
       value={{
         open,
-        setOpen,
         alertSeverity,
-        setAlertSeverity,
         alertMessage,
-        setAlertMessage,
+        setOpen,
+        setAlert,
       }}
     >
       {children}

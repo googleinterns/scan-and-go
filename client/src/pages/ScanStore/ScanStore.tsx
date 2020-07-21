@@ -36,14 +36,12 @@ import {
   MediaResponse,
   emptyMediaResponse,
 } from "src/interfaces";
-import { urlGetParam, getTotalPrice } from "src/utils";
+import { urlGetParam } from "src/utils";
 import { getStoreInfo, getItem } from "src/pages/Actions";
 import {
-  HOME_PAGE,
-  RECEIPT_PAGE,
-  ITEM_LIST_API,
   BARCODE_PLACEHOLDER,
   PRICE_FRACTION_DIGITS,
+  CHECKOUT_PAGE,
 } from "src/constants";
 import { microapps, isWeb, isDebug } from "src/config";
 import { ErrorTheme } from "src/theme";
@@ -124,9 +122,9 @@ function ScanStore() {
   const makePayment = () => {
     //TODO(#48) This should be just an ID without exposing the contents of our Order
     history.push({
-      pathname: RECEIPT_PAGE,
-      search: "?id=TEST_ORDER", // Temporary placeholder
+      pathname: CHECKOUT_PAGE,
       state: {
+        store: curStore,
         contents: cartItems,
       },
     });

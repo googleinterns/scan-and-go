@@ -5,7 +5,7 @@ import { priceSumArray, priceMul } from "src/priceLibrary";
 import { microapps, isWeb } from "./config";
 
 // Get json from response
-const getJson = (res: any) => {
+const getJson = (res: Response) => {
   if (res.ok) {
     let res_json = res.json();
     return res_json;
@@ -41,13 +41,16 @@ const getIdToken = async () => {
     const nonce = await fetchText("GET", {}, "/api/nonce");
     const request = { nonce: nonce };
     idToken = microapps.getIdentity(request).catch((err: any) => {
+      catchErr(err);
       return null;
     });
   } else {
     // Web flow with Google Sign-In https://developers.google.com/identity/sign-in/web
     // Load and initialize the GoogleAuth object, otherwise throws gapi/auth2 is not defined error
     await new Promise((resolve, reject) => {
-      gapi.load("auth2", resolve);
+      window.addEventListener("google-loaded", () => {
+        gapi.load("auth2", resolve);
+      });
     });
     gapi.auth2.init({ client_id: process.env.REACT_APP_MICROAPPS_CLIENT_ID });
 
@@ -245,4 +248,27 @@ export const jestImportImage = (imgPath: string) => {
   const imgFileType = imgPath.split(".").pop();
   // Format this information into src expected format
   return `data:image/${imgFileType};base64,${imgFileData}`;
+};
+
+// Parses the merchant ID and orderID from the Spot order name, which should be in the form of
+// {merchants/:merchantId\/orders/:orderId}. Returns empty IDs if either ID is not found.
+export const parseOrderName = (orderName: string) => {
+  const merchantIdMatches = orderName.match(
+    /(?<=^merchants\/)(.*?)(?=\/orders)/gi
+  );
+  const orderIdMatches = orderName.match(/(?<=\/orders\/)(.*)$/gi);
+  const orderIds = { merchantId: "", orderId: "" };
+  if (
+    merchantIdMatches &&
+    merchantIdMatches.length == 1 &&
+    orderIdMatches &&
+    orderIdMatches.length == 1
+  ) {
+    Object.assign(
+      orderIds,
+      { merchantId: merchantIdMatches[0] },
+      { orderId: orderIdMatches[0] }
+    );
+  }
+  return orderIds;
 };

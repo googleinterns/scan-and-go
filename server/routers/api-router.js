@@ -23,11 +23,16 @@ router.post("/store/list", storesController.listStores); //Batch Operation
 router.post("/user", usersController.getUser);
 
 // Items API
-router.post("/item", itemsController.getItem);
-router.post("/item/list", itemsController.listItems); //Batch Operation
+router.post("/item", itemsController.getItems); //Batch Operation
 
 // Order API
-router.post("/order", ordersController.addOrder);
+router.post("/order/add", authenticateUser, ordersController.addOrder);
+router.post("/order/update", authenticateUser, ordersController.updateOrder);
 router.get("/order/list", authenticateUser, ordersController.listOrders);
+router.get(
+  "/order/merchants/:merchantId/orders/:orderId",
+  authenticateUser,
+  ordersController.getOrder
+);
 
 module.exports = router;

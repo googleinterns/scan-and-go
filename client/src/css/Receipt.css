@@ -1,14 +1,3 @@
-.receipt {
-  height: 94vh;
-  width: 90%;
-  margin: 2vh 5vw;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: stretch;
-}
-
 .qrCode {
   flex: 1;
   display: flex;
@@ -41,12 +30,4 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-}
-
-.button {
-  width: 95%;
-  font-size: "14px";
-  border-radius: 14;
-  align-self: center;
-  margin-top: auto;
 }

@@ -4,7 +4,6 @@ import Login from "src/pages/Login";
 import Home from "src/pages/Home";
 import ScanStore from "src/pages/ScanStore";
 import Receipt from "src/pages/Receipt";
-import Orders from "src/pages/Orders";
 import NotFound from "src/pages/NotFound";
 import AppTheme from "src/theme";
 import { isWeb } from "src/config";
@@ -15,6 +14,7 @@ import { AuthContextProvider } from "src/contexts/AuthContext";
 import { AlertContextProvider } from "./contexts/AlertContext";
 import AuthenticatedRoute from "./components/AuthenticatedRoute";
 import "src/css/App.css";
+import Checkout from "./pages/Checkout";
 
 function App() {
   const theme = useTheme();
@@ -38,6 +38,7 @@ function App() {
                 <Route path="/" component={Home} exact />
                 <Route path="/login" component={Login} />
                 <Route path="/store" component={ScanStore} />
+                <Route path="/checkout" component={Checkout} />
                 <AuthenticatedRoute path="/receipt" component={Receipt} />
                 <Route component={NotFound} />
               </Switch>

@@ -22,3 +22,15 @@ exports.geoDist = (lat1, lon1, lat2, lon2) => {
 exports.flatMap = (listVals, defaultVal = null) => {
   return listVals.length > 0 ? listVals[0] : defaultVal;
 };
+
+// Split an array into sub-arrays of up to length chunkSize.
+// Returns an arry of the sub-arrays.
+exports.chunk = (array, chunkSize) => {
+  const res = [];
+  let i = 0;
+  while (i < array.length) {
+    res.push(array.slice(i, i + chunkSize));
+    i += chunkSize;
+  }
+  return res;
+};
