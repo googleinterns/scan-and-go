@@ -47,6 +47,10 @@ steps:
     dir: "server/"
     waitFor: ["server-build"]
     timeout: 300s
+  - name: "gcr.io/cloud-builders/gcloud"
+    args: ["app", "deploy", "cron.yaml"]
+    dir: "server/"
+    waitFor: ["server-build"]
 
 options:
   machineType: "N1_HIGHCPU_8"
