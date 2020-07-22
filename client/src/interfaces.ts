@@ -13,6 +13,7 @@ export interface Item {
   "merchant-id": string; // Which merchant owns this item
   media?: string; // Image display string
   detail?: string; // Optional descriptive message to display
+  unit?: string; // Optional unit of measurement to display
 }
 
 export const emptyItem = (): Item => ({

@@ -17,7 +17,7 @@ declare const window: any;
 const Receipt: React.FC = () => {
   const history = useHistory();
   const orderName = urlGetParam("order") || "";
-  const [contents, setContents] = useState<CartItem[]>();
+  const [contents, setContents] = useState<CartItem[]>([]);
   const qrCodeDiv: React.RefObject<HTMLDivElement> = React.createRef();
   const [viewQr, setViewQr] = useState(true);
   const { setAlert } = useContext(AlertContext);
