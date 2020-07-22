@@ -48,6 +48,7 @@ function ItemDetail({
         />
       </div>
       <div style={{ width: "100vw" }}>
+        {/*TODO(#198): zIndex layering helper class needed to manage layers on page*/}
         <div
           style={{
             position: "absolute",
