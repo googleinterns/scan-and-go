@@ -3,7 +3,6 @@ import { CartItem, emptyItem } from "src/interfaces";
 import { Button, Typography, Grid, IconButton } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { useTheme } from "@material-ui/core/styles";
-import AutoSizeMedia from "src/components/AutoSizeMedia";
 import ItemCardQuantityMixer from "src/components/ItemCard/ItemCardQuantityMixer";
 import { PRICE_FRACTION_DIGITS, PLACEHOLDER_ITEM_MEDIA } from "src/constants";
 import { getSubtotalPrice, parseRawTextNewlines } from "src/utils";
@@ -34,18 +33,18 @@ function ItemDetail({
           top: `${theme.spacing(2)}px`,
           left: `${theme.spacing(2)}px`,
           position: "fixed",
+          color: "#FFFFFF",
+          backgroundColor: "rgba(0,0,0,0.3)",
         }}
-        color="secondary"
         onClick={() => closeCallback()}
         size="small"
       >
         <CloseIcon />
       </IconButton>
       <div style={{ width: "100vw", height: "60vh", overflow: "hidden" }}>
-        <AutoSizeMedia
-          media={item.media ? item.media : PLACEHOLDER_ITEM_MEDIA}
-          maxHeight="100vw"
-          fullWidth={true}
+        <img
+          src={item.media ? item.media : PLACEHOLDER_ITEM_MEDIA}
+          style={{ height: "100%", width: "100%", objectFit: "cover" }}
         />
       </div>
       <div style={{ width: "100vw" }}>
