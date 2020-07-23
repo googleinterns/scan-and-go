@@ -85,13 +85,12 @@ function ScanStore() {
     if (quantity <= 0) {
       if (curItem)
         setCurItem(Object.assign({}, curItem, { quantity: quantity }));
-      //TODO(#): Block user from removing item with confirmation dialog
+      //TODO(#200): Block user from removing item with confirmation dialog
       updateCart(
         cartItems.filter((cartItem) => cartItem.item.barcode !== barcode)
       );
       if (curItem && curItem.item.barcode === barcode) {
         setShowDetail(false);
-        setCurItem(undefined);
       }
     } else {
       if (curItem && curItem.item.barcode === barcode) {
@@ -251,7 +250,11 @@ function ScanStore() {
         }
       />
       {/*TODO(#198): zIndex layering helper class needed to manage layers on page*/}
-      <Slide direction="up" in={showDetail}>
+      <Slide
+        direction="up"
+        in={showDetail}
+        onExited={() => setCurItem(undefined)}
+      >
         <div
           style={{
             zIndex: 1001,
