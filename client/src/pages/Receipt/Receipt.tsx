@@ -2,8 +2,8 @@ import React, { useEffect, useState, useContext } from "react";
 import { withRouter, useHistory } from "react-router-dom";
 import { AlertContext } from "src/contexts/AlertContext";
 import Cart from "src/components/Cart";
-import { urlGetParam } from "src/utils";
-import { Button, Typography, Grid } from "@material-ui/core";
+import { urlGetParam, parseOrderName } from "src/utils";
+import { Button, Typography, Grid, Collapse } from "@material-ui/core";
 import QRCode from "qrcode";
 import { HOME_PAGE } from "src/constants";
 import "src/css/Receipt.css";
@@ -12,14 +12,18 @@ import Page from "src/pages/Page";
 import Header from "src/components/Header";
 import CartSummary from "src/components/CartSummary";
 import { getOrderContents } from "../Actions";
+import ExpandLessIcon from "@material-ui/icons/ExpandLess";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 declare const window: any;
 
 const Receipt: React.FC = () => {
   const history = useHistory();
   const orderName = urlGetParam("order") || "";
-  const [contents, setContents] = useState<CartItem[]>();
+  const { orderId } = parseOrderName(orderName);
+  const [contents, setContents] = useState<CartItem[]>([]);
+  const [orderTimestamp, setOrderTimestamp] = useState("");
   const qrCodeDiv: React.RefObject<HTMLDivElement> = React.createRef();
-  const [viewQr, setViewQr] = useState(true);
+  const [showOrder, setShowOrder] = useState(false);
   const { setAlert } = useContext(AlertContext);
 
   useEffect(() => {
@@ -33,6 +37,10 @@ const Receipt: React.FC = () => {
       generateQR();
     }
   }, [contents]);
+
+  useEffect(() => {
+    generateQR();
+  }, [showOrder]);
 
   const generateQR = () => {
     const text = `$Order: ${orderName}.\n Contents: ${contents}`;
@@ -73,48 +81,67 @@ const Receipt: React.FC = () => {
     });
   };
 
-  const changeView = () => {
-    setViewQr(!viewQr);
-  };
-
   return (
     <Page
       header={<Header title={<Typography variant="h4">Receipt</Typography>} />}
       content={
-        <Grid container item xs>
-          {!viewQr && (
-            <Grid item xs className="order">
-              <Typography variant="h6">Order details</Typography>
-              <div className="details" onClick={changeView}>
-                {contents && (
-                  <Cart contents={contents} collapse={true} showMedia={false} />
-                )}
-              </div>
-              <CartSummary cartItems={contents}></CartSummary>
-            </Grid>
-          )}
-          <Grid
-            item
-            xs
-            className="qrCode"
-            onClick={changeView}
-            style={{ display: viewQr ? "flex" : "none" }}
-            hidden={!viewQr}
-            ref={qrCodeDiv}
-            id="qrGrid"
-          >
+        <Grid container item xs direction="column">
+          <Typography align="left" color="textSecondary">
+            No.: {orderId}
+          </Typography>
+          <Grid item xs className="qrCode" ref={qrCodeDiv} id="qrGrid">
             <canvas id="canvas" />
-            <Typography align="center" color="textSecondary">
-              Please show this to the cashier for verification.
-            </Typography>
-            <Typography align="center" color="textSecondary">
-              Tap to see order details.
-            </Typography>
+          </Grid>
+          <Grid
+            container
+            item
+            direction="column"
+            alignItems="stretch"
+            xs={showOrder ? true : false}
+          >
+            <Grid
+              item
+              onClick={() => setShowOrder(!showOrder)}
+              // style={{ zIndex: 1000, marginTop: "-36px" }}
+            >
+              <Button fullWidth={true} style={{ textTransform: "none" }}>
+                {showOrder ? (
+                  <div>
+                    <ExpandLessIcon />
+                    <Typography align="center" color="textSecondary">
+                      Hide order details.
+                    </Typography>
+                  </div>
+                ) : (
+                  <div>
+                    <Typography align="center" color="textSecondary">
+                      View order details.
+                    </Typography>
+                    <ExpandMoreIcon />
+                  </div>
+                )}
+              </Button>
+            </Grid>
+            <Collapse in={showOrder}>
+              <Grid item xs className="order">
+                <div className="details">
+                  {contents && (
+                    <Cart
+                      contents={contents}
+                      collapse={true}
+                      showMedia={false}
+                    />
+                  )}
+                </div>
+                <CartSummary cartItems={contents}></CartSummary>
+              </Grid>
+            </Collapse>
           </Grid>
         </Grid>
       }
       footer={
         <Button
+          className="returnBtn"
           onClick={returnToHome}
           variant="contained"
           color="primary"

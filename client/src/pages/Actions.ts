@@ -177,7 +177,7 @@ export const getOrderContents = async (orderName: string) => {
     const items = await fetchJson("POST", data, ITEM_API);
     contents = order.items.map((orderItem: OrderItem) => {
       return {
-        item: items.filter((item: Item) => item.barcode == orderItem.subtitle),
+        item: items.find((item: Item) => item.barcode == orderItem.subtitle),
         quantity: orderItem.quantity,
       };
     });

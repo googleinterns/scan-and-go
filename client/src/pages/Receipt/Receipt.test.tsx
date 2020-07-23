@@ -51,7 +51,7 @@ it("Receipt renders QR code with order ID", async () => {
     );
   });
 
-  await waitFor(() => expect(toCanvasStub).toBeCalledTimes(1));
+  await waitFor(() => expect(toCanvasStub).toBeCalled());
   expect(toCanvasStub).toBeCalledWith(
     null,
     testQRText,
@@ -68,9 +68,7 @@ it("Receipt redirects to Home upon button click", async () => {
         <Receipt {...history} />
       </Router>
     );
-    const btns = wrapper.find("button");
-    expect(btns).toHaveLength(1);
-    const returnToHomeBtn = btns.first();
+    const returnToHomeBtn = wrapper.find(".returnBtn").first();
     returnToHomeBtn.simulate("click");
   });
 
