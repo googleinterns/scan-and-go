@@ -147,7 +147,10 @@ function ItemDetail({
                   </Grid>
                   <Grid item>
                     <Typography variant="body1" align="right">
-                      Subtotal: ${cartItem ? getSubtotalPrice(cartItem) : 0}
+                      Subtotal: $
+                      {cartItem
+                        ? getSubtotalPrice({ item: item, quantity: curAmount })
+                        : 0}
                     </Typography>
                   </Grid>
                 </Grid>
