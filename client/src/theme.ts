@@ -48,7 +48,7 @@ export const ErrorTheme = createMuiTheme({
 });
 
 // Inverse of ErrorTheme with text-color and backgrouund color inverted
-export const LightErrorTheme = createMuiTheme({
+export const InverseErrorTheme = createMuiTheme({
   palette: {
     primary: {
       main: WHITE_BACKGROUND_COLOR,

@@ -16,11 +16,13 @@ function Cart({
   contents,
   collapse,
   updateItemQuantity,
+  itemPickerCallback,
   showMedia = true,
 }: {
   contents: CartItem[];
   collapse: boolean;
   updateItemQuantity?: (barcode: string, quantity: number) => void;
+  itemPickerCallback?: (item: CartItem) => void;
   showMedia?: boolean;
 }) {
   return (
@@ -36,9 +38,24 @@ function Cart({
               : () => {},
           };
           return collapse ? (
-            <ItemCardCompact {...cardProps} showMedia={false} />
+            <ItemCardCompact
+              {...cardProps}
+              showMedia={false}
+              selectActionCallback={
+                itemPickerCallback
+                  ? () => itemPickerCallback(cardProps.cartItem)
+                  : undefined
+              }
+            />
           ) : (
-            <ItemCard {...cardProps} />
+            <ItemCard
+              {...cardProps}
+              selectActionCallback={
+                itemPickerCallback
+                  ? () => itemPickerCallback(cardProps.cartItem)
+                  : undefined
+              }
+            />
           );
         })}
     </div>

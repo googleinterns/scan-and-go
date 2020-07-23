@@ -8,9 +8,11 @@ import { useTheme } from "@material-ui/core/styles";
 function ItemCard({
   cartItem,
   showMedia = true,
+  selectActionCallback,
 }: {
   cartItem: CartItem;
   showMedia?: boolean;
+  selectActionCallback?: () => void;
 }) {
   const theme = useTheme();
   const themeSpacing = theme.spacing(1);
@@ -19,7 +21,9 @@ function ItemCard({
     <Card
       style={{
         marginTop: themeSpacing,
+        cursor: selectActionCallback ? "pointer" : "default",
       }}
+      onClick={selectActionCallback}
     >
       <Grid
         container

@@ -17,11 +17,13 @@ describe("ItemCard Component Tests", () => {
     price: 1.0,
     "merchant-id": "test_merchant",
   };
+  const selectActionCallback = jest.fn();
   const props = {
     cartItem: testCartItem,
     updateItemQuantity: (barcode: string, quantity: number) => {
       num = quantity;
     },
+    selectActionCallback: selectActionCallback,
   };
 
   // Fresh reset dummy values for testCartItem
@@ -46,5 +48,12 @@ describe("ItemCard Component Tests", () => {
     const decBtn = wrapper.find("#dec").last();
     decBtn.simulate("click");
     expect(num).toBe(0);
+  });
+
+  it("ItemCard triggers select action if registered", () => {
+    const wrapper = Enzyme.mount(<ItemCard {...props} />);
+    const imgMedia = wrapper.find("img").last();
+    imgMedia.simulate("click");
+    expect(selectActionCallback).toBeCalled();
   });
 });

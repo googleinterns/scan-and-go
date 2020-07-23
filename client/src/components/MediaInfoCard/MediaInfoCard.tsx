@@ -11,6 +11,7 @@ export const MAX_CARD_HEIGHT = 100;
 function MediaInfoCard({
   media,
   mediaVariant,
+  mediaCallback,
   title,
   content,
   rightColumn,
@@ -21,6 +22,7 @@ function MediaInfoCard({
 }: {
   media: string;
   mediaVariant?: "rounded" | "circle";
+  mediaCallback?: () => void;
   title: React.ReactElement;
   content: React.ReactElement;
   rightColumn?: React.ReactElement;
@@ -49,6 +51,7 @@ function MediaInfoCard({
         <Grid item style={{ marginRight: themeSpacing }}>
           <InfoCardMedia
             media={media}
+            onClick={mediaCallback}
             maxHeight={themeConfig.max_card_height}
             variant={mediaVariant}
             placeholder={placeholder}
