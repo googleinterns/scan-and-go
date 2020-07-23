@@ -200,17 +200,15 @@ export const createOrder = async (store: Store, cartItems: CartItem[]) => {
   const currencyCode = DEFAULT_CURRENCY_CODE;
   const orderReq = {
     title: `Order @ ${store.name}`,
-    items: cartItems.map((cartItem) => {
-      return {
-        title: cartItem.item.name,
-        subtitle: cartItem.item.barcode,
-        quantity: cartItem.quantity,
-        price: {
-          currency: currencyCode,
-          value: cartItem.item.price.toFixed(PRICE_FRACTION_DIGITS),
-        },
-      };
-    }),
+    items: cartItems.map((cartItem) => ({
+      title: cartItem.item.name,
+      subtitle: cartItem.item.barcode,
+      quantity: cartItem.quantity,
+      price: {
+        currency: currencyCode,
+        value: cartItem.item.price.toFixed(PRICE_FRACTION_DIGITS),
+      },
+    })),
     total: {
       currency: currencyCode,
       value: getTotalPrice(cartItems),
@@ -218,25 +216,27 @@ export const createOrder = async (store: Store, cartItems: CartItem[]) => {
     status: { type: "COMPLETED" },
   };
 
-  let orderRes = await microapps.createOrder(orderReq);
-
-  if (orderRes) {
+  let order = await microapps
+    .createOrder(orderReq)
+    .then((response: string) => JSON.parse(response));
+  if (order) {
     // update the order actions for the newly created microapps order
-    orderRes = await fetchJson(
+    order = await fetchJson(
       "POST",
-      { orderName: orderRes.name },
+      { orderName: order.name },
       MICROAPPS_ORDER_UPDATE_API,
       true
     );
 
     // add the order to the ScanAndGo database
+    const { merchantId } = parseOrderName(order.name);
     const data = {
-      merchantId: process.env.REACT_APP_SPOT_MERCHANT_ID,
-      orderId: orderRes.orderId,
+      merchantId: merchantId,
+      orderId: order.orderId,
     };
     await fetchText("POST", data, ORDER_ADD_API, true);
   }
-  return orderRes;
+  return order;
 };
 
 export const getUser = () => {

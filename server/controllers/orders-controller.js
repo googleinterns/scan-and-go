@@ -100,8 +100,8 @@ exports.updateOrder = async (req, res) => {
       const updateBody = {
         actions: [
           {
-            label: "Details",
-            url: `https://microapps.google.com/${process.env.EXPRESS_SERVER_MICROAPPS_CLIENT_ID}/receipt?order=${orderName}`,
+            label: "RECEIPT",
+            url: `https://microapps.google.com/${process.env.EXPRESS_SERVER_MICROAPP_ID}/receipt?order=${orderName}`,
           },
         ],
       };
