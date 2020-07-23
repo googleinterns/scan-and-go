@@ -29,6 +29,7 @@ function ItemDetail({
   return (
     <div style={{ height: "100vh", width: "100%" }}>
       <IconButton
+        id="item-detail-dismiss"
         style={{
           top: `${theme.spacing(2)}px`,
           left: `${theme.spacing(2)}px`,

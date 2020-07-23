@@ -15,12 +15,20 @@ describe("ItemCardCompact Component Tests", () => {
     price: 1.0,
     "merchant-id": "test_merchant",
   };
+  const selectActionCallback = jest.fn();
   const props = {
     cartItem: testCartItem,
+    selectActionCallback: selectActionCallback,
   };
 
   it("ItemCardCompact renders correctly", () => {
     const tree = renderer.create(<ItemCardCompact {...props} />).toJSON();
     expect(tree).toMatchSnapshot();
+  });
+
+  it("ItemCardCompact triggers selectActionCallback if registered", () => {
+    const wrapper = Enzyme.shallow(<ItemCardCompact {...props} />);
+    wrapper.simulate("click");
+    expect(selectActionCallback).toBeCalled();
   });
 });
