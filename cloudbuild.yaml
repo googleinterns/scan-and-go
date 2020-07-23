@@ -34,7 +34,10 @@ steps:
     id: "server-env"
     dir: "server/"
     env:
+      - "EXPRESS_SERVER_MICROAPP_ID=${_MICROAPP_ID}"
       - "EXPRESS_SERVER_MICROAPPS_CLIENT_ID=${_MICROAPPS_CLIENT_ID}"
+      - "EXPRESS_SERVER_SERVICE_ACCOUNT_CLIENT_EMAIL=${_SERVICE_ACCOUNT_CLIENT_EMAIL}"
+      - "EXPRESS_SERVER_SERVICE_ACCOUNT_PRIVATE_KEY=${_SERVICE_ACCOUNT_PRIVATE_KEY}"
   - name: node:10
     entrypoint: yarn
     args:
