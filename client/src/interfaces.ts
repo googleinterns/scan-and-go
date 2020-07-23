@@ -33,7 +33,7 @@ export const emptyCartItem = (): CartItem => ({
   quantity: 0,
 });
 
-// OrderItem describes a Spot Order
+// OrderItem describes a Spot Order item
 export interface OrderItem {
   title: string;
   subtitle: string;

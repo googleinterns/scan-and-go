@@ -1,5 +1,7 @@
+const { Timestamp } = require("@google-cloud/firestore");
 const { ordersCollection } = require("./../firestore");
 const { SPOT_BASE_URL, SPOT_ORDERS_SCOPE } = require("./../constants");
+const { flatMap } = require("./../utils");
 
 const { JWT } = require("google-auth-library");
 
@@ -47,6 +49,7 @@ exports.addOrder = async (req, res) => {
           "merchant-id": merchantId,
           "order-id": orderId,
           "user-id": userId,
+          timestamp: Timestamp.now(),
         })
         .then(() => {
           retId = orderId;
@@ -123,7 +126,7 @@ exports.updateOrder = async (req, res) => {
 };
 
 /**
- * Gets the Spot order identified by its merchant ID and order ID.
+ * Gets the Spot order, identified by its merchant ID and order ID, and its creation timestamp.
  *
  * @param {Object} req - The request.
  * @param {Object} res - The response.
@@ -134,13 +137,25 @@ exports.getOrder = async (req, res) => {
   const merchantId = req.params.merchantId;
   const orderId = req.params.orderId;
   const url = `${SPOT_BASE_URL}/merchants/${merchantId}/orders/${orderId}`;
-  let order = {};
+  const order = {};
 
   try {
     if (merchantId && orderId) {
+      // get the order from the Spot server
       await request(SPOT_ORDERS_SCOPE, url, "GET").then((response) => {
-        order = response.data;
+        Object.assign(order, response.data);
       });
+
+      // get the timestamp from the Firestore document
+      await ordersCollection
+        .where("merchant-id", "==", merchantId)
+        .where("order-id", "==", orderId)
+        .get()
+        .then((ordersQuery) => {
+          const orders = ordersQuery.docs.map((doc) => doc.data());
+          const { timestamp } = flatMap(orders, {});
+          Object.assign(order, { timestamp: timestamp.toDate() });
+        });
     }
   } catch (err) {
     console.error("getOrder: ", err);

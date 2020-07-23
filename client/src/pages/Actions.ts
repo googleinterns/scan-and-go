@@ -160,12 +160,13 @@ export const getOrders = async () => {
  * @param {string} orderName - The Spot order name in the form of {merchants/*\/orders/*}.
  * @returns {CartItem[]} contents - The items in the order.
  */
-export const getOrderContents = async (orderName: string) => {
+export const getOrderDetails = async (orderName: string) => {
   let contents: CartItem[] = [];
+  let timestamp: string = "";
 
   // retrieve order items from backend
   const order = await fetchJson("GET", {}, `${ORDER_API}/${orderName}`, true);
-  if (order?.items) {
+  if (order) {
     const itemBarcodes = order.items.map(
       (orderItem: OrderItem) => orderItem.subtitle
     );
@@ -181,8 +182,9 @@ export const getOrderContents = async (orderName: string) => {
         quantity: orderItem.quantity,
       };
     });
+    timestamp = new Date(order.timestamp).toLocaleString();
   }
-  return contents;
+  return { contents: contents, timestamp: timestamp };
 };
 
 /**

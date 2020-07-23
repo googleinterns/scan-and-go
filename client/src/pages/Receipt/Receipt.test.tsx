@@ -40,9 +40,15 @@ it("Receipt renders QR code with order ID", async () => {
     .spyOn(QRCode, "toCanvas")
     .mockImplementation(jest.fn());
   jest
-    .spyOn(Actions, "getOrderContents")
-    .mockReturnValueOnce(new Promise((resolve, _) => resolve(testContents)));
-
+    .spyOn(Actions, "getOrderDetails")
+    .mockReturnValueOnce(
+      new Promise((resolve, _) =>
+        resolve({
+          contents: testContents,
+          timestamp: Date.now().toLocaleString(),
+        })
+      )
+    );
   await act(async () => {
     const wrapper = Enzyme.mount(
       <Router>

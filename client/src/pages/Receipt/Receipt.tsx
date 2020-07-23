@@ -11,7 +11,7 @@ import { CartItem } from "src/interfaces";
 import Page from "src/pages/Page";
 import Header from "src/components/Header";
 import CartSummary from "src/components/CartSummary";
-import { getOrderContents } from "../Actions";
+import { getOrderDetails } from "../Actions";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 declare const window: any;
@@ -27,8 +27,9 @@ const Receipt: React.FC = () => {
   const { setAlert } = useContext(AlertContext);
 
   useEffect(() => {
-    getOrderContents(orderName).then((res) => {
-      setContents(res);
+    getOrderDetails(orderName).then((res) => {
+      setContents(res.contents);
+      setOrderTimestamp(res.timestamp);
     });
   }, []);
 
@@ -88,6 +89,9 @@ const Receipt: React.FC = () => {
         <Grid container item xs direction="column">
           <Typography align="left" color="textSecondary">
             No.: {orderId}
+          </Typography>
+          <Typography align="left" color="textSecondary">
+            {orderTimestamp}
           </Typography>
           <Grid item xs className="qrCode" ref={qrCodeDiv} id="qrGrid">
             <canvas id="canvas" />
