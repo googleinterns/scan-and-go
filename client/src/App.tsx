@@ -14,7 +14,6 @@ import { AuthContextProvider } from "src/contexts/AuthContext";
 import { AlertContextProvider } from "./contexts/AlertContext";
 import AuthenticatedRoute from "./components/AuthenticatedRoute";
 import "src/css/App.css";
-import Checkout from "./pages/Checkout";
 
 function App() {
   const theme = useTheme();
@@ -38,7 +37,6 @@ function App() {
                 <Route path="/" component={Home} exact />
                 <Route path="/login" component={Login} />
                 <Route path="/store" component={ScanStore} />
-                <Route path="/checkout" component={Checkout} />
                 <AuthenticatedRoute path="/receipt" component={Receipt} />
                 <Route component={NotFound} />
               </Switch>

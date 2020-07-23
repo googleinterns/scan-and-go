@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import StoreHeader from "src/components/StoreHeader";
 import ItemCard from "src/components/ItemCard";
@@ -37,14 +37,16 @@ import {
   emptyMediaResponse,
 } from "src/interfaces";
 import { urlGetParam } from "src/utils";
-import { getStoreInfo, getItem } from "src/pages/Actions";
+import { getStoreInfo, getItem, createOrder } from "src/pages/Actions";
 import {
   BARCODE_PLACEHOLDER,
   PRICE_FRACTION_DIGITS,
-  CHECKOUT_PAGE,
+  RECEIPT_PAGE,
+  PAYMENT_STATUS,
 } from "src/constants";
 import { microapps, isWeb, isDebug } from "src/config";
 import { ErrorTheme } from "src/theme";
+import { AlertContext } from "src/contexts/AlertContext";
 declare const window: any;
 
 // Flag to toggle display of taken image (for debugging)
@@ -65,6 +67,7 @@ function ScanStore() {
   const [showDebug, setShowDebug] = useState<boolean>(false);
   const [showFooter, setShowFooter] = useState<boolean>(true);
   const [debugBarcode, setDebugBarcode] = useState<string>("");
+  const { setAlert } = useContext(AlertContext);
 
   const addItemToCart = async (barcode: string) => {
     const existingItem = cartItems.find(
@@ -119,14 +122,28 @@ function ScanStore() {
     setShowDebug(event.target.checked);
   };
 
+  const checkout = async () => {
+    const paymentStatus = makePayment();
+    if (paymentStatus == PAYMENT_STATUS.FAILURE) {
+      setAlert("error", "Payment failed. Please try again.");
+      return;
+    }
+    const order = await createOrder(curStore, cartItems);
+    if (order) {
+      goToReceipt(order.name);
+      setAlert("success", `Order ${order.orderId} Confirmed!`);
+    }
+  };
+
   const makePayment = () => {
-    //TODO(#48) This should be just an ID without exposing the contents of our Order
+    // TODO (#50): Replace with actual payflow
+    return PAYMENT_STATUS.SUCCESS;
+  };
+
+  const goToReceipt = (orderName: string) => {
     history.push({
-      pathname: CHECKOUT_PAGE,
-      state: {
-        store: curStore,
-        contents: cartItems,
-      },
+      pathname: RECEIPT_PAGE,
+      search: `?order=${orderName}`,
     });
   };
 
@@ -212,7 +229,7 @@ function ScanStore() {
               fullWidth={true}
               variant="contained"
               color="primary"
-              onClick={makePayment}
+              onClick={checkout}
             >
               {showFooter
                 ? "Checkout"
