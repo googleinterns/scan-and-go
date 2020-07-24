@@ -244,7 +244,7 @@ export const getUser = () => {
   if (user) {
     return JSON.parse(user);
   } else {
-    return emptyUser;
+    return emptyUser();
   }
 };
 

@@ -26,7 +26,7 @@ describe("UserHeader Component Tests", () => {
   });
 
   it("UserHeader displays user name in title", () => {
-    const wrapper = Enzyme.shallow(<UserHeader {...props} />);
+    const wrapper = Enzyme.mount(<UserHeader {...props} />);
     const headerElement = wrapper.find(Header);
     const userInfoProp = headerElement.prop("title");
     const stringToMatch = props.user.name;

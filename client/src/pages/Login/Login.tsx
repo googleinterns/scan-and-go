@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import TextInputField from "src/components/TextInputField";
 import { Grid, Typography, Button } from "@material-ui/core";
 import { emptyUser, IdentityToken } from "src/interfaces";
-import { HOME_PAGE, TITLE_TEXT } from "src/constants";
+import { HOME_PAGE, TITLE_TEXT, TEST_USER } from "src/constants";
 import { isWeb, isDebug } from "src/config";
 import { loginUser } from "src/pages/Actions";
 import { AuthContext } from "src/contexts/AuthContext";
@@ -17,15 +17,16 @@ function Login() {
 
   const history = useHistory();
 
+  const [debugUsername, setDebugUsername] = useState<string>("");
   const [loginError, setLoginError] = useState(false);
-  const { user, setUser } = useContext(AuthContext);
+  const { user, setUser, unsetUser } = useContext(AuthContext);
 
   const login = () => {
     loginUser()
       .then((decodedIdentity: IdentityToken | null) => {
         if (decodedIdentity) {
           setUser(
-            Object.assign({}, emptyUser, {
+            Object.assign(emptyUser(), {
               name: decodedIdentity.name,
               "user-id": decodedIdentity.sub,
             })
@@ -38,6 +39,16 @@ function Login() {
         setLoginError(true);
         console.error("Error logging in: ", err);
       });
+  };
+
+  const webMockLogin = () => {
+    if (debugUsername) {
+      setUser(
+        Object.assign(emptyUser(), TEST_USER, {
+          name: debugUsername,
+        })
+      );
+    }
   };
 
   useEffect(() => {
@@ -59,6 +70,8 @@ function Login() {
 
   useEffect(() => {
     if (isWeb) {
+      // Clear user data cache
+      unsetUser();
       // Render Google Sign-in button
       if (window.gapi) {
         renderGSigninButton();
@@ -104,17 +117,22 @@ function Login() {
             <img src={Logo} height="200" width="auto" />
           </Grid>
           <Grid item>
-            <TextInputField id="username" text="Username" fullWidth={true} />
+            <TextInputField
+              id="username"
+              text="Username"
+              setState={setDebugUsername}
+              fullWidth={true}
+            />
           </Grid>
           <Grid item>
             <TextInputField type="password" text="Password" fullWidth={true} />
           </Grid>
           <Grid item>
-            <Button variant="contained" color="primary" onClick={login}>
+            <Button variant="contained" color="primary" onClick={webMockLogin}>
               Log in
             </Button>
           </Grid>
-          <div id="g-signin2" hidden={user !== emptyUser}></div>
+          <div id="g-signin2" hidden={!!user["user-id"]}></div>
         </Grid>
       )}
       {(!isWeb || isDebug) && (

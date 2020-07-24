@@ -161,6 +161,7 @@ function ItemDetail({
               {isRemoving ? (
                 <MuiThemeProvider theme={ErrorTheme}>
                   <Button
+                    id="item-detail-action-btn"
                     disabled={!cartItem}
                     variant="contained"
                     fullWidth={true}
@@ -172,6 +173,7 @@ function ItemDetail({
                 </MuiThemeProvider>
               ) : (
                 <Button
+                  id="item-detail-action-btn"
                   disabled={!cartItem}
                   variant="contained"
                   fullWidth={true}

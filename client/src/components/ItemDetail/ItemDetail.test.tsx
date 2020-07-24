@@ -11,6 +11,7 @@ import { deepHtmlStringMatch } from "src/utils";
 Enzyme.configure({ adapter: new Adapter() });
 
 describe("ItemDetail Component Tests", () => {
+  const actionBtnId = "item-detail-action-btn";
   const TEST_ITEM: Item = {
     name: "TEST_ITEM",
     barcode: "12345",
@@ -44,7 +45,7 @@ describe("ItemDetail Component Tests", () => {
 
   it("ItemDetail triggers update item info", () => {
     const wrapper = Enzyme.shallow(<ItemDetail {...props} />);
-    const actionBtn = wrapper.find(Button).last();
+    const actionBtn = wrapper.find(`#${actionBtnId}`).last();
     actionBtn.simulate("click");
     expect(updateItemCallback).toBeCalled();
   });
@@ -53,7 +54,7 @@ describe("ItemDetail Component Tests", () => {
     // Render item without quantity
     Object.assign(TEST_CARTITEM, { quantity: 0 });
     const wrapper = Enzyme.mount(<ItemDetail {...props} />);
-    const actionBtn = wrapper.find(Button).last();
+    const actionBtn = wrapper.find(`#${actionBtnId}`).last();
     waitFor(() =>
       expect(deepHtmlStringMatch(actionBtn, "Remove Item")).toBe(true)
     );
@@ -65,7 +66,7 @@ describe("ItemDetail Component Tests", () => {
     // Temporarily remove item from props
     Object.assign(props, { currentCart: [] });
     const wrapper = Enzyme.mount(<ItemDetail {...props} />);
-    const actionBtn = wrapper.find(Button).last();
+    const actionBtn = wrapper.find(`#${actionBtnId}`).last();
     waitFor(() =>
       expect(deepHtmlStringMatch(actionBtn, "Add Item")).toBe(true)
     );
@@ -75,7 +76,7 @@ describe("ItemDetail Component Tests", () => {
 
   it("ItemDetail correctly renders Change text for existing item", async () => {
     const wrapper = Enzyme.mount(<ItemDetail {...props} />);
-    const actionBtn = wrapper.find(Button).last();
+    const actionBtn = wrapper.find(`#${actionBtnId}`).last();
     waitFor(() =>
       expect(deepHtmlStringMatch(actionBtn, "Confirm Change")).toBe(true)
     );
@@ -85,7 +86,7 @@ describe("ItemDetail Component Tests", () => {
     // Temporarily remove item from props
     Object.assign(props, { cartItem: undefined });
     const wrapper = Enzyme.shallow(<ItemDetail {...props} />);
-    const actionBtn = wrapper.find(Button).last();
+    const actionBtn = wrapper.find(`#${actionBtnId}`).last();
     expect(actionBtn.prop("disabled")).toBe(true);
     // Reinstate cartItem
     Object.assign(props, { cartItem: TEST_CARTITEM });

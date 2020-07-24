@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { User } from "src/interfaces";
-import { DEFAULT_USER_HEADER_SUBTITLE } from "src/constants";
+import {
+  DEFAULT_USER_HEADER_SUBTITLE,
+  DEFAULT_USER_HEADER_WELCOME,
+} from "src/constants";
 import { Typography, Paper, Grid, Box, Button } from "@material-ui/core";
 import { getDayPeriod } from "src/utils";
 import { isDebug } from "src/config";
@@ -18,41 +21,6 @@ function UserHeader({
   scanStoreQRCallback: (storeUrl: string) => void;
   content?: React.ReactElement;
 }) {
-  const curHour = new Date().getHours();
-  const curMin = new Date().getMinutes();
-  const [curSec, setCurSec] = useState<number>(0);
-
-  let componentIsMounted = false;
-
-  const updateTime = () => {
-    if (componentIsMounted) {
-      setCurSec(new Date().getSeconds());
-    }
-  };
-
-  const padTime = (num: number) => {
-    // Ensure our time is output in hh:mm:ss
-    // non-constants used will unlikely change
-    if (num === 0) return "00";
-    return num ? num.toString().padStart(2, "0") : "";
-  };
-
-  // This hook runs on start (component mounted)
-  useEffect(() => {
-    componentIsMounted = true;
-    updateTime();
-    // returned function callback is called
-    // by react when component unmounts
-    return () => {
-      componentIsMounted = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    // Register time watching
-    setInterval(updateTime, 500);
-  }, [curSec]);
-
   //TODO(#132) Usage of '14px' should be abstracted to custom font variant for consistency
   return (
     <div className="UserHeader">
@@ -60,17 +28,22 @@ function UserHeader({
         <Header
           title={
             <Typography variant="h4">
-              Good {getDayPeriod()}{" "}
+              {user.name ? "Hey " : ""}
               <Box display="inline" fontWeight="fontWeightBold">
-                {user.name}
+                {user.name ? user.name : DEFAULT_USER_HEADER_WELCOME}
               </Box>
               !
             </Typography>
           }
           subtitle={
-            <Typography variant="subtitle2">
-              {DEFAULT_USER_HEADER_SUBTITLE}
-            </Typography>
+            <div>
+              <Typography variant="subtitle2">
+                Good {getDayPeriod()}{" "}
+              </Typography>
+              <Typography variant="subtitle2">
+                {DEFAULT_USER_HEADER_SUBTITLE}
+              </Typography>
+            </div>
           }
           button={
             <MediaScanner
@@ -87,13 +60,6 @@ function UserHeader({
               resultCallback={scanStoreQRCallback}
               debugFallbackImg={SampleStoreQR}
             />
-          }
-          content={
-            isDebug ? (
-              <Typography variant="body1">
-                {padTime(curHour)}:{padTime(curMin)}:{padTime(curSec)}
-              </Typography>
-            ) : undefined
           }
         />
       )}
