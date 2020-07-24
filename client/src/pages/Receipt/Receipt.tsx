@@ -97,10 +97,7 @@ const Receipt: React.FC = () => {
             <canvas id="canvas" />
           </div>
           <div className="flex" style={{ flex: showOrder ? 3 : "none" }}>
-            <Grid
-              onClick={() => setShowOrder(!showOrder)}
-              // style={{ zIndex: 1000, marginTop: "-36px" }}
-            >
+            <Grid onClick={() => setShowOrder(!showOrder)}>
               <Button fullWidth={true} style={{ textTransform: "none" }}>
                 {showOrder ? (
                   <div>
