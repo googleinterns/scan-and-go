@@ -104,7 +104,9 @@ exports.updateOrder = async (req, res) => {
         actions: [
           {
             label: "RECEIPT",
-            url: `https://microapps.google.com/${process.env.EXPRESS_SERVER_MICROAPP_ID}/receipt?order=${orderName}`,
+            url: `https://microapps.google.com/${
+              process.env.EXPRESS_SERVER_MICROAPP_ID
+            }?link=${encodeURIComponent(`receipt?order=${orderName}`)}`,
           },
         ],
       };

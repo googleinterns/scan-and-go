@@ -86,25 +86,18 @@ const Receipt: React.FC = () => {
     <Page
       header={<Header title={<Typography variant="h4">Receipt</Typography>} />}
       content={
-        <Grid container item xs direction="column">
+        <div className="receipt-content">
           <Typography align="left" color="textSecondary">
             No.: {orderId}
           </Typography>
           <Typography align="left" color="textSecondary">
             {orderTimestamp}
           </Typography>
-          <Grid item xs className="qrCode" ref={qrCodeDiv} id="qrGrid">
+          <div className="qrCode" ref={qrCodeDiv}>
             <canvas id="canvas" />
-          </Grid>
-          <Grid
-            container
-            item
-            direction="column"
-            alignItems="stretch"
-            xs={showOrder ? true : false}
-          >
+          </div>
+          <div className="flex" style={{ flex: showOrder ? 3 : "none" }}>
             <Grid
-              item
               onClick={() => setShowOrder(!showOrder)}
               // style={{ zIndex: 1000, marginTop: "-36px" }}
             >
@@ -127,7 +120,7 @@ const Receipt: React.FC = () => {
               </Button>
             </Grid>
             <Collapse in={showOrder}>
-              <Grid item xs className="order">
+              <div className="order">
                 <div className="details">
                   {contents && (
                     <Cart
@@ -138,10 +131,10 @@ const Receipt: React.FC = () => {
                   )}
                 </div>
                 <CartSummary cartItems={contents}></CartSummary>
-              </Grid>
+              </div>
             </Collapse>
-          </Grid>
-        </Grid>
+          </div>
+        </div>
       }
       footer={
         <Button
