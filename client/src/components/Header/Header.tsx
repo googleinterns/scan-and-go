@@ -2,21 +2,33 @@ import React from "react";
 import { isDebug } from "src/config";
 import { Typography, Paper, Grid, Box, Button } from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
+import HomeIcon from "@material-ui/icons/Home";
+import { useHistory } from "react-router-dom";
+import { HOME_PAGE } from "src/constants";
 
 function Header({
   title,
   subtitle,
   button,
   content,
+  homeBtn,
 }: {
   title: React.ReactElement;
   subtitle?: React.ReactElement;
   button?: React.ReactElement;
   content?: React.ReactElement;
+  homeBtn?: boolean;
 }) {
   const theme = useTheme();
   const headerTopPadding = theme.spacing(2);
   const headerBotPadding = theme.spacing(4);
+
+  const history = useHistory();
+  const returnToHome = () => {
+    history.push({
+      pathname: HOME_PAGE,
+    });
+  };
 
   return (
     <div className="UserHeader">
@@ -34,7 +46,18 @@ function Header({
           alignItems="flex-start"
         >
           <Grid item xs={button ? 8 : 12}>
-            <Grid item xs={12}>
+            <Grid container item xs={12} direction="row">
+              {homeBtn && (
+                <Button
+                  onClick={returnToHome}
+                  style={{
+                    padding: `0 ${theme.spacing(2)}px 0 0 `,
+                    minWidth: "0",
+                  }}
+                >
+                  <HomeIcon fontSize="default" />
+                </Button>
+              )}
               {title}
             </Grid>
             {content && (

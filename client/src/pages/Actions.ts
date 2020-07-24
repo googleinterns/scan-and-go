@@ -155,7 +155,7 @@ export const getOrders = async () => {
 };
 
 /**
- * Retrieves the list of items in an order.
+ * Retrieves the order details.
  *
  * @param {string} orderName - The Spot order name in the form of {merchants/*\/orders/*}.
  * @returns {CartItem[]} contents - The items in the order.
@@ -163,6 +163,7 @@ export const getOrders = async () => {
 export const getOrderDetails = async (orderName: string) => {
   let contents: CartItem[] = [];
   let timestamp: string = "";
+  let storeId: string = "";
 
   // retrieve order items from backend
   const order = await fetchJson("GET", {}, `${ORDER_API}/${orderName}`, true);
@@ -183,8 +184,9 @@ export const getOrderDetails = async (orderName: string) => {
       };
     });
     timestamp = new Date(order.timestamp).toLocaleString();
+    storeId = order.storeId;
   }
-  return { contents: contents, timestamp: timestamp };
+  return { contents, timestamp, storeId };
 };
 
 /**
@@ -235,6 +237,7 @@ export const createOrder = async (store: Store, cartItems: CartItem[]) => {
     const data = {
       merchantId: merchantId,
       orderId: order.orderId,
+      storeId: store["store-id"],
     };
     await fetchText("POST", data, ORDER_ADD_API, true);
   }

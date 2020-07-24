@@ -185,6 +185,7 @@ describe("Test api/order endpoints", () => {
     const res = await request(app).post("/api/order/add").send({
       merchantId: CONSTANTS.TEST_MERCHANT_ID,
       orderId: CONSTANTS.TEST_ORDER_ID,
+      storeId: CONSTANTS.TEST_STORE_ID,
     });
     expect(res.statusCode).toEqual(CONSTANTS.HTTP_SUCCESS);
     expect(res.text).toEqual(CONSTANTS.TEST_ORDER_ID);
