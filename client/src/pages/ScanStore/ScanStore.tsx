@@ -24,6 +24,9 @@ import {
   Button,
   Collapse,
   Slide,
+  Dialog,
+  DialogActions,
+  DialogTitle,
 } from "@material-ui/core";
 import { MuiThemeProvider, useTheme } from "@material-ui/core/styles";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
@@ -68,9 +71,15 @@ function ScanStore() {
   const [showDebug, setShowDebug] = useState<boolean>(false);
   const [showFooter, setShowFooter] = useState<boolean>(true);
   const [showDetail, setShowDetail] = useState<boolean>(false);
+  const [showRemoveConfirmation, setShowRemoveConfirmation] = useState<boolean>(
+    false
+  );
+  const [addDirect, setAddDirect] = useState<boolean>(false);
+  const [removeBarcode, setRemoveBarcode] = useState<string>("");
   const [debugBarcode, setDebugBarcode] = useState<string>("");
 
-  const addItemToCart = async (barcode: string) => {
+  // Entry point for user scanning barcode
+  const scanItemToCart = async (barcode: string) => {
     const existingItem = cartItems.find(
       (cartItem) => cartItem.item.barcode === barcode
     );
@@ -81,14 +90,67 @@ function ScanStore() {
     }
   };
 
+  const updateNewItem = async (barcode: string) => {
+    setLoadingItem(true);
+    const item: Item = await getItem(barcode, merchantID);
+    if (!item.barcode) {
+      // TODO (#59): Notify user if barcode is invalid or item not found
+      return;
+    }
+    const newCartItem = {
+      item: item,
+      quantity: 1,
+    };
+    setLoadingItem(false);
+    // Experimental Flag: Toggle whether we raise dialog for adding item
+    //                    or simply chuck it in immediately
+    if (addDirect) {
+      addCartItem(newCartItem);
+    } else {
+      // Raise confirmation dialog via Item Details Page
+      setCurItem(newCartItem);
+      setShowDetail(true);
+    }
+  };
+
+  // Callback from Item Details Dialog with CartItem in question
+  const itemDetailCallback = (cartItem: CartItem) => {
+    if (!cartItem || !cartItem.item.barcode) {
+      // No item to process
+      setShowDetail(false);
+      return;
+    }
+    const barcode = cartItem.item.barcode;
+    const quantity = cartItem.quantity;
+    const existingItem = cartItems.find(
+      (cartItem) => cartItem.item.barcode === barcode
+    );
+    if (existingItem) {
+      if (quantity <= 0) {
+        // Removing item
+        // We do not need re-confirmation here as user has already
+        // explicitly clicked onto a "Remove Item" button in ItemDetail Dialog
+        setCurItem(Object.assign({}, curItem, { quantity: quantity }));
+        removeCartItem(barcode);
+      } else {
+        // Change quantity
+        setCurItem(Object.assign({}, curItem, { quantity: quantity }));
+        updateCartItem(barcode, quantity);
+      }
+    } else {
+      // Call add new item to flow
+      addCartItem(cartItem);
+    }
+    // Close dialog
+    setShowDetail(false);
+  };
+
+  // Callback for changing item quantities in Cart
   const updateItemQuantity = (barcode: string, quantity: number) => {
     if (quantity <= 0) {
-      if (curItem)
-        setCurItem(Object.assign({}, curItem, { quantity: quantity }));
       //TODO(#200): Block user from removing item with confirmation dialog
-      updateCart(
-        cartItems.filter((cartItem) => cartItem.item.barcode !== barcode)
-      );
+      // Raise removal confirmation dialog
+      raiseRemoveConfirmation(barcode);
       if (curItem && curItem.item.barcode === barcode) {
         setShowDetail(false);
       }
@@ -96,32 +158,48 @@ function ScanStore() {
       if (curItem && curItem.item.barcode === barcode) {
         setCurItem(Object.assign({}, curItem, { quantity: quantity }));
       }
-      updateCart(
-        cartItems.map((cartItem) => {
-          if (cartItem.item.barcode === barcode) {
-            return Object.assign({}, cartItem, { quantity: quantity });
-          }
-          return cartItem;
-        })
-      );
+      updateCartItem(barcode, quantity);
     }
   };
 
-  const updateNewItem = async (barcode: string) => {
-    setLoadingItem(true);
-    const item: Item = await getItem(barcode, merchantID);
-    setLoadingItem(false);
-    // Override placeholder item when we receive actual info
-    if (item.barcode) {
-      updateCart([
-        ...cartItems,
-        {
-          item: item,
-          quantity: 1,
-        },
-      ]);
-    }
-    // TODO (#59): Notify user if barcode is invalid or item not found
+  const dismissRemoveConfirmation = () => {
+    setRemoveBarcode("");
+    setShowRemoveConfirmation(false);
+  };
+
+  const raiseRemoveConfirmation = (barcode: string) => {
+    setRemoveBarcode(barcode);
+    setShowRemoveConfirmation(true);
+  };
+
+  // Callback for user confirmation of item removal from Cart
+  const confirmDeleteCallback = (barcode: string) => {
+    removeCartItem(barcode);
+  };
+
+  /* cartItems: CartItem[] mutation functions */
+  // Update item in Cart
+  const updateCartItem = (barcode: string, quantity: number) => {
+    updateCart(
+      cartItems.map((cartItem) => {
+        if (cartItem.item.barcode === barcode) {
+          return Object.assign({}, cartItem, { quantity: quantity });
+        }
+        return cartItem;
+      })
+    );
+  };
+
+  // Add new item into Cart
+  const addCartItem = (newCartItem: CartItem) => {
+    updateCart([...cartItems, newCartItem]);
+  };
+
+  // Remove item from Cart
+  const removeCartItem = (barcode: string) => {
+    updateCart(
+      cartItems.filter((cartItem) => cartItem.item.barcode !== barcode)
+    );
   };
 
   const toggleCart = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -134,6 +212,10 @@ function ScanStore() {
 
   const toggleDetail = (event: React.ChangeEvent<HTMLInputElement>) => {
     setShowDetail(event.target.checked);
+  };
+
+  const toggleAddItemMode = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setAddDirect(event.target.checked);
   };
 
   const makePayment = () => {
@@ -162,7 +244,7 @@ function ScanStore() {
           <div className="ScanStore-header">
             <CartHeader
               store={curStore}
-              scanBarcodeCallback={addItemToCart}
+              scanBarcodeCallback={scanItemToCart}
               content={
                 <FormGroup row>
                   <FormControlLabel
@@ -185,13 +267,20 @@ function ScanStore() {
                 text={debugBarcode ? debugBarcode : BARCODE_PLACEHOLDER}
                 setState={setDebugBarcode}
               />,
-              <button onClick={() => addItemToCart(debugBarcode)}>
+              <button onClick={() => scanItemToCart(debugBarcode)}>
                 Test Add Item
               </button>,
               <FormControlLabel
                 checked={showDetail}
                 control={<Switch onChange={toggleDetail} color="primary" />}
                 label="Show Item Detail"
+              />,
+              <FormControlLabel
+                checked={addDirect}
+                control={
+                  <Switch onChange={toggleAddItemMode} color="primary" />
+                }
+                label="Add Item Directly"
               />,
             ]}
             <Divider />
@@ -265,11 +354,36 @@ function ScanStore() {
         >
           <ItemDetail
             cartItem={curItem}
-            updateItemQuantity={updateItemQuantity}
+            currentCart={cartItems}
             closeCallback={() => setShowDetail(false)}
+            updateItemCallback={itemDetailCallback}
           />
         </div>
       </Slide>
+      <Dialog open={showRemoveConfirmation} onClose={dismissRemoveConfirmation}>
+        <DialogTitle>Confirm item removal?</DialogTitle>
+        <DialogActions>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={dismissRemoveConfirmation}
+          >
+            Cancel
+          </Button>
+          <MuiThemeProvider theme={ErrorTheme}>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => {
+                confirmDeleteCallback(removeBarcode);
+                dismissRemoveConfirmation();
+              }}
+            >
+              Remove
+            </Button>
+          </MuiThemeProvider>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

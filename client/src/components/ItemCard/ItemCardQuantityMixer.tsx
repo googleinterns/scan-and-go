@@ -8,9 +8,11 @@ import { InverseErrorTheme } from "src/theme";
 function ItemCardQuantityMixer({
   quantity,
   updateQuantity,
+  disabled = false,
 }: {
   quantity: number;
   updateQuantity: (quantity: number) => void;
+  disabled?: boolean;
 }) {
   const theme = useTheme();
 
@@ -26,7 +28,13 @@ function ItemCardQuantityMixer({
     <MuiThemeProvider theme={InverseErrorTheme}>
       <Grid container direction="row" justify="flex-end">
         <Grid item>
-          <Fab color="primary" id="inc" onClick={increaseCounter} size="small">
+          <Fab
+            color="primary"
+            id="inc"
+            onClick={increaseCounter}
+            size="small"
+            disabled={disabled}
+          >
             <AddIcon />
           </Fab>
         </Grid>
@@ -49,6 +57,7 @@ function ItemCardQuantityMixer({
             id="dec"
             onClick={decreaseCounter}
             size="small"
+            disabled={disabled}
           >
             <RemoveIcon />
           </Fab>
