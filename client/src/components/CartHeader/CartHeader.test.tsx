@@ -37,7 +37,6 @@ describe("CartHeader Component Tests", () => {
   it("CartHeader has button and triggers scan barcode callback", async () => {
     const wrapper = Enzyme.mount(<CartHeader {...props} />);
     const buttons = wrapper.find(Button);
-    expect(buttons).toHaveLength(1);
     const scanButton = buttons.last();
     scanButton.simulate("click");
     // We require waitFor to wait for effect hooks to trigger in <MediaScanner />
