@@ -46,7 +46,7 @@ it("ScanStore redirects to Receipt and sets successs alert upon successful order
         </Router>
       </AlertContext.Provider>
     );
-    const checkoutBtn = wrapper.find("button").last();
+    const checkoutBtn = wrapper.find(".checkoutBtn").last();
     checkoutBtn.simulate("click");
   });
 

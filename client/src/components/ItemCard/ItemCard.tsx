@@ -5,16 +5,18 @@ import { Fab, Typography, Paper, Grid, Divider } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
 import { useTheme } from "@material-ui/core/styles";
-import { getSubtotalPrice, parseRawTextNewlines } from "src/utils";
+import { getSubtotalPrice } from "src/utils";
 import ItemCardQuantityMixer from "./ItemCardQuantityMixer";
 import MediaInfoCard from "src/components/MediaInfoCard";
 
 function ItemCard({
   cartItem,
   updateItemQuantity,
+  selectActionCallback,
 }: {
   cartItem: CartItem;
   updateItemQuantity: (barcode: string, quantity: number) => void;
+  selectActionCallback?: () => void;
 }) {
   const theme = useTheme();
   const themeSpacing = theme.spacing(1);
@@ -27,22 +29,9 @@ function ItemCard({
     <MediaInfoCard
       media={cartItem.item.media ? cartItem.item.media : PLACEHOLDER_ITEM_MEDIA}
       mediaVariant="rounded"
+      mediaCallback={selectActionCallback}
       title={<Typography variant="body1">{cartItem.item.name}</Typography>}
-      content={
-        <div>
-          {cartItem.item.detail &&
-            parseRawTextNewlines(cartItem.item.detail).map(
-              (line: string, i: number) => (
-                <Typography
-                  key={`detail-${cartItem.item.barcode}-${i}`}
-                  variant="subtitle2"
-                >
-                  {line}
-                </Typography>
-              )
-            )}
-        </div>
-      }
+      content={<Typography variant="body2">{cartItem.item.unit}</Typography>}
       rightColumn={
         <Grid item container style={{ height: "100%" }} direction="column">
           <Grid item xs container direction="column">
