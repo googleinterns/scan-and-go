@@ -68,7 +68,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Global</h3><ul><li><a href="global.html#AuthenticatedRoute">AuthenticatedRoute</a></li><li><a href="global.html#createOrder">createOrder</a></li><li><a href="global.html#getOrderContents">getOrderContents</a></li><li><a href="global.html#IconSearchBar">IconSearchBar</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Global</h3><ul><li><a href="global.html#AuthenticatedRoute">AuthenticatedRoute</a></li><li><a href="global.html#createOrder">createOrder</a></li><li><a href="global.html#getOrderDetails">getOrderDetails</a></li><li><a href="global.html#IconSearchBar">IconSearchBar</a></li></ul></div>
                 
             </nav>
         </div>
@@ -247,12 +247,13 @@ export const getOrders = async () => {
  * @param {string} orderName - The Spot order name in the form of {merchants/*\/orders/*}.
  * @returns {CartItem[]} contents - The items in the order.
  */
-export const getOrderContents = async (orderName: string) => {
+export const getOrderDetails = async (orderName: string) => {
   let contents: CartItem[] = [];
+  let timestamp: string = "";
 
   // retrieve order items from backend
   const order = await fetchJson("GET", {}, `${ORDER_API}/${orderName}`, true);
-  if (order?.items) {
+  if (order) {
     const itemBarcodes = order.items.map(
       (orderItem: OrderItem) => orderItem.subtitle
     );
@@ -264,12 +265,13 @@ export const getOrderContents = async (orderName: string) => {
     const items = await fetchJson("POST", data, ITEM_API);
     contents = order.items.map((orderItem: OrderItem) => {
       return {
-        item: items.filter((item: Item) => item.barcode == orderItem.subtitle),
+        item: items.find((item: Item) => item.barcode == orderItem.subtitle),
         quantity: orderItem.quantity,
       };
     });
+    timestamp = new Date(order.timestamp).toLocaleString();
   }
-  return contents;
+  return { contents: contents, timestamp: timestamp };
 };
 
 /**
