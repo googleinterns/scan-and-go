@@ -40,14 +40,16 @@ exports.addOrder = async (req, res) => {
 
   const merchantId = reqProps.merchantId;
   const orderId = reqProps.orderId;
+  const storeId = reqProps.storeId;
   const userId = req.userId;
 
   try {
-    if (merchantId && orderId && userId) {
+    if (merchantId && orderId && storeId && userId) {
       await ordersCollection
         .add({
           "merchant-id": merchantId,
           "order-id": orderId,
+          "store-id": storeId,
           "user-id": userId,
           timestamp: Timestamp.now(),
         })
@@ -155,8 +157,11 @@ exports.getOrder = async (req, res) => {
         .get()
         .then((ordersQuery) => {
           const orders = ordersQuery.docs.map((doc) => doc.data());
-          const { timestamp } = flatMap(orders, {});
-          Object.assign(order, { timestamp: timestamp.toDate() });
+          const orderDoc = flatMap(orders, {});
+          Object.assign(order, {
+            timestamp: orderDoc.timestamp.toDate(),
+            storeId: orderDoc["store-id"],
+          });
         });
     }
   } catch (err) {

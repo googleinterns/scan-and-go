@@ -3,6 +3,7 @@ import { Store } from "src/interfaces";
 import {
   DEFAULT_CART_HEADER_TITLE,
   DEFAULT_STORE_HEADER_SUBTITLE,
+  HOME_PAGE,
 } from "src/constants";
 import { Typography, Button } from "@material-ui/core";
 import Header from "src/components/Header";
@@ -47,6 +48,7 @@ function CartHeader({
           />
         }
         content={content}
+        homeBtn={true}
       />
     </div>
   );
