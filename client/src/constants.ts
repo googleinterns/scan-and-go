@@ -45,7 +45,9 @@ export const PLACEHOLDER_STORE_MEDIA = "http://placekitten.com/300/300";
 export const DEFAULT_CURRENCY_CODE = "INR";
 // Test variables
 export const TEST_ORDER_ID = "TEST ORDER";
-export const TEST_ORDER_NAME = "merchants/TEST MERCHANT/orders/TEST ORDER";
+export const TEST_ORDER_NAME =
+  process.env.REACT_APP_TEST_ORDER_NAME ||
+  "merchants/TEST MERCHANT/orders/TEST ORDER";
 export const TEST_STORE_ID = "WPANCUD-1";
 export const TEST_STORE_MERCHANT_ID = "WPANCUD";
 export const TEST_USER = { name: "TEST USER", "user-id": "TEST USER ID" };

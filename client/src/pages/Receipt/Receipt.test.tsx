@@ -39,10 +39,14 @@ it("Receipt renders QR code with order ID", async () => {
   const toCanvasStub = jest
     .spyOn(QRCode, "toCanvas")
     .mockImplementation(jest.fn());
-  jest
-    .spyOn(Actions, "getOrderContents")
-    .mockReturnValueOnce(new Promise((resolve, _) => resolve(testContents)));
-
+  jest.spyOn(Actions, "getOrderDetails").mockReturnValueOnce(
+    new Promise((resolve, _) =>
+      resolve({
+        contents: testContents,
+        timestamp: Date.now().toLocaleString(),
+      })
+    )
+  );
   await act(async () => {
     const wrapper = Enzyme.mount(
       <Router>
@@ -68,9 +72,7 @@ it("Receipt redirects to Home upon button click", async () => {
         <Receipt {...history} />
       </Router>
     );
-    const btns = wrapper.find("button");
-    expect(btns).toHaveLength(1);
-    const returnToHomeBtn = btns.first();
+    const returnToHomeBtn = wrapper.find(".returnBtn").first();
     returnToHomeBtn.simulate("click");
   });
 

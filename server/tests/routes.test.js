@@ -4,6 +4,10 @@
 // https://stackoverflow.com/questions/41995464/how-to-mock-middleware-in-express-to-skip-authentication-for-unit-test
 jest.mock("./../authentication", () => jest.fn());
 jest.mock("google-auth-library");
+// Mock firestore server sdk with client sdk https://stackoverflow.com/questions/58774788/cant-fetch-data-from-firebase-using-timestamp
+jest.mock("@google-cloud/firestore", () => ({
+  Timestamp: require("@firebase/testing").firestore.Timestamp,
+}));
 
 const request = require("supertest");
 const { app, server } = require("./../server");
