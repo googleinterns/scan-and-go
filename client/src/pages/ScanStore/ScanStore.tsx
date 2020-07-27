@@ -140,7 +140,7 @@ function ScanStore() {
         setCurItem(Object.assign({}, curItem, { quantity: quantity }));
         updateCartItem(barcode, quantity);
       }
-    } else {
+    } else if (quantity > 0) {
       // Call add new item to flow
       addCartItem(cartItem);
     }
