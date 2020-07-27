@@ -256,3 +256,38 @@ export const getUser = () => {
 export const getStoreRedirectUrl = (storeId: string, merchantId: string) => {
   return `${SCANSTORE_PAGE}?id=${storeId}&mid=${merchantId}`;
 };
+
+/**
+ * Retrieves the cart for the current store from the cache.
+ *
+ * @param {string} curMerchantId
+ * @param {string} curStoreId
+ * @returns {CartItem[]} cartItems
+ */
+export const getCart = (curMerchantId: string, curStoreId: string) => {
+  let cartItems: CartItem[] = [];
+  const cart = window.localStorage.getItem("cart");
+  const merchantId = window.localStorage.getItem("merchantId");
+  const storeId = window.localStorage.getItem("storeId");
+  if (cart && merchantId == curMerchantId && storeId == curStoreId) {
+    cartItems = JSON.parse(cart);
+  }
+  return cartItems;
+};
+
+/**
+ * Stores the cart and current store and merchant IDs in the cache.
+ *
+ * @param cartItems
+ * @param merchantId
+ * @param storeId
+ */
+export const setCart = (
+  cartItems: CartItem[],
+  merchantId: string,
+  storeId: string
+) => {
+  window.localStorage.setItem("cart", JSON.stringify(cartItems));
+  window.localStorage.setItem("merchantId", merchantId);
+  window.localStorage.setItem("storeId", storeId);
+};
