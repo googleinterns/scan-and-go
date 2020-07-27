@@ -82,7 +82,7 @@ function ScanStore() {
   const { setAlert } = useContext(AlertContext);
 
   // Entry point for user scanning barcode
-  const scanItemToCart = async (barcode: string) => {
+  const scanItemToCart = (barcode: string) => {
     const existingItem = cartItems.find(
       (cartItem) => cartItem.item.barcode === barcode
     );
@@ -96,7 +96,8 @@ function ScanStore() {
   const updateNewItem = async (barcode: string) => {
     setLoadingItem(true);
     const item: Item = await getItem(barcode, merchantID);
-    if (!item.barcode) {
+    setLoadingItem(false);
+    if (!item || !item.barcode) {
       // TODO (#59): Notify user if barcode is invalid or item not found
       return;
     }
@@ -104,7 +105,6 @@ function ScanStore() {
       item: item,
       quantity: 1,
     };
-    setLoadingItem(false);
     // Experimental Flag: Toggle whether we raise dialog for adding item
     //                    or simply chuck it in immediately
     if (addDirect) {
@@ -140,7 +140,7 @@ function ScanStore() {
         setCurItem(Object.assign({}, curItem, { quantity: quantity }));
         updateCartItem(barcode, quantity);
       }
-    } else {
+    } else if (quantity > 0) {
       // Call add new item to flow
       addCartItem(cartItem);
     }

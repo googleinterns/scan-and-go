@@ -82,8 +82,17 @@ function Home(props: any) {
 
   const scanStoreQRCallback = (storeUrl: string) => {
     // Try to extract store-id and merchant-id fields from storeUrl
-    const storeId = parseUrlParam(storeUrl, "id"); //TODO(#167) Replace with constants for "id"/"mid"
-    const merchantId = parseUrlParam(storeUrl, "mid");
+    const storeUrlArglist = storeUrl.split("?");
+    if (storeUrlArglist.length !== 2) {
+      //TODO(#65) Let user know that QR is malformed
+      // in this case, no url parameters detected
+      return;
+    }
+    // A correctly formed url will only contain 1 '?' character
+    // hence split will be array of length 2 always
+    const trimmedStoreUrl = storeUrlArglist[1];
+    const storeId = parseUrlParam(trimmedStoreUrl, "id"); //TODO(#167) Replace with constants for "id"/"mid"
+    const merchantId = parseUrlParam(trimmedStoreUrl, "mid");
     // If valid extraction, push us to new site
     if (storeId && merchantId) {
       history.push(getStoreRedirectUrl(storeId, merchantId));

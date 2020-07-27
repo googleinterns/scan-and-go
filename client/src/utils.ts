@@ -229,17 +229,19 @@ export const deepHtmlStringMatch = (element: any, match: string) => {
 
 // Given a HTML img element, process image data for barcode string
 export const processImageBarcode = async (img: HTMLImageElement) => {
-  const codeReader = new BrowserMultiFormatReader();
-  if (img) {
-    const result = await codeReader
-      .decodeFromImage(img)
-      .then((res: any) => res.text)
-      .catch((err: any) => null);
-    if (result) {
+  try {
+    const codeReader = new BrowserMultiFormatReader();
+    if (img) {
+      const result = await codeReader
+        .decodeFromImage(img)
+        .then((res: any) => res.text)
+        .catch((err: any) => "");
       return result;
     }
+  } catch (err) {
+    console.error(err);
+    throw err;
   }
-  return false;
 };
 
 // Jest does not load up image files by default
