@@ -1,7 +1,7 @@
 import React from "react";
-import { isDebug } from "src/config";
-import { Typography, Paper, Grid, Box, Button } from "@material-ui/core";
+import { Paper, Grid, Button } from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
+import { useStyles } from "src/styles";
 import HomeIcon from "@material-ui/icons/Home";
 import { useHistory } from "react-router-dom";
 import { HOME_PAGE } from "src/constants";
@@ -22,6 +22,7 @@ function Header({
   const theme = useTheme();
   const headerTopPadding = theme.spacing(2);
   const headerBotPadding = theme.spacing(4);
+  const classes = useStyles(theme);
 
   const history = useHistory();
   const returnToHome = () => {
@@ -49,13 +50,14 @@ function Header({
             <Grid container item xs={12} direction="row">
               {homeBtn && (
                 <Button
+                  id="home-btn"
                   onClick={returnToHome}
                   style={{
                     padding: `0 ${theme.spacing(2)}px 0 0 `,
                     minWidth: "0",
                   }}
                 >
-                  <HomeIcon fontSize="default" />
+                  <HomeIcon className={classes.icon} />
                 </Button>
               )}
               {title}
