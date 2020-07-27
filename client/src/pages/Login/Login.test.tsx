@@ -77,7 +77,7 @@ describe("Test on Web UI", () => {
   });
 
   it("Login Page stays on page, given invalid user", async () => {
-    mockAuthContext.user = emptyUser;
+    mockAuthContext.user = emptyUser();
     await act(async () => {
       TestRenderer.create(
         <AuthContext.Provider value={mockAuthContext}>

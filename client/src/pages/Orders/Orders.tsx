@@ -17,7 +17,7 @@ function Orders(props: any) {
   const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    if (user !== emptyUser) {
+    if (user["user-id"]) {
       getOrders().then((res) => setOrders(res));
     }
   }, [user]);
@@ -25,7 +25,7 @@ function Orders(props: any) {
   return (
     <div className="Orders">
       <a href="/home">back</a>
-      <h3 hidden={user === emptyUser}>Hello {user.name}</h3>
+      <h3 hidden={!!user["user-id"]}>Hello {user.name}</h3>
       <Table>
         <TableHead>
           <TableRow>

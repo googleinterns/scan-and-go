@@ -4,7 +4,7 @@ import { User, emptyUser } from "src/interfaces";
 import { SET_USER, UNSET_USER } from "src/constants";
 
 export const AuthContext = createContext({
-  user: emptyUser,
+  user: emptyUser(),
   setUser: (user: User) => {},
   unsetUser: () => {},
 });
@@ -23,7 +23,7 @@ const reducer = (state: any, action: any) => {
       window.localStorage.clear();
       return {
         ...state,
-        user: emptyUser,
+        user: emptyUser(),
       };
     }
   }
