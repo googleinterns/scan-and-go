@@ -38,9 +38,13 @@ function MediaScanner({
         img = document.getElementById(DEBUG_IMG_ID) as HTMLImageElement;
       } else return;
     }
-    processImageBarcode(img).then((barcode: string) => {
-      resultCallback(barcode);
-    });
+    processImageBarcode(img)
+      .then((barcode: string) => {
+        resultCallback(barcode);
+      })
+      .catch((err: any) => {
+        //TODO(#59): Raise Error for barcode library failure
+      });
   };
 
   useEffect(() => {

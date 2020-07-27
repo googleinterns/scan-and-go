@@ -235,11 +235,12 @@ export const processImageBarcode = async (img: HTMLImageElement) => {
       const result = await codeReader
         .decodeFromImage(img)
         .then((res: any) => res.text)
-        .catch((err: any) => null);
+        .catch((err: any) => "");
       return result;
     }
   } catch (err) {
-    return null;
+    console.error(err);
+    throw err;
   }
 };
 
