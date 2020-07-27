@@ -161,6 +161,7 @@ function ItemDetail({
               {isRemoving ? (
                 <MuiThemeProvider theme={ErrorTheme}>
                   <Button
+                    disabled={!cartItem}
                     variant="contained"
                     fullWidth={true}
                     color="secondary"
