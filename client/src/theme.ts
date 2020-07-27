@@ -1,4 +1,4 @@
-import { createMuiTheme } from "@material-ui/core/styles";
+import { createMuiTheme, responsiveFontSizes } from "@material-ui/core/styles";
 import { Fab } from "@material-ui/core";
 
 const PRIMARY_COLOR = "#66BE64";
@@ -67,4 +67,4 @@ export const themeConfig = {
   default_card_img_height: "20vw",
 };
 
-export default AppTheme;
+export default responsiveFontSizes(AppTheme);
