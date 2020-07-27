@@ -17,7 +17,7 @@ function CartHeader({
   content,
 }: {
   store: Store;
-  scanBarcodeCallback: (barcode: string) => Promise<void>;
+  scanBarcodeCallback: (barcode: string) => void;
   content?: React.ReactElement;
 }) {
   return (

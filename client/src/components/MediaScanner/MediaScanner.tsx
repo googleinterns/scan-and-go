@@ -33,10 +33,10 @@ function MediaScanner({
   const scanBarcodeFromImage = () => {
     let img = document.getElementById(UPLOADED_IMG_ID) as HTMLImageElement;
     // Try to fallback, else abort
-    if (!img && debugFallbackImg) {
-      img = document.getElementById(DEBUG_IMG_ID) as HTMLImageElement;
-    } else {
-      return;
+    if (!img) {
+      if (debugFallbackImg) {
+        img = document.getElementById(DEBUG_IMG_ID) as HTMLImageElement;
+      } else return;
     }
     processImageBarcode(img).then((barcode: string) => {
       resultCallback(barcode);
