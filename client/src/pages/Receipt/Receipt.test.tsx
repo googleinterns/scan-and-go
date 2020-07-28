@@ -61,7 +61,7 @@ it("Receipt renders QR code with order ID", async () => {
     );
   });
 
-  await waitFor(() => expect(toCanvasStub).toBeCalledTimes(1));
+  await waitFor(() => expect(toCanvasStub).toBeCalled());
   expect(toCanvasStub).toBeCalledWith(
     null,
     testQRText,

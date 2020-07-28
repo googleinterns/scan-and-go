@@ -14,6 +14,7 @@ import CartSummary from "src/components/CartSummary";
 import { getOrderDetails, getStoreRedirectUrl } from "../Actions";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import "src/css/animation.css";
 declare const window: any;
 
 const Receipt: React.FC = () => {
@@ -39,9 +40,7 @@ const Receipt: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (!isLoading) {
-      generateQR();
-    }
+    generateQR();
   }, [isLoading]);
 
   const generateQR = () => {
@@ -59,13 +58,18 @@ const Receipt: React.FC = () => {
         10
       );
       const width = Math.min(divHeight, divWidth);
+      const options = { width };
+      if (isLoading) {
+        Object.assign(options, { color: { dark: "#80808080" } });
+      }
 
       QRCode.toCanvas(
         document.getElementById("canvas"),
         text,
-        { width: width },
+        options,
         (err) => {
           if (err) {
+            console.log(err);
             setAlert("error", `Unable to generate QR code `);
           }
         }
@@ -124,7 +128,10 @@ const Receipt: React.FC = () => {
             {orderTimestamp}
           </Typography>
           <div className="qrCode" ref={qrCodeDiv}>
-            <canvas id="canvas" />
+            <canvas
+              id="canvas"
+              className={isLoading ? "animate-flicker" : undefined}
+            />
           </div>
           <div ref={orderRef}>
             <Grid>
