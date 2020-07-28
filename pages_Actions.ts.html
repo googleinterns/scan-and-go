@@ -68,7 +68,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Global</h3><ul><li><a href="global.html#AuthenticatedRoute">AuthenticatedRoute</a></li><li><a href="global.html#createOrder">createOrder</a></li><li><a href="global.html#getOrderDetails">getOrderDetails</a></li><li><a href="global.html#IconSearchBar">IconSearchBar</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Global</h3><ul><li><a href="global.html#AuthenticatedRoute">AuthenticatedRoute</a></li><li><a href="global.html#createOrder">createOrder</a></li><li><a href="global.html#getCart">getCart</a></li><li><a href="global.html#getOrderDetails">getOrderDetails</a></li><li><a href="global.html#IconSearchBar">IconSearchBar</a></li><li><a href="global.html#setCart">setCart</a></li></ul></div>
                 
             </nav>
         </div>
@@ -342,6 +342,41 @@ export const getUser = () => {
 
 export const getStoreRedirectUrl = (storeId: string, merchantId: string) => {
   return `${SCANSTORE_PAGE}?id=${storeId}&amp;mid=${merchantId}`;
+};
+
+/**
+ * Retrieves the cart for the current store from the cache.
+ *
+ * @param {string} curMerchantId
+ * @param {string} curStoreId
+ * @returns {CartItem[]} cartItems
+ */
+export const getCart = (curMerchantId: string, curStoreId: string) => {
+  let cartItems: CartItem[] = [];
+  const cart = window.localStorage.getItem("cart");
+  const merchantId = window.localStorage.getItem("merchantId");
+  const storeId = window.localStorage.getItem("storeId");
+  if (cart &amp;&amp; merchantId == curMerchantId &amp;&amp; storeId == curStoreId) {
+    cartItems = JSON.parse(cart);
+  }
+  return cartItems;
+};
+
+/**
+ * Stores the cart and current store and merchant IDs in the cache.
+ *
+ * @param cartItems
+ * @param merchantId
+ * @param storeId
+ */
+export const setCart = (
+  cartItems: CartItem[],
+  merchantId: string,
+  storeId: string
+) => {
+  window.localStorage.setItem("cart", JSON.stringify(cartItems));
+  window.localStorage.setItem("merchantId", merchantId);
+  window.localStorage.setItem("storeId", storeId);
 };
 </code></pre>
         </article>
