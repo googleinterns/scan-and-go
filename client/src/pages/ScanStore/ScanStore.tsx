@@ -307,6 +307,7 @@ function ScanStore() {
           <Grid item container direction="column">
             <Grid item>
               <Cart
+                editable={true}
                 contents={cartItems}
                 collapse={showCompactCart}
                 updateItemQuantity={updateItemQuantity}

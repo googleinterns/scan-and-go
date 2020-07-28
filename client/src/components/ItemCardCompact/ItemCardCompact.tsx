@@ -9,10 +9,12 @@ import EditIcon from "@material-ui/icons/Edit";
 function ItemCard({
   cartItem,
   showMedia = true,
+  showEdit = false,
   selectActionCallback,
 }: {
   cartItem: CartItem;
   showMedia?: boolean;
+  showEdit?: boolean;
   selectActionCallback?: () => void;
 }) {
   const theme = useTheme();
@@ -40,7 +42,7 @@ function ItemCard({
         )}
         <Grid item xs={3}>
           <Typography variant="body1">
-            <EditIcon fontSize="small" />
+            {showEdit && <EditIcon fontSize="small" />}
             {cartItem.item.name}
           </Typography>
         </Grid>
