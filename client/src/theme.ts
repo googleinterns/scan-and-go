@@ -1,5 +1,6 @@
 import { createMuiTheme, responsiveFontSizes } from "@material-ui/core/styles";
 import { Fab } from "@material-ui/core";
+import GoogleSansFont from "./css/GoogleSansFont.css";
 
 const PRIMARY_COLOR = "#66BE64";
 const SECONDARY_COLOR = "#909090";
@@ -14,6 +15,13 @@ const WHITE_BACKGROUND_COLOR = "#FFFFFF";
 // https://material-ui.com/customization/theming/#createmuitheme-options-args-theme
 // Customize our app-specific theme
 const AppTheme = createMuiTheme({
+  overrides: {
+    MuiCssBaseline: {
+      "@global": {
+        "@font-face": [GoogleSansFont],
+      },
+    },
+  },
   palette: {
     primary: {
       main: PRIMARY_COLOR,
@@ -25,8 +33,12 @@ const AppTheme = createMuiTheme({
     },
   },
   typography: {
-    body2: {
+    fontFamily: "Google Sans",
+    body1: {
       fontWeight: 800,
+    },
+    body2: {
+      fontWeight: 400,
     },
     subtitle2: {
       color: SECONDARY_COLOR,
@@ -89,6 +101,7 @@ export const InverseErrorTheme = createMuiTheme({
 export const themeConfig = {
   max_card_height: 120,
   default_card_img_height: "20vw",
+  default_card_img_minHeight: "80px",
 };
 
 export default responsiveFontSizes(AppTheme);
