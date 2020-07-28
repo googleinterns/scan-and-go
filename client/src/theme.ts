@@ -32,6 +32,19 @@ const AppTheme = createMuiTheme({
   },
 });
 
+export const InverseAppTheme = createMuiTheme({
+  palette: {
+    primary: {
+      main: WHITE_BACKGROUND_COLOR,
+      contrastText: PRIMARY_COLOR,
+    },
+    secondary: {
+      main: WHITE_BACKGROUND_COLOR,
+      contrastText: SECONDARY_COLOR,
+    },
+  },
+});
+
 // Moving 'success' and 'error' into primary/secondary to allow
 // usage with majority of components (typescript + @material-ui constrain)
 export const ErrorTheme = createMuiTheme({
