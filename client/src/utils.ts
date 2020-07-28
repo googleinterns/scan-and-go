@@ -278,3 +278,8 @@ export const parseOrderName = (orderName: string) => {
   }
   return orderIds;
 };
+
+// Determine if a HTMLElement content has overflowed
+export const checkContentOverflow = (ele: HTMLElement) => {
+  return ele.clientHeight < ele.scrollHeight;
+};

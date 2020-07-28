@@ -6,7 +6,11 @@ import { useTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import { ErrorTheme } from "src/theme";
 import ItemCardQuantityMixer from "src/components/ItemCard/ItemCardQuantityMixer";
 import { PRICE_FRACTION_DIGITS, PLACEHOLDER_ITEM_MEDIA } from "src/constants";
-import { getSubtotalPrice, parseRawTextNewlines } from "src/utils";
+import {
+  getSubtotalPrice,
+  parseRawTextNewlines,
+  checkContentOverflow,
+} from "src/utils";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
@@ -37,11 +41,6 @@ function ItemDetail({
     !currentCart
       .map((curItem: CartItem) => curItem.item.barcode)
       .includes(item.barcode);
-
-  // Determine if our content has overflow and render expand button
-  const checkContentOverflow = (ele: HTMLElement) => {
-    return ele.clientHeight < ele.scrollHeight;
-  };
 
   // Callback for +/- mixer to update chosen item quantity
   const updateItemQuantityWrapper = (quantity: number) => {
