@@ -91,6 +91,7 @@ function ScanStore() {
   const [addDirect, setAddDirect] = useState<boolean>(false);
   const [removeBarcode, setRemoveBarcode] = useState<string>("");
   const [debugBarcode, setDebugBarcode] = useState<string>("");
+  const [isCheckingOut, setIsCheckingOut] = useState<boolean>(false);
   const { setAlert } = useContext(AlertContext);
 
   // Entry point for user scanning barcode
@@ -234,9 +235,11 @@ function ScanStore() {
   };
 
   const checkout = async () => {
+    setIsCheckingOut(true);
     const paymentStatus = makePayment();
     if (paymentStatus == PAYMENT_STATUS.FAILURE) {
       setAlert("error", "Payment failed. Please try again.");
+      setIsCheckingOut(false);
       return;
     }
     const order = await createOrder(curStore, cartItems);
@@ -377,6 +380,7 @@ function ScanStore() {
                 color="primary"
                 onClick={checkout}
                 className="checkoutBtn"
+                disabled={cartItems.length == 0 || isCheckingOut}
               >
                 {showFooter
                   ? "Checkout"
