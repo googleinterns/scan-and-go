@@ -29,11 +29,23 @@ function ItemDetail({
   const [isRemoving, setIsRemoving] = useState<boolean>(false);
   const [isOverflow, setIsOverflow] = useState<boolean>(false);
   const [mediaCollapsed, setMediaCollapsed] = useState<boolean>(false);
+  const [minHeightMarginTop, setMinHeightMarginTop] = useState<number>(0);
 
   const theme = useTheme();
 
   const item = cartItem ? cartItem.item : emptyItem();
   const cornerRoundingRadius = "24px";
+
+  // Clamp minimum height for footer vh
+  const footerMinHeight = 180;
+  let footerPercentageHeight = 0.4;
+  if (
+    document.documentElement.clientHeight * footerPercentageHeight <
+    footerMinHeight
+  ) {
+    footerPercentageHeight =
+      footerMinHeight / document.documentElement.clientHeight;
+  }
 
   // Determine if is new item
   const isNewItem =
@@ -77,6 +89,17 @@ function ItemDetail({
     const contentDiv = document.getElementById("item-detail-description");
     if (contentDiv) setIsOverflow(checkContentOverflow(contentDiv));
     else setIsOverflow(false); // Cannot find content tag, no content to render
+    // Compute the margin required to offset minHeight for footer
+    const footerMarginOffset =
+      footerMinHeight -
+      document.documentElement.clientHeight * footerPercentageHeight;
+    if (footerMarginOffset > 0)
+      setMinHeightMarginTop(
+        Math.floor(
+          (100 * footerMarginOffset) / document.documentElement.clientHeight
+        )
+      );
+    else setMinHeightMarginTop(0);
   }, [cartItem]);
 
   return (
@@ -99,7 +122,7 @@ function ItemDetail({
       <div
         style={{
           width: "100vw",
-          height: "60vh",
+          height: `${Math.floor((1 - footerPercentageHeight) * 100)}vh`,
           overflow: "hidden",
           backgroundPosition: "center",
           backgroundSize: "cover",
@@ -140,8 +163,13 @@ function ItemDetail({
           style={{
             transition: "height 0.3s ease-out, margin-top 0.3s ease-out",
             width: "100%",
-            marginTop: mediaCollapsed ? "-50vh" : "0vh",
-            height: mediaCollapsed ? "90vh" : "40vh",
+            marginTop: mediaCollapsed
+              ? `-${90 - Math.floor(footerPercentageHeight * 100)}vh`
+              : "0vh",
+            height: mediaCollapsed
+              ? "90vh"
+              : `${Math.floor(footerPercentageHeight * 100)}vh`,
+            minHeight: "180px",
             backgroundColor: "#FFFFFF",
           }}
         >
