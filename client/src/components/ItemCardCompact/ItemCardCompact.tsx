@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { CartItem } from "src/interfaces";
 import { PRICE_FRACTION_DIGITS } from "src/constants";
 import { getSubtotalPrice } from "src/utils";
-import { Typography, Card, Grid, Divider } from "@material-ui/core";
+import { Typography, Paper, Grid, Divider } from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
+import EditIcon from "@material-ui/icons/Edit";
 
 function ItemCard({
   cartItem,
@@ -18,7 +19,8 @@ function ItemCard({
   const themeSpacing = theme.spacing(1);
 
   return (
-    <Card
+    <Paper
+      elevation={0}
       style={{
         marginTop: themeSpacing,
         cursor: selectActionCallback ? "pointer" : "default",
@@ -37,7 +39,10 @@ function ItemCard({
           </Grid>
         )}
         <Grid item xs={3}>
-          <Typography variant="body1">{cartItem.item.name}</Typography>
+          <Typography variant="body1">
+            <EditIcon fontSize="small" />
+            {cartItem.item.name}
+          </Typography>
         </Grid>
         <Grid item xs={2}>
           <Typography variant="body1">
@@ -53,7 +58,8 @@ function ItemCard({
           </Typography>
         </Grid>
       </Grid>
-    </Card>
+      <Divider />
+    </Paper>
   );
 }
 
