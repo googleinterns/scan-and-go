@@ -36,12 +36,12 @@ function ItemCard({
         <Grid item container style={{ height: "100%" }} direction="column">
           <Grid item xs container direction="column">
             <Grid item>
-              <Typography variant="body1" align="right">
+              <Typography variant="body2" align="right">
                 ea. ${cartItem.item.price.toFixed(PRICE_FRACTION_DIGITS)}
               </Typography>
             </Grid>
             <Grid item>
-              <Typography variant="body1" align="right">
+              <Typography variant="body2" align="right">
                 Subtotal: ${getSubtotalPrice(cartItem)}
               </Typography>
             </Grid>

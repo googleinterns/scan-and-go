@@ -40,14 +40,14 @@ function ItemCard({
             <p>Media</p>
           </Grid>
         )}
-        <Grid item xs={3}>
-          <Typography variant="body1">
-            {showEdit && <EditIcon fontSize="small" />}
-            {cartItem.item.name}
-          </Typography>
+        <Grid item xs={3} container direction="row" alignItems="center">
+          <Grid item>{showEdit && <EditIcon fontSize="small" />}</Grid>
+          <Grid item>
+            <Typography variant="body2">{cartItem.item.name}</Typography>
+          </Grid>
         </Grid>
         <Grid item xs={2}>
-          <Typography variant="body1">
+          <Typography variant="body2">
             ${cartItem.item.price.toFixed(PRICE_FRACTION_DIGITS)}
           </Typography>
         </Grid>
@@ -55,7 +55,7 @@ function ItemCard({
           <Typography variant="body1">${getSubtotalPrice(cartItem)}</Typography>
         </Grid>
         <Grid item xs={2}>
-          <Typography variant="body1" align="center">
+          <Typography variant="body2" align="center">
             {cartItem.quantity}
           </Typography>
         </Grid>

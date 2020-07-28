@@ -274,16 +274,18 @@ function ScanStore() {
                 <FormGroup row>
                   <FormControlLabel
                     control={<Switch onChange={toggleCart} color="primary" />}
-                    label="Compact View"
+                    label={
+                      <Typography variant="body2">Compact View</Typography>
+                    }
                   />
-                  <MuiThemeProvider theme={ErrorTheme}>
-                    <FormControlLabel
-                      control={
+                  <FormControlLabel
+                    control={
+                      <MuiThemeProvider theme={ErrorTheme}>
                         <Switch onChange={toggleDebug} color="secondary" />
-                      }
-                      label="Debug"
-                    />
-                  </MuiThemeProvider>
+                      </MuiThemeProvider>
+                    }
+                    label={<Typography variant="body2">Debug</Typography>}
+                  />
                 </FormGroup>
               }
             />
@@ -298,14 +300,18 @@ function ScanStore() {
               <FormControlLabel
                 checked={showDetail}
                 control={<Switch onChange={toggleDetail} color="primary" />}
-                label="Show Item Detail"
+                label={
+                  <Typography variant="body2">Show Item Detail</Typography>
+                }
               />,
               <FormControlLabel
                 checked={addDirect}
                 control={
                   <Switch onChange={toggleAddItemMode} color="primary" />
                 }
-                label="Add Item Directly"
+                label={
+                  <Typography variant="body2">Add Item Directly</Typography>
+                }
               />,
             ]}
             <Divider />
