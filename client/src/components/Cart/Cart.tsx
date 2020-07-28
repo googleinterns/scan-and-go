@@ -15,12 +15,14 @@ import ReceiptHeader from "src/components/ReceiptHeader";
 function Cart({
   contents,
   collapse,
+  editable,
   updateItemQuantity,
   itemPickerCallback,
   showMedia = true,
 }: {
   contents: CartItem[];
   collapse: boolean;
+  editable: boolean;
   updateItemQuantity?: (barcode: string, quantity: number) => void;
   itemPickerCallback?: (item: CartItem) => void;
   showMedia?: boolean;
@@ -40,6 +42,7 @@ function Cart({
           return collapse ? (
             <ItemCardCompact
               {...cardProps}
+              showEdit={editable}
               showMedia={false}
               selectActionCallback={
                 itemPickerCallback
