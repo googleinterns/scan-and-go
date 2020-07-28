@@ -8,6 +8,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { TEST_ORDER_NAME, RECEIPT_PAGE, TEST_ORDER_ID } from "src/constants";
 import * as Actions from "../Actions";
 import { AlertContext } from "src/contexts/AlertContext";
+import { emptyCartItem } from "src/interfaces";
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -25,14 +26,27 @@ it("ScanStore renders correctly", async () => {
   expect(tree).toMatchSnapshot();
 });
 
+it("ScanStore disables checkout if cart is empty", async () => {
+  await act(async () => {
+    const wrapper = Enzyme.mount(
+      <Router>
+        <ScanStore />
+      </Router>
+    );
+    const checkoutBtn = wrapper.find(".checkoutBtn").last();
+    expect(checkoutBtn.is("[disabled]")).toBe(true);
+  });
+});
+
 it("ScanStore redirects to Receipt and sets successs alert upon successful order", async () => {
   jest
     .spyOn(Actions, "createOrder")
-    .mockReturnValue(
+    .mockReturnValueOnce(
       new Promise((resolve, _) =>
         resolve({ name: TEST_ORDER_NAME, orderId: TEST_ORDER_ID })
       )
     );
+  jest.spyOn(Actions, "getCart").mockReturnValueOnce([emptyCartItem()]);
   const mockSetAlert = jest.fn();
   const mockAlertContext = {
     setAlert: mockSetAlert,
@@ -48,6 +62,7 @@ it("ScanStore redirects to Receipt and sets successs alert upon successful order
     );
     const checkoutBtn = wrapper.find(".checkoutBtn").last();
     checkoutBtn.simulate("click");
+    expect(checkoutBtn.is("[disabled]")).toBe(true);
   });
 
   const pushArgs = global.mockRedirectPush.mock.calls.pop();

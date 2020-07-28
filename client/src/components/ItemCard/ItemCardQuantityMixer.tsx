@@ -1,9 +1,8 @@
 import React from "react";
-import { Fab, Typography, Grid } from "@material-ui/core";
+import { Typography, Grid, Button } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
-import { useTheme, MuiThemeProvider } from "@material-ui/core/styles";
-import { InverseAppTheme } from "src/theme";
+import { useTheme } from "@material-ui/core/styles";
 
 function ItemCardQuantityMixer({
   quantity,
@@ -25,45 +24,57 @@ function ItemCardQuantityMixer({
   };
 
   return (
-    <MuiThemeProvider theme={InverseAppTheme}>
-      <Grid container direction="row" justify="flex-end">
-        <Grid item>
-          <Fab
-            color="secondary"
-            id="inc"
-            onClick={increaseCounter}
-            size="small"
-            disabled={disabled}
-          >
-            <AddIcon />
-          </Fab>
-        </Grid>
-        <Grid item>
-          <Typography
-            variant="h5"
-            align="center"
-            style={{
-              minWidth: "5vw",
-              marginLeft: theme.spacing(2),
-              marginRight: theme.spacing(2),
-            }}
-          >
-            {quantity}
-          </Typography>
-        </Grid>
-        <Grid item>
-          <Fab
-            color="secondary"
-            id="dec"
-            onClick={decreaseCounter}
-            size="small"
-            disabled={disabled}
-          >
-            <RemoveIcon />
-          </Fab>
-        </Grid>
+    <Grid container direction="row" justify="flex-end" alignItems="center">
+      <Grid item>
+        <Button
+          color="secondary"
+          id="dec"
+          onClick={decreaseCounter}
+          size="small"
+          disabled={disabled}
+          style={{
+            borderRadius: 50,
+            color: "black",
+            padding: 0,
+            minWidth: "fit-content",
+          }}
+          variant="outlined"
+        >
+          <RemoveIcon />
+        </Button>
       </Grid>
-    </MuiThemeProvider>
+      <Grid item>
+        <Typography
+          variant="h5"
+          align="center"
+          style={{
+            minWidth: "5vw",
+            marginLeft: theme.spacing(2),
+            marginRight: theme.spacing(2),
+          }}
+        >
+          {quantity}
+        </Typography>
+      </Grid>
+      <Grid item>
+        <Button
+          color="secondary"
+          id="inc"
+          onClick={increaseCounter}
+          size="small"
+          disabled={disabled}
+          style={{
+            borderRadius: 50,
+            color: "black",
+            padding: 0,
+            minWidth: "fit-content",
+          }}
+          variant="outlined"
+        >
+          <AddIcon />
+        </Button>
+      </Grid>
+    </Grid>
   );
 }
 
