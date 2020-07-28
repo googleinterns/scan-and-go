@@ -348,14 +348,18 @@ function ScanStore() {
         footer={
           <div className="ScanStore-footer">
             <Grid item container direction="row" justify="center">
-              <div
+              <Grid
+                item
+                xs
+                container
+                justify="center"
                 onClick={() => setShowFooter(!showFooter)}
-                style={{ zIndex: 1000, marginTop: "-36px" }}
+                style={{ zIndex: 1000 }}
               >
-                <Button>
+                <Button fullWidth={true}>
                   {showFooter ? <ExpandMoreIcon /> : <ExpandLessIcon />}
                 </Button>
-              </div>
+              </Grid>
             </Grid>
             <Collapse in={showFooter}>
               <Grid item>
