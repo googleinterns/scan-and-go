@@ -5,7 +5,7 @@ import Cart from "src/components/Cart";
 import { urlGetParam, parseOrderName } from "src/utils";
 import { Button, Typography, Grid, Collapse } from "@material-ui/core";
 import QRCode from "qrcode";
-import { HOME_PAGE, TEST_STORE_MERCHANT_ID } from "src/constants";
+import { TEST_STORE_MERCHANT_ID, SCALING_FACTOR } from "src/constants";
 import "src/css/Receipt.css";
 import { CartItem } from "src/interfaces";
 import Page from "src/pages/Page";
@@ -24,7 +24,9 @@ const Receipt: React.FC = () => {
   const [orderTimestamp, setOrderTimestamp] = useState("");
   const [storeId, setStoreId] = useState("");
   const qrCodeDiv: React.RefObject<HTMLDivElement> = React.createRef();
+  const orderRef: React.RefObject<HTMLDivElement> = React.createRef();
   const [showOrder, setShowOrder] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { setAlert } = useContext(AlertContext);
 
   useEffect(() => {
@@ -32,33 +34,26 @@ const Receipt: React.FC = () => {
       setContents(res.contents);
       setOrderTimestamp(res.timestamp);
       setStoreId(res.storeId);
+      setIsLoading(false);
     });
   }, []);
 
   useEffect(() => {
-    if (contents) {
+    if (!isLoading) {
       generateQR();
     }
-  }, [contents]);
-
-  useEffect(() => {
-    generateQR();
-  }, [showOrder]);
+  }, [isLoading]);
 
   const generateQR = () => {
     const text = `$Order: ${orderName}.\n Contents: ${contents}`;
 
-    // Calculate QR code width to fit within screen (otherwise it defaults to a fixed size),
-    // taking into account space needed for text below QR code.
+    // Calculate maximum possible QR code width to fit within screen
+    // (otherwise it defaults to a fixed size)
     if (qrCodeDiv.current) {
-      const divHeight =
-        0.8 *
-        parseInt(
-          window
-            .getComputedStyle(qrCodeDiv.current)!
-            .getPropertyValue("height"),
-          10
-        );
+      const divHeight = parseInt(
+        window.getComputedStyle(qrCodeDiv.current)!.getPropertyValue("height"),
+        10
+      );
       const divWidth = parseInt(
         window.getComputedStyle(qrCodeDiv.current)!.getPropertyValue("width"),
         10
@@ -75,6 +70,35 @@ const Receipt: React.FC = () => {
           }
         }
       );
+    }
+  };
+
+  const enlargeQrCode = () => {
+    const canvas = document.getElementById("canvas");
+    if (canvas) {
+      canvas.style.height =
+        (parseInt(canvas.style.height) * SCALING_FACTOR).toString() + "px";
+      canvas.style.width =
+        (parseInt(canvas.style.width) * SCALING_FACTOR).toString() + "px";
+    }
+  };
+
+  const shrinkQrCode = () => {
+    const canvas = document.getElementById("canvas");
+    if (canvas) {
+      canvas.style.height =
+        (parseInt(canvas.style.height) / SCALING_FACTOR).toString() + "px";
+      canvas.style.width =
+        (parseInt(canvas.style.width) / SCALING_FACTOR).toString() + "px";
+    }
+  };
+
+  const scrollToOrder = () => {
+    if (orderRef.current) {
+      orderRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
     }
   };
 
@@ -102,9 +126,14 @@ const Receipt: React.FC = () => {
           <div className="qrCode" ref={qrCodeDiv}>
             <canvas id="canvas" />
           </div>
-          <div className="flex" style={{ flex: showOrder ? 3 : "none" }}>
-            <Grid onClick={() => setShowOrder(!showOrder)}>
-              <Button fullWidth={true} style={{ textTransform: "none" }}>
+          <div ref={orderRef}>
+            <Grid>
+              <Button
+                onClick={() => setShowOrder(!showOrder)}
+                disabled={isLoading}
+                fullWidth={true}
+                style={{ textTransform: "none" }}
+              >
                 {showOrder ? (
                   <div>
                     <ExpandLessIcon />
@@ -122,7 +151,13 @@ const Receipt: React.FC = () => {
                 )}
               </Button>
             </Grid>
-            <Collapse in={showOrder}>
+            <Collapse
+              timeout={0}
+              in={showOrder}
+              onEntered={scrollToOrder}
+              onEnter={shrinkQrCode}
+              onExit={enlargeQrCode}
+            >
               <div className="order">
                 <div className="details">
                   {contents && (

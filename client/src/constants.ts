@@ -22,6 +22,7 @@ export const BARCODE_PLACEHOLDER = "...barcode";
 export const ID_PLACEHOLDER = "...id";
 export const EMPTY_PLACEHOLDER = "";
 export const TITLE_TEXT = "ScanAndGo";
+export const SCALING_FACTOR = 3;
 // HTML DOM Handles
 export const GOOGLE_MAP_PLACEHOLDER_ID = "mapPlaceholder";
 export const GOOGLE_PLACES_SCRIPT_ID = "mapPlacesAPIScript";
