@@ -42,7 +42,13 @@ import {
   emptyMediaResponse,
 } from "src/interfaces";
 import { urlGetParam } from "src/utils";
-import { getStoreInfo, getItem, createOrder } from "src/pages/Actions";
+import {
+  getStoreInfo,
+  getItem,
+  createOrder,
+  setCart,
+  getCart,
+} from "src/pages/Actions";
 import {
   BARCODE_PLACEHOLDER,
   PRICE_FRACTION_DIGITS,
@@ -58,15 +64,21 @@ declare const window: any;
 const debugImg = true;
 
 function ScanStore() {
-  const storeID = urlGetParam("id");
-  const merchantID = urlGetParam("mid");
+  const storeID = urlGetParam("id") || "";
+  const merchantID = urlGetParam("mid") || "";
 
   const theme = useTheme();
   const history = useHistory();
 
   const [curStore, setCurStore] = useState<Store>(emptyStore());
   const [curItem, setCurItem] = useState<CartItem>();
-  const [cartItems, updateCart] = useState<CartItem[]>([]);
+  const [cartItems, setCartItems] = useState<CartItem[]>(
+    getCart(merchantID, storeID)
+  );
+  const updateCart = (newCartItems: CartItem[]) => {
+    setCartItems(newCartItems);
+    setCart(newCartItems, merchantID, storeID);
+  };
   const [cartTotal, setCartTotal] = useState<number>(0.0);
   const [loadingItem, setLoadingItem] = useState<boolean>(false);
   const [showCompactCart, setShowCompactCart] = useState<boolean>(false);
@@ -79,6 +91,7 @@ function ScanStore() {
   const [addDirect, setAddDirect] = useState<boolean>(false);
   const [removeBarcode, setRemoveBarcode] = useState<string>("");
   const [debugBarcode, setDebugBarcode] = useState<string>("");
+  const [isCheckingOut, setIsCheckingOut] = useState<boolean>(false);
   const { setAlert } = useContext(AlertContext);
 
   // Entry point for user scanning barcode
@@ -222,9 +235,11 @@ function ScanStore() {
   };
 
   const checkout = async () => {
+    setIsCheckingOut(true);
     const paymentStatus = makePayment();
     if (paymentStatus == PAYMENT_STATUS.FAILURE) {
       setAlert("error", "Payment failed. Please try again.");
+      setIsCheckingOut(false);
       return;
     }
     const order = await createOrder(curStore, cartItems);
@@ -316,20 +331,38 @@ function ScanStore() {
                 }}
               />
             </Grid>
-            <Grid item>{loadingItem && <PlaceholderCart length={1} />}</Grid>
+            {loadingItem && (
+              <Grid item>
+                <PlaceholderCart length={1} />
+              </Grid>
+            )}
+            {cartItems.length == 0 && !loadingItem && (
+              <Grid container item xs direction="column" justify="center">
+                <Typography variant="subtitle2" align="center">
+                  No items in cart.
+                </Typography>
+                <Typography variant="subtitle2" align="center">
+                  Scan the barcode to shop.
+                </Typography>
+              </Grid>
+            )}
           </Grid>
         }
         footer={
           <div className="ScanStore-footer">
             <Grid item container direction="row" justify="center">
-              <div
+              <Grid
+                item
+                xs
+                container
+                justify="center"
                 onClick={() => setShowFooter(!showFooter)}
-                style={{ zIndex: 1000, marginTop: "-36px" }}
+                style={{ zIndex: 1000 }}
               >
-                <Button>
+                <Button fullWidth={true}>
                   {showFooter ? <ExpandMoreIcon /> : <ExpandLessIcon />}
                 </Button>
-              </div>
+              </Grid>
             </Grid>
             <Collapse in={showFooter}>
               <Grid item>
@@ -347,6 +380,7 @@ function ScanStore() {
                 color="primary"
                 onClick={checkout}
                 className="checkoutBtn"
+                disabled={cartItems.length == 0 || isCheckingOut}
               >
                 {showFooter
                   ? "Checkout"
