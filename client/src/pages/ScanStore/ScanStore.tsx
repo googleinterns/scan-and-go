@@ -7,6 +7,7 @@ import CartHeader from "src/components/CartHeader";
 import TextInputField from "src/components/TextInputField";
 import PlaceholderCart from "src/components/PlaceholderCart";
 import CartSummary from "src/components/CartSummary";
+import MediaInfoCard from "src/components/MediaInfoCard";
 import Page from "src/pages/Page";
 import ItemDetail from "src/components/ItemDetail";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
@@ -27,6 +28,7 @@ import {
   Dialog,
   DialogActions,
   DialogTitle,
+  DialogContent,
 } from "@material-ui/core";
 import { MuiThemeProvider, useTheme } from "@material-ui/core/styles";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
@@ -35,6 +37,7 @@ import PaymentIcon from "@material-ui/icons/Payment";
 import AddIcon from "@material-ui/icons/Add";
 import {
   Item,
+  emptyItem,
   CartItem,
   Store,
   emptyStore,
@@ -48,9 +51,10 @@ import {
   PRICE_FRACTION_DIGITS,
   RECEIPT_PAGE,
   PAYMENT_STATUS,
+  PLACEHOLDER_ITEM_MEDIA,
 } from "src/constants";
 import { microapps, isWeb, isDebug } from "src/config";
-import { ErrorTheme } from "src/theme";
+import { ErrorTheme, NeutralAppTheme } from "src/theme";
 import { AlertContext } from "src/contexts/AlertContext";
 declare const window: any;
 
@@ -77,7 +81,7 @@ function ScanStore() {
     false
   );
   const [addDirect, setAddDirect] = useState<boolean>(false);
-  const [removeBarcode, setRemoveBarcode] = useState<string>("");
+  const [removeItem, setRemoveItem] = useState<Item>(emptyItem());
   const [debugBarcode, setDebugBarcode] = useState<string>("");
   const { setAlert } = useContext(AlertContext);
 
@@ -166,12 +170,16 @@ function ScanStore() {
   };
 
   const dismissRemoveConfirmation = () => {
-    setRemoveBarcode("");
     setShowRemoveConfirmation(false);
   };
 
   const raiseRemoveConfirmation = (barcode: string) => {
-    setRemoveBarcode(barcode);
+    // Find the item information for what is to be deleted
+    const itemToRemove = cartItems
+      .map((cartItem) => cartItem.item)
+      .find((item) => item.barcode === barcode);
+    if (!itemToRemove) return; // Should not be the case here
+    setRemoveItem(itemToRemove);
     setShowRemoveConfirmation(true);
   };
 
@@ -381,20 +389,29 @@ function ScanStore() {
       </Slide>
       <Dialog open={showRemoveConfirmation} onClose={dismissRemoveConfirmation}>
         <DialogTitle>Confirm item removal?</DialogTitle>
+        <DialogContent style={{ minWidth: "50vw" }}>
+          <MediaInfoCard
+            elevation={2}
+            media={removeItem.media ? removeItem.media : PLACEHOLDER_ITEM_MEDIA}
+            mediaVariant="rounded"
+            title={<Typography variant="body1">{removeItem.name}</Typography>}
+            content={<Typography variant="body2">{removeItem.unit}</Typography>}
+          />
+        </DialogContent>
         <DialogActions>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={dismissRemoveConfirmation}
-          >
-            Cancel
-          </Button>
-          <MuiThemeProvider theme={ErrorTheme}>
+          <MuiThemeProvider theme={NeutralAppTheme}>
             <Button
-              variant="contained"
-              color="secondary"
+              variant="text"
+              color="primary"
+              onClick={dismissRemoveConfirmation}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="text"
+              color="primary"
               onClick={() => {
-                confirmDeleteCallback(removeBarcode);
+                confirmDeleteCallback(removeItem.barcode);
                 dismissRemoveConfirmation();
               }}
             >

@@ -6,6 +6,8 @@ const SECONDARY_COLOR = "#909090";
 const SUCCESS_COLOR = "#00E676";
 const ERROR_COLOR = "#F44336";
 
+const NEUTRAL_PRIMARY_COLOR = "#2196f3";
+
 const WHITE_TEXT_COLOR = "white";
 const WHITE_BACKGROUND_COLOR = "#FFFFFF";
 
@@ -41,6 +43,15 @@ export const InverseAppTheme = createMuiTheme({
     secondary: {
       main: WHITE_BACKGROUND_COLOR,
       contrastText: SECONDARY_COLOR,
+    },
+  },
+});
+
+export const NeutralAppTheme = createMuiTheme({
+  palette: {
+    primary: {
+      main: NEUTRAL_PRIMARY_COLOR,
+      contrastText: WHITE_TEXT_COLOR,
     },
   },
 });
