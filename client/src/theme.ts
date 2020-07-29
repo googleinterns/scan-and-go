@@ -85,15 +85,6 @@ export const NeutralAppTheme = createMuiTheme(
   })
 );
 
-export const NeutralAppTheme = createMuiTheme({
-  palette: {
-    primary: {
-      main: NEUTRAL_PRIMARY_COLOR,
-      contrastText: WHITE_TEXT_COLOR,
-    },
-  },
-});
-
 // Moving 'success' and 'error' into primary/secondary to allow
 // usage with majority of components (typescript + @material-ui constrain)
 export const ErrorTheme = createMuiTheme(
