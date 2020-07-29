@@ -178,7 +178,12 @@ function ScanStore() {
     const itemToRemove = cartItems
       .map((cartItem) => cartItem.item)
       .find((item) => item.barcode === barcode);
-    if (!itemToRemove) return; // Should not be the case here
+    // We should always be able to find an item to remove
+    // in cartItems, but the following check is to avoid
+    // compile-time errors in Typescript.
+    // null value cannot be passed to setRemoveItem state update
+    // since we did not declare it so. (rightfully shouldn't be the case)
+    if (!itemToRemove) return;
     setRemoveItem(itemToRemove);
     setShowRemoveConfirmation(true);
   };
@@ -394,10 +399,10 @@ function ScanStore() {
         </div>
       </Slide>
       <Dialog open={showRemoveConfirmation} onClose={dismissRemoveConfirmation}>
-        <DialogTitle>Confirm item removal?</DialogTitle>
+        <DialogTitle>Do you want to remove item from cart?</DialogTitle>
         <DialogContent style={{ minWidth: "50vw" }}>
           <MediaInfoCard
-            elevation={2}
+            elevation={0}
             media={removeItem.media ? removeItem.media : PLACEHOLDER_ITEM_MEDIA}
             mediaVariant="rounded"
             title={<Typography variant="body1">{removeItem.name}</Typography>}

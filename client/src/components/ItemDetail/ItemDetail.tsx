@@ -13,6 +13,7 @@ import {
   clampTextLines,
   parseRawTextBreakpoints,
 } from "src/utils";
+import { themeConfig } from "src/theme";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
@@ -31,12 +32,11 @@ function ItemDetail({
   const [isRemoving, setIsRemoving] = useState<boolean>(false);
   const [isOverflow, setIsOverflow] = useState<boolean>(false);
   const [mediaCollapsed, setMediaCollapsed] = useState<boolean>(false);
-  const [minHeightMarginTop, setMinHeightMarginTop] = useState<number>(0);
 
   const theme = useTheme();
 
   const item = cartItem ? cartItem.item : emptyItem();
-  const cornerRoundingRadius = "24px";
+  const cornerRoundingRadius = themeConfig.cornerRoundingRadius;
 
   // Clamp minimum height for footer vh
   const footerMinHeight = 180;
@@ -90,18 +90,7 @@ function ItemDetail({
     // Determine whether we should render 'show more' expand button
     const contentDiv = document.getElementById("item-detail-description");
     if (contentDiv) setIsOverflow(checkContentOverflow(contentDiv));
-    else setIsOverflow(false); // Cannot find content tag, no content to render
-    // Compute the margin required to offset minHeight for footer
-    const footerMarginOffset =
-      footerMinHeight -
-      document.documentElement.clientHeight * footerPercentageHeight;
-    if (footerMarginOffset > 0)
-      setMinHeightMarginTop(
-        Math.floor(
-          (100 * footerMarginOffset) / document.documentElement.clientHeight
-        )
-      );
-    else setMinHeightMarginTop(0);
+    else setIsOverflow(false);
   }, [cartItem]);
 
   return (
@@ -155,8 +144,15 @@ function ItemDetail({
               style={{ height: `${cornerRoundingRadius}` }}
               onClick={() => setMediaCollapsed(!mediaCollapsed)}
             >
-              {mediaCollapsed ? "Show Less" : "Show More"}
-              {mediaCollapsed ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+              {mediaCollapsed ? (
+                <>
+                  Show Less <ExpandMoreIcon />
+                </>
+              ) : (
+                <>
+                  Show More <ExpandLessIcon />
+                </>
+              )}
             </Button>
           )}
         </div>

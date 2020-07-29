@@ -7,7 +7,8 @@ const SECONDARY_COLOR = "#909090";
 const SUCCESS_COLOR = "#00E676";
 const ERROR_COLOR = "#F44336";
 
-const NEUTRAL_PRIMARY_COLOR = "#2196f3";
+const NEUTRAL_PRIMARY_COLOR = "#000000";
+const NEUTRAL_PRIMARY_COLOR_BLUE = "#2196f3";
 
 const WHITE_TEXT_COLOR = "white";
 const WHITE_BACKGROUND_COLOR = "#FFFFFF";
@@ -84,6 +85,15 @@ export const NeutralAppTheme = createMuiTheme(
   })
 );
 
+export const NeutralAppTheme = createMuiTheme({
+  palette: {
+    primary: {
+      main: NEUTRAL_PRIMARY_COLOR,
+      contrastText: WHITE_TEXT_COLOR,
+    },
+  },
+});
+
 // Moving 'success' and 'error' into primary/secondary to allow
 // usage with majority of components (typescript + @material-ui constrain)
 export const ErrorTheme = createMuiTheme(
@@ -122,6 +132,7 @@ export const themeConfig = {
   max_card_height: 120,
   default_card_img_height: "20vw",
   default_card_img_minHeight: "80px",
+  cornerRoundingRadius: "24px",
 };
 
 export default responsiveFontSizes(AppTheme);
