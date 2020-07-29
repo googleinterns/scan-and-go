@@ -11,7 +11,6 @@ import {
   parseRawTextNewlines,
   checkContentOverflow,
   clampTextLines,
-  parseRawTextBreakpoints,
 } from "src/utils";
 import { themeConfig } from "src/theme";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
