@@ -197,6 +197,16 @@ export const parseRawTextNewlines = (text: string): string[] => {
   return text.split("%0A"); // %0A URL encoded \n newline character
 };
 
+// Replaces encoded newlines with breakpoints
+export const parseRawTextBreakpoints = (text: string): string => {
+  const newlineDelims = ["%0A", "\n"]; // URL encoded \n as well as raw \n
+  let htmlString = text;
+  for (const delim of newlineDelims) {
+    htmlString = htmlString.replace(delim, "<br>");
+  }
+  return htmlString;
+};
+
 // Returns formatted address seperated into lines
 export const parseRawAddressNewlines = (addr: string): string[] => {
   return addr.split(",");
@@ -282,4 +292,15 @@ export const parseOrderName = (orderName: string) => {
 // Determine if a HTMLElement content has overflowed
 export const checkContentOverflow = (ele: HTMLElement) => {
   return ele.clientHeight < ele.scrollHeight;
+};
+
+// Export a style object for clamping text lines
+export const clampTextLines = (maxLines: number): React.CSSProperties => {
+  return {
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    WebkitLineClamp: maxLines,
+    WebkitBoxOrient: "vertical",
+    display: "-webkit-box",
+  };
 };

@@ -10,6 +10,8 @@ import {
   getSubtotalPrice,
   parseRawTextNewlines,
   checkContentOverflow,
+  clampTextLines,
+  parseRawTextBreakpoints,
 } from "src/utils";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
@@ -186,32 +188,42 @@ function ItemDetail({
             }}
           >
             <Grid item>
-              <Typography variant="h4">
+              <Typography variant="h3">
                 {cartItem ? item.name : "Nothing to see here..."}
               </Typography>
               {item.unit && (
-                <Typography variant="body2">{item.unit}</Typography>
+                <Typography variant="subtitle2" color="secondary">
+                  {item.unit}
+                </Typography>
               )}
             </Grid>
             <Grid
               id="item-detail-description"
               item
               xs
-              style={{ overflowY: "hidden", overflowX: "hidden" }}
+              style={{
+                overflowY: mediaCollapsed ? "scroll" : "hidden",
+                overflowX: "hidden",
+              }}
             >
-              {item.detail &&
-                parseRawTextNewlines(item.detail).map(
-                  (line: string, i: number) => (
-                    <Typography
-                      key={`detail-${item.barcode}-${i}`}
-                      variant="subtitle2"
-                    >
+              {item.detail && (
+                <Typography variant="body1">
+                  {parseRawTextNewlines(item.detail).map((line: string) => (
+                    <>
                       {line}
-                    </Typography>
-                  )
-                )}
+                      <br />
+                    </>
+                  ))}
+                </Typography>
+              )}
             </Grid>
-            <Grid item container direction="row" justify="space-between">
+            <Grid
+              item
+              style={{ marginTop: theme.spacing(1) }}
+              container
+              direction="row"
+              justify="space-between"
+            >
               <Grid item style={{ marginBottom: theme.spacing(2) }}>
                 <ItemCardQuantityMixer
                   quantity={curAmount ? curAmount : 0}
@@ -222,12 +234,12 @@ function ItemDetail({
               <Grid item xs>
                 <Grid item xs container direction="column">
                   <Grid item>
-                    <Typography variant="body1" align="right">
+                    <Typography variant="body2" align="right">
                       ea. ${item.price.toFixed(PRICE_FRACTION_DIGITS)}
                     </Typography>
                   </Grid>
                   <Grid item>
-                    <Typography variant="body1" align="right">
+                    <Typography variant="h6" align="right">
                       Subtotal: $
                       {cartItem
                         ? getSubtotalPrice({ item: item, quantity: curAmount })

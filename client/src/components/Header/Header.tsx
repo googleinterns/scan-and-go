@@ -44,7 +44,7 @@ function Header({
           container
           direction="row"
           justify="space-between"
-          alignItems="flex-start"
+          alignItems="stretch"
         >
           <Grid item xs={button ? 8 : 12}>
             <Grid container item xs={12} direction="row">
@@ -74,7 +74,7 @@ function Header({
             </Grid>
           )}
           {subtitle && (
-            <Grid item xs={12}>
+            <Grid style={{ marginTop: theme.spacing(1) }} item xs={12}>
               {subtitle}
             </Grid>
           )}

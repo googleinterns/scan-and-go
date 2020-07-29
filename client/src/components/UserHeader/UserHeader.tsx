@@ -27,7 +27,7 @@ function UserHeader({
       {user && (
         <Header
           title={
-            <Typography variant="h4">
+            <Typography variant="h3" noWrap={true}>
               {user.name ? "Hey " : ""}
               <Box display="inline" fontWeight="fontWeightBold">
                 {user.name ? user.name : DEFAULT_USER_HEADER_WELCOME}
@@ -37,10 +37,10 @@ function UserHeader({
           }
           subtitle={
             <div>
-              <Typography variant="subtitle2">
+              <Typography variant="subtitle2" color="secondary">
                 Good {getDayPeriod()}{" "}
               </Typography>
-              <Typography variant="subtitle2">
+              <Typography variant="subtitle2" color="secondary">
                 {DEFAULT_USER_HEADER_SUBTITLE}
               </Typography>
             </div>
@@ -54,7 +54,9 @@ function UserHeader({
                   color="primary"
                   startIcon={<CropFreeIcon />}
                 >
-                  Store QR
+                  <Typography variant="body2" noWrap={true}>
+                    Store QR
+                  </Typography>
                 </Button>
               }
               resultCallback={scanStoreQRCallback}
