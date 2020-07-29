@@ -52,7 +52,9 @@ function ItemCard({
           </Typography>
         </Grid>
         <Grid item xs={2}>
-          <Typography variant="body1">${getSubtotalPrice(cartItem)}</Typography>
+          <Typography variant="subtitle2">
+            ${getSubtotalPrice(cartItem)}
+          </Typography>
         </Grid>
         <Grid item xs={2}>
           <Typography variant="body2" align="center">

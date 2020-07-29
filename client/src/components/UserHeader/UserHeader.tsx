@@ -37,10 +37,10 @@ function UserHeader({
           }
           subtitle={
             <div>
-              <Typography variant="subtitle2" color="secondary">
+              <Typography variant="subtitle2" color="secondary" noWrap={true}>
                 Good {getDayPeriod()}{" "}
               </Typography>
-              <Typography variant="subtitle2" color="secondary">
+              <Typography variant="subtitle2" color="secondary" noWrap={true}>
                 {DEFAULT_USER_HEADER_SUBTITLE}
               </Typography>
             </div>
