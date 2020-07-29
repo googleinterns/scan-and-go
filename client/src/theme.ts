@@ -47,16 +47,14 @@ export const ErrorTheme = createMuiTheme({
   },
 });
 
-// Inverse of ErrorTheme with text-color and backgrouund color inverted
-export const InverseErrorTheme = createMuiTheme({
+// Theme for store status text
+export const StoreStatusTheme = createMuiTheme({
   palette: {
     primary: {
-      main: WHITE_BACKGROUND_COLOR,
-      contrastText: SUCCESS_COLOR,
+      main: "#0D652D",
     },
     secondary: {
-      main: WHITE_BACKGROUND_COLOR,
-      contrastText: ERROR_COLOR,
+      main: "#870101",
     },
   },
 });

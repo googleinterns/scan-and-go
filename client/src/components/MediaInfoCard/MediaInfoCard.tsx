@@ -47,8 +47,8 @@ function MediaInfoCard({
       )}
       className={placeholder ? "animate-flicker" : undefined}
     >
-      <Grid container>
-        <Grid item style={{ marginRight: themeSpacing }}>
+      <Grid container wrap="nowrap">
+        <Grid item>
           <InfoCardMedia
             media={media}
             onClick={mediaCallback}
@@ -57,10 +57,30 @@ function MediaInfoCard({
             placeholder={placeholder}
           />
         </Grid>
-        <Grid item xs container direction="row">
-          <Grid item xs container direction="column" align-items="stretch">
-            <Grid item>{title}</Grid>
-            <Grid item xs style={{ overflow: "scroll" }}>
+        <Grid
+          item
+          xs
+          container
+          direction="row"
+          style={{ maxWidth: "100%", overflowX: "hidden" }}
+        >
+          <Grid
+            item
+            xs
+            container
+            direction="column"
+            style={{ maxWidth: "100%" }}
+            align-items="stretch"
+          >
+            <Grid item style={{ maxWidth: "100%" }}>
+              {title}
+            </Grid>
+            <Grid
+              container
+              item
+              xs
+              style={{ maxWidth: "100%", overflow: "hidden" }}
+            >
               {content}
             </Grid>
           </Grid>
