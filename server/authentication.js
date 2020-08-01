@@ -4,7 +4,7 @@ const {
   HTTP_UNAUTHORIZED,
   IPv4_LOOPBACK,
   IPv6_LOOPBACK,
-  GAE_PRIVATE_IP,
+  GAE_PRIVATE_IP_admissible,
 } = require("./constants");
 
 const client = jwksClient({
@@ -51,6 +51,8 @@ const authCron = (req, res, next) => {
   // client requests external to AppEngine. Therefore, we can use
   // this check to verify that we are calling an endpoint from CronJob
   if (req.header("X-Appengine-Cron") !== "true") {
+    console.error("Unauthorized Sync w headers:");
+    console.error(req.headers);
     return res.sendStatus(HTTP_UNAUTHORIZED);
   }
   // Furthermore, requests from CronJob are send from the IP 10.0.0.1
@@ -58,24 +60,30 @@ const authCron = (req, res, next) => {
   // We can make a further check here to be sure requester is CronJob
   // ::1 is for local IPv6 loopback address when debugging using curl
   if (
-    req.connection.remoteAddress !== IPv6_LOOPBACK &&
-    req.connection.remoteAddress !== IPv4_LOOPBACK &&
-    req.connection.remoteAddress !== GAE_PRIVATE_IP
+    req.connection.remoteAddress === IPv6_LOOPBACK ||
+    req.connection.remoteAddress === IPv4_LOOPBACK ||
+    GAE_PRIVATE_IP_admissible.includes(req.connection.remoteAddress)
   ) {
+    return next();
+  } else {
+    console.error("Unauthorized Sync incorrect IP:");
+    console.error(req.connection.remoteAddress);
     return res.sendStatus(HTTP_UNAUTHORIZED);
   }
-  return next();
 };
 
 const authDebug = (req, res, next) => {
   // Ensure we protect endpoints behind a local config
   if (
-    req.connection.remoteAddress !== IPv6_LOOPBACK &&
-    req.connection.remoteAddress !== IPv4_LOOPBACK
+    req.connection.remoteAddress === IPv6_LOOPBACK ||
+    req.connection.remoteAddress === IPv4_LOOPBACK
   ) {
+    return next();
+  } else {
+    console.error("Unauthorized Sync incorrect IP:");
+    console.error(req.connection.remoteAddress);
     return res.sendStatus(HTTP_UNAUTHORIZED);
   }
-  return next();
 };
 
 module.exports = {

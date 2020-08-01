@@ -2,3 +2,6 @@ dispatch:
   # Forward requests to */api to our backend service
   - url: "*/api/*"
     service: api
+  # Configure cronjob endpoint /ingest/sync to backend
+  - url: "*/ingest/sync"
+    service: api
