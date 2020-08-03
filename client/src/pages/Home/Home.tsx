@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { withRouter, useHistory } from "react-router-dom";
 import StoreList from "src/components/StoreList";
-import TextInputField from "src/components/TextInputField";
 import UserHeader from "src/components/UserHeader";
 import DebugBar from "./DebugBar";
 import PlaceholderStoreList from "src/components/PlaceholderStoreList";
@@ -9,10 +8,8 @@ import IconSearchBar from "src/components/IconSearchBar";
 import LocationOnIcon from "@material-ui/icons/LocationOn";
 import LocationOffIcon from "@material-ui/icons/LocationOff";
 import { useTheme } from "@material-ui/core/styles";
-import { SCANSTORE_PAGE } from "src/constants";
-import { User, emptyUser, Store, GMapPlace, GeoLocation } from "src/interfaces";
+import { Store, GMapPlace, GeoLocation } from "src/interfaces";
 import {
-  getUserInfo,
   getGeoLocation,
   getStoresByLocation,
   getNearbyPlacesTest,
@@ -25,8 +22,7 @@ import { parseUrlParam } from "src/utils";
 import { AuthContext } from "src/contexts/AuthContext";
 
 function Home(props: any) {
-  const { user, setUser } = useContext(AuthContext);
-  const [userid, setUserid] = useState("");
+  const { user } = useContext(AuthContext);
   const [stores, setStores] = useState<Store[]>([]);
   const [loadingStores, setLoadingStores] = useState<boolean>(false);
   const [testPlaces, setTestPlaces] = useState<GMapPlace[]>([]);
@@ -119,12 +115,6 @@ function Home(props: any) {
   }, [curGeoLocation]);
 
   useEffect(() => {
-    if (userid) {
-      getUserInfo(userid).then((res) => setUser(res));
-    }
-  }, [userid]);
-
-  useEffect(() => {
     //TODO(#127): Update when resolved and remove testPlaces/placeStores
     //            when functionality is built into backend server /store/list
     setPlaceStores(testPlaces.map((place) => transformGMapPlaceToStore(place)));
@@ -132,7 +122,6 @@ function Home(props: any) {
 
   return (
     <div className="Home">
-      {isDebug && <TextInputField text={userid} setState={setUserid} />}
       <UserHeader user={user} scanStoreQRCallback={scanStoreQRCallback} />
       {isDebug && (
         <DebugBar storesCallback={setStores} placesCallback={setTestPlaces} />
