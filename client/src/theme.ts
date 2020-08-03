@@ -6,6 +6,9 @@ const SECONDARY_COLOR = "#909090";
 const SUCCESS_COLOR = "#00E676";
 const ERROR_COLOR = "#F44336";
 
+const NEUTRAL_PRIMARY_COLOR = "#000000";
+const NEUTRAL_PRIMARY_COLOR_BLUE = "#2196f3";
+
 const WHITE_TEXT_COLOR = "white";
 const WHITE_BACKGROUND_COLOR = "#FFFFFF";
 
@@ -28,6 +31,28 @@ const AppTheme = createMuiTheme({
     },
     subtitle2: {
       color: SECONDARY_COLOR,
+    },
+  },
+});
+
+export const InverseAppTheme = createMuiTheme({
+  palette: {
+    primary: {
+      main: WHITE_BACKGROUND_COLOR,
+      contrastText: PRIMARY_COLOR,
+    },
+    secondary: {
+      main: WHITE_BACKGROUND_COLOR,
+      contrastText: SECONDARY_COLOR,
+    },
+  },
+});
+
+export const NeutralAppTheme = createMuiTheme({
+  palette: {
+    primary: {
+      main: NEUTRAL_PRIMARY_COLOR,
+      contrastText: WHITE_TEXT_COLOR,
     },
   },
 });
@@ -65,6 +90,7 @@ export const InverseErrorTheme = createMuiTheme({
 export const themeConfig = {
   max_card_height: 120,
   default_card_img_height: "20vw",
+  cornerRoundingRadius: "24px",
 };
 
 export default responsiveFontSizes(AppTheme);
