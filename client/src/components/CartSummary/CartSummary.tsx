@@ -38,28 +38,24 @@ function CartSummary({
     <div className="CartSummary">
       <Grid container direction="row" justify="flex-end">
         <Grid item style={{ marginRight: theme.spacing(4) }}>
-          <Typography variant="subtitle1" align="right">
+          <Typography variant="body2" align="right">
             Subtotal:
           </Typography>
-          <Typography variant="subtitle1" align="right">
+          <Typography variant="body2" align="right">
             GST ({GST_PERCENTAGE}%):
           </Typography>
-          <Typography variant="subtitle1" align="right">
+          <Typography variant="h6" align="right">
             Total:
           </Typography>
         </Grid>
         <Grid item>
-          <Typography
-            id="cart-summary-subtotal"
-            variant="subtitle1"
-            align="right"
-          >
+          <Typography id="cart-summary-subtotal" variant="body2" align="right">
             ${cartSubtotal.toFixed(PRICE_FRACTION_DIGITS)}
           </Typography>
-          <Typography id="cart-summary-gst" variant="subtitle1" align="right">
+          <Typography id="cart-summary-gst" variant="body2" align="right">
             ${cartGST.toFixed(PRICE_FRACTION_DIGITS)}
           </Typography>
-          <Typography id="cart-summary-total" variant="subtitle1" align="right">
+          <Typography id="cart-summary-total" variant="h6" align="right">
             ${cartTotal.toFixed(PRICE_FRACTION_DIGITS)}
           </Typography>
         </Grid>

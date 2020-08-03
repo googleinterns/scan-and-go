@@ -20,6 +20,7 @@ function InfoCardMedia({
   const theme = useTheme();
 
   const DEFAULT_IMG_HEIGHT = themeConfig.default_card_img_height;
+  const DEFAULT_IMG_MINHEIGHT = themeConfig.default_card_img_minHeight;
 
   let imgBorderRadius = "0%";
   // Parse css style given props
@@ -33,6 +34,8 @@ function InfoCardMedia({
     borderRadius: imgBorderRadius,
     height: DEFAULT_IMG_HEIGHT,
     width: DEFAULT_IMG_HEIGHT,
+    minHeight: DEFAULT_IMG_MINHEIGHT,
+    minWidth: DEFAULT_IMG_MINHEIGHT,
     maxHeight: maxHeight,
     maxWidth: maxHeight,
     marginRight: theme.spacing(1),

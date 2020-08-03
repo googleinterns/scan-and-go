@@ -29,10 +29,8 @@ function StoreCard({
       media={store.media ? store.media : PLACEHOLDER_STORE_MEDIA}
       mediaVariant="circle"
       title={
-        <Typography component="span" variant="subtitle1">
-          <Box display="inline" fontWeight="fontWeightBold">
-            {store.name}
-          </Box>
+        <Typography component="span" variant="body1">
+          {store.name}
         </Typography>
       }
       content={
@@ -42,7 +40,7 @@ function StoreCard({
               (text: string, i: number) => (
                 <Typography
                   key={`detail-${store["store-id"]}-${i}`}
-                  variant="body1"
+                  variant="body2"
                 >
                   {text}
                 </Typography>
@@ -59,7 +57,7 @@ function StoreCard({
           direction="column"
         >
           <Grid item>
-            <Typography variant="body2" align="right">
+            <Typography color="secondary" variant="body2" align="right">
               {store.business_status
                 ? store.business_status
                 : "Schrödinger's Store"}

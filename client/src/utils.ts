@@ -283,3 +283,14 @@ export const parseOrderName = (orderName: string) => {
 export const checkContentOverflow = (ele: HTMLElement) => {
   return ele.clientHeight < ele.scrollHeight;
 };
+
+// Export a style object for clamping text lines
+export const clampTextLines = (maxLines: number): React.CSSProperties => {
+  return {
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    WebkitLineClamp: maxLines,
+    WebkitBoxOrient: "vertical",
+    display: "-webkit-box",
+  };
+};

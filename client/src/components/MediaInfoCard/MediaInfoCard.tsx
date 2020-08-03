@@ -59,8 +59,10 @@ function MediaInfoCard({
         </Grid>
         <Grid item xs container direction="row">
           <Grid item xs container direction="column" align-items="stretch">
-            <Grid item>{title}</Grid>
-            <Grid item xs style={{ overflow: "scroll" }}>
+            <Grid item style={{ maxHeight: "80%", overflow: "hidden" }}>
+              {title}
+            </Grid>
+            <Grid item xs style={{ minHeight: "20%", overflow: "hidden" }}>
               {content}
             </Grid>
           </Grid>
