@@ -259,6 +259,7 @@ function ScanStore() {
     if (order) {
       goToReceipt(order.name);
       setAlert("success", `Order confirmed!`);
+      setCart([], "", "");
     }
   };
 
