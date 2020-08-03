@@ -72,14 +72,17 @@ function MediaInfoCard({
             style={{ maxWidth: "100%" }}
             align-items="stretch"
           >
-            <Grid item style={{ maxWidth: "100%" }}>
+            <Grid
+              item
+              style={{ maxHeight: "80%", maxWidth: "100%", overflow: "hidden" }}
+            >
               {title}
             </Grid>
             <Grid
               container
               item
               xs
-              style={{ maxWidth: "100%", overflow: "hidden" }}
+              style={{ minHeight: "20%", maxWidth: "100%", overflow: "hidden" }}
             >
               {content}
             </Grid>

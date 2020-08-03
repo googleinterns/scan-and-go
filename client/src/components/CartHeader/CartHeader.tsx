@@ -24,7 +24,7 @@ function CartHeader({
     <div className="CartHeader">
       <Header
         title={
-          <Typography variant="h4">{DEFAULT_CART_HEADER_TITLE}</Typography>
+          <Typography variant="h3">{DEFAULT_CART_HEADER_TITLE}</Typography>
         }
         subtitle={
           <Typography variant="subtitle2">
@@ -40,7 +40,9 @@ function CartHeader({
                 color="primary"
                 startIcon={<CropFreeIcon />}
               >
-                Scan
+                <Typography variant="body2" noWrap={true}>
+                  Scan
+                </Typography>
               </Button>
             }
             resultCallback={scanBarcodeCallback}

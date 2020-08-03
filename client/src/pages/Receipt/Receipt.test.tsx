@@ -8,10 +8,7 @@ import { BrowserRouter as Router, useHistory } from "react-router-dom";
 import QRCode from "qrcode";
 import {
   TEST_ORDER_NAME,
-  HOME_PAGE,
-  ITEM_API,
   TEST_STORE_MERCHANT_ID,
-  SCANSTORE_PAGE,
   TEST_STORE_ID,
 } from "src/constants";
 import { waitFor } from "@testing-library/react";
@@ -57,7 +54,7 @@ it("Receipt renders correctly", async () => {
 it("Receipt renders QR code with order ID", async () => {
   const testQRText = `$Order: ${TEST_ORDER_NAME}.\n Contents: ${testContents}`;
   await act(async () => {
-    const wrapper = Enzyme.mount(
+    Enzyme.mount(
       <Router>
         <Receipt />
       </Router>
