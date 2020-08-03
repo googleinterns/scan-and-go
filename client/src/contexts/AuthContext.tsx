@@ -1,5 +1,5 @@
 import React, { createContext, useState, useReducer } from "react";
-import { getUser } from "src/pages/Actions";
+import { getInitialUserState } from "src/pages/Actions";
 import { User, emptyUser } from "src/interfaces";
 import { SET_USER, UNSET_USER } from "src/constants";
 
@@ -33,7 +33,7 @@ const reducer = (state: any, action: any) => {
 export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const initialState = { user: getUser() };
+  const initialState = { user: getInitialUserState() };
   const [state, dispatch] = useReducer(reducer, initialState);
   const { user } = state;
 

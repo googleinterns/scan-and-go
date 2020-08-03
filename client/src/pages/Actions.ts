@@ -244,13 +244,21 @@ export const createOrder = async (store: Store, cartItems: CartItem[]) => {
   return order;
 };
 
-export const getUser = () => {
-  const user = window.localStorage.getItem("user");
-  if (user) {
-    return JSON.parse(user);
-  } else {
-    return emptyUser();
+/**
+ * Gets the initial user state.
+ * If in the microapp environment, returns an empty user, as every app session
+ * launch should trigger a call to the getIdentity API as users might have revoked
+ * permissions since the previous session.
+ * If in the web environment, the user is retrieved from local storage.
+ */
+export const getInitialUserState = () => {
+  if (isWeb) {
+    const user = window.localStorage.getItem("user");
+    if (user) {
+      return JSON.parse(user);
+    }
   }
+  return emptyUser();
 };
 
 export const getStoreRedirectUrl = (storeId: string, merchantId: string) => {
