@@ -169,6 +169,7 @@ const Receipt: React.FC = () => {
                 <div className="details">
                   {contents && (
                     <Cart
+                      editable={false}
                       contents={contents}
                       collapse={true}
                       showMedia={false}

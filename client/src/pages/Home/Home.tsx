@@ -7,6 +7,7 @@ import PlaceholderStoreList from "src/components/PlaceholderStoreList";
 import IconSearchBar from "src/components/IconSearchBar";
 import LocationOnIcon from "@material-ui/icons/LocationOn";
 import LocationOffIcon from "@material-ui/icons/LocationOff";
+import { useTheme } from "@material-ui/core/styles";
 import { Store, GMapPlace, GeoLocation } from "src/interfaces";
 import {
   getGeoLocation,
@@ -31,6 +32,7 @@ function Home(props: any) {
   const [curGeoLocation, setCurGeoLocation] = useState<GeoLocation | null>(
     null
   );
+  const theme = useTheme();
   const history = useHistory();
 
   const SECRET_TRIGGER = "hungry";
@@ -132,7 +134,7 @@ function Home(props: any) {
         icon={[<LocationOnIcon color="primary" />, <LocationOffIcon />]}
       />
       {!useLocation && (
-        <Typography variant="body2">
+        <Typography style={{ paddingTop: theme.spacing(1) }} variant="body2">
           Turn on location for suggested nearby places!
         </Typography>
       )}
