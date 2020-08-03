@@ -15,6 +15,7 @@ module.exports = {
   ORDERS_COLLECTION: "orders",
   MERCHANTS_COLLECTION: "merchants",
   INGESTION_COLLECTION: "ingestion",
+  INGESTION_STATUS_DOCUMENT: "status",
   CLOUD_BUCKET: "scan-and-go-for-gpay-storage",
   DOWNLOAD_FOLDER: "data",
   MERCHANTS_INGESTION_CSV: "merchants.csv",
