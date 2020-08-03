@@ -21,7 +21,7 @@ function Header({
 }) {
   const theme = useTheme();
   const headerTopPadding = theme.spacing(2);
-  const headerBotPadding = theme.spacing(4);
+  const headerBotPadding = theme.spacing(2);
   const classes = useStyles(theme);
 
   const history = useHistory();
