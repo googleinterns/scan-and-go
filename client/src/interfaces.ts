@@ -55,6 +55,7 @@ export interface Store {
   media?: string; // Image/Icon displayed
   business_status?: string; // State of store opening
   vicinity?: string; // Address of store
+  opening_hours?: { open_now: boolean };
 }
 
 export const emptyStore = (): Store => ({

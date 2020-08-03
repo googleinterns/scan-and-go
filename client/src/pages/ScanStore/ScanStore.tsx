@@ -258,7 +258,7 @@ function ScanStore() {
     const order = await createOrder(curStore, cartItems);
     if (order) {
       goToReceipt(order.name);
-      setAlert("success", `Order ${order.orderId} Confirmed!`);
+      setAlert("success", `Order confirmed!`);
       setCart([], "", "");
     }
   };

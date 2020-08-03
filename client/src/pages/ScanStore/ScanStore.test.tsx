@@ -68,8 +68,5 @@ it("ScanStore redirects to Receipt and sets successs alert upon successful order
   const pushArgs = global.mockRedirectPush.mock.calls.pop();
   expect(pushArgs[0]).toHaveProperty("pathname", RECEIPT_PAGE);
   expect(pushArgs[0]).toHaveProperty("search", `?order=${TEST_ORDER_NAME}`);
-  expect(mockSetAlert).toBeCalledWith(
-    "success",
-    `Order ${TEST_ORDER_ID} Confirmed!`
-  );
+  expect(mockSetAlert).toBeCalledWith("success", "Order confirmed!");
 });

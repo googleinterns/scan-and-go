@@ -102,21 +102,17 @@ export const ErrorTheme = createMuiTheme(
   })
 );
 
-// Inverse of ErrorTheme with text-color and backgrouund color inverted
-export const InverseErrorTheme = createMuiTheme(
-  Object.assign({}, AppThemeConfig, {
-    palette: {
-      primary: {
-        main: WHITE_BACKGROUND_COLOR,
-        contrastText: SUCCESS_COLOR,
-      },
-      secondary: {
-        main: WHITE_BACKGROUND_COLOR,
-        contrastText: ERROR_COLOR,
-      },
+// Theme for store status text
+export const StoreStatusTheme = createMuiTheme({
+  palette: {
+    primary: {
+      main: "#0D652D",
     },
-  })
-);
+    secondary: {
+      main: "#870101",
+    },
+  },
+});
 
 // UI config variables
 export const themeConfig = {
