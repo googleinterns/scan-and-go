@@ -37,6 +37,7 @@ import {
   OrderItem,
   Item,
   emptyCartItem,
+  User,
 } from "src/interfaces";
 
 // Load up Google Maps Places API Service
@@ -246,19 +247,23 @@ export const createOrder = async (store: Store, cartItems: CartItem[]) => {
 
 /**
  * Gets the initial user state.
- * If in the microapp environment, returns an empty user, as every app session
- * launch should trigger a call to the getIdentity API as users might have revoked
- * permissions since the previous session.
+ * If in the microapp environment, every app session launch should trigger
+ * a call to the getIdentity API as users might have revoked permissions
+ * since the previous session.
  * If in the web environment, the user is retrieved from local storage.
  */
 export const getInitialUserState = () => {
-  if (isWeb) {
-    const user = window.localStorage.getItem("user");
-    if (user) {
-      return JSON.parse(user);
-    }
+  if (!isWeb) {
+    microapps
+      .getIdentity({ skipPrompt: true })
+      .catch((err: any) => window.localStorage.removeItem("user"));
   }
-  return emptyUser();
+  const user = window.localStorage.getItem("user");
+  if (user) {
+    return JSON.parse(user);
+  } else {
+    return emptyUser();
+  }
 };
 
 export const getStoreRedirectUrl = (storeId: string, merchantId: string) => {

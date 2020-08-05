@@ -17,13 +17,8 @@ const AuthenticatedRoute = (props: AuthenticatedRouteProps) => {
   const { user } = useContext(AuthContext);
   const { setAlert } = useContext(AlertContext);
 
-  useEffect(() => {
-    if (!user["user-id"]) {
-      setAlert("error", "Please login to access this page");
-    }
-  }, [user]);
-
   if (!user["user-id"]) {
+    setAlert("error", "Please login to access this page");
     return (
       <Redirect
         to={{
