@@ -26,4 +26,7 @@ router.post(
   ingestionController.uploadFile
 );
 
+// Reset ingestion timestamp
+router.get("/resetSync", authDebug, ingestionController.resetSyncTiming);
+
 module.exports = router;

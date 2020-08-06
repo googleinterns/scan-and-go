@@ -5,3 +5,4 @@ dispatch:
   # Configure cronjob endpoint /ingest/sync to backend
   - url: "*/ingest/sync"
     service: api
+

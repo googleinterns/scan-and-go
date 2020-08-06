@@ -29,6 +29,11 @@ const ordersCollection = firestore.collection(ORDERS_COLLECTION);
 const merchantsCollection = firestore.collection(MERCHANTS_COLLECTION);
 const ingestionCollection = firestore.collection(INGESTION_COLLECTION);
 
+// If testing environment, populate db
+if (ENV === TEST) {
+  require("./emulatedFirestore").populate();
+}
+
 module.exports = {
   firestore,
   usersCollection,

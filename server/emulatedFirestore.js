@@ -23,6 +23,8 @@ const setupSimulatedDB = async () => {
     STORES_COLLECTION,
     ORDERS_COLLECTION,
     MERCHANTS_COLLECTION,
+    INGESTION_COLLECTION,
+    INGESTION_STATUS_DOCUMENT,
   } = require("./config");
 
   // Add our dummy data into emulated firestore
@@ -41,6 +43,13 @@ const setupSimulatedDB = async () => {
   for (const merchant of TEST_MERCHANTS) {
     await firestore.collection(MERCHANTS_COLLECTION).add(merchant);
   }
+  // Write fake ingestion status document
+  await firestore
+    .collection(INGESTION_COLLECTION)
+    .doc(INGESTION_STATUS_DOCUMENT)
+    .set({
+      timestamp: 0,
+    });
 };
 
 const clearDB = async () => {
