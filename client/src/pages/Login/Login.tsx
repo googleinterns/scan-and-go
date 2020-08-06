@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import TextInputField from "src/components/TextInputField";
 import { Grid, Typography, Button } from "@material-ui/core";
-import { emptyUser, IdentityToken } from "src/interfaces";
+import { emptyUser, IdentityToken, emptyIdentityToken } from "src/interfaces";
 import { HOME_PAGE, TITLE_TEXT, TEST_USER } from "src/constants";
 import { isWeb, isDebug } from "src/config";
 import { loginUser } from "src/pages/Actions";
@@ -57,7 +57,10 @@ function Login() {
       search: "",
       state: "",
     };
-    if (user.name !== "EMPTY" && user.name !== "") {
+    if (
+      user["user-id"] !== "" &&
+      user["user-id"] !== emptyIdentityToken().sub
+    ) {
       history.push({
         pathname: redirect.pathname,
         search: redirect.search,
@@ -69,9 +72,10 @@ function Login() {
   }, [user]);
 
   useEffect(() => {
+    // Clear user data cache
+    unsetUser();
+    // TODO (#163): synchronize login on microapp and web
     if (isWeb) {
-      // Clear user data cache
-      unsetUser();
       // Render Google Sign-in button
       if (window.gapi) {
         renderGSigninButton();
@@ -79,10 +83,10 @@ function Login() {
         // Wait for gapi to be initialized stackoverflow.com/questions/31640234/using-google-sign-in-button-with-react-2
         window.addEventListener("google-loaded", renderGSigninButton);
       }
+    } else {
+      // Initial login if on microapp
+      login();
     }
-    // TODO (#163): synchronize login on microapp and web
-    // Initial login if on microapp
-    login();
   }, []);
 
   const onSignIn = async (googleUser: gapi.auth2.GoogleUser) => {
