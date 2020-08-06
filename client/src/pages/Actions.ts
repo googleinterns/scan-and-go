@@ -205,6 +205,8 @@ export const createOrder = async (store: Store, cartItems: CartItem[]) => {
   const currencyCode = DEFAULT_CURRENCY_CODE;
   const orderReq = {
     title: `Order @ ${store.name}`,
+    subtitle: new Date(Date.now()).toLocaleDateString(),
+    imageUrl: store.media,
     items: cartItems.map((cartItem) => ({
       title: cartItem.item.name,
       subtitle: cartItem.item.barcode,
@@ -246,24 +248,11 @@ export const createOrder = async (store: Store, cartItems: CartItem[]) => {
 };
 
 /**
- * Gets the initial user state.
- * If in the microapp environment, every app session launch should trigger
- * a call to the getIdentity API as users might have revoked permissions
- * since the previous session.
- * If in the web environment, the user is retrieved from local storage.
+ * Gets the initial user state from local storage, or empty user otherwise.
  */
 export const getInitialUserState = () => {
-  if (!isWeb) {
-    microapps
-      .getIdentity({ skipPrompt: true })
-      .catch((err: any) => window.localStorage.removeItem("user"));
-  }
   const user = window.localStorage.getItem("user");
-  if (user) {
-    return JSON.parse(user);
-  } else {
-    return emptyUser();
-  }
+  return user ? JSON.parse(user) : emptyUser();
 };
 
 export const getStoreRedirectUrl = (storeId: string, merchantId: string) => {

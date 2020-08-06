@@ -14,6 +14,12 @@ import { AuthContextProvider } from "src/contexts/AuthContext";
 import { AlertContextProvider } from "./contexts/AlertContext";
 import AuthenticatedRoute from "./components/AuthenticatedRoute";
 import "src/css/App.css";
+import {
+  LOGIN_PAGE,
+  SCANSTORE_PAGE,
+  HOME_PAGE,
+  RECEIPT_PAGE,
+} from "./constants";
 
 function App() {
   const theme = useTheme();
@@ -34,10 +40,10 @@ function App() {
               style={microappStyling}
             >
               <Switch>
-                <Route path="/" component={Home} exact />
-                <Route path="/login" component={Login} />
-                <Route path="/store" component={ScanStore} />
-                <AuthenticatedRoute path="/receipt" component={Receipt} />
+                <Route path={HOME_PAGE} component={Home} />
+                <Route path={LOGIN_PAGE} component={Login} exact />
+                <Route path={SCANSTORE_PAGE} component={ScanStore} />
+                <AuthenticatedRoute path={RECEIPT_PAGE} component={Receipt} />
                 <Route component={NotFound} />
               </Switch>
               <AlertSnackbar />

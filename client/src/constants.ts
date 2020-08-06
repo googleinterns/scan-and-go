@@ -1,9 +1,9 @@
 // Client Site Pages
-export const HOME_PAGE = "/";
+export const HOME_PAGE = "/home";
 export const SCANSTORE_PAGE = "/store";
 export const CHECKOUT_PAGE = "/checkout";
 export const RECEIPT_PAGE = "/receipt";
-export const LOGIN_PAGE = "/login";
+export const LOGIN_PAGE = "/";
 // API endpoints
 export const API = "/api/";
 export const CART_API = "/api/cart";
