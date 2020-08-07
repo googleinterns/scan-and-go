@@ -18,8 +18,13 @@ exports.listStores = async (req, res) => {
   //TODO(#10) Implement searching with keywords
   try {
     if (userLat && userLong) {
+      console.time("Query collection");
       const storesQuery = await storesCollection.get();
+      console.timeEnd("Query collection");
+
+      console.time("Search Stores");
       const stores = storesQuery.docs.map((doc) => doc.data());
+      console.log(`Searching through ${stores.length} stores!`);
       for (let store of stores) {
         const lat = store["latitude"];
         const long = store["longitude"];
@@ -28,6 +33,9 @@ exports.listStores = async (req, res) => {
           retStores.push(Object.assign({}, store, { distance: curDist }));
         }
       }
+      console.log("Stores found within vicinity:");
+      console.log(retStores);
+      console.timeEnd("Search Stores");
     } else {
       const storesQuery = await storesCollection
         .orderBy("name")
