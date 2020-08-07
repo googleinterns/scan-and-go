@@ -137,8 +137,8 @@ const onboardNewMerchant = async (merchant) => {
       payeeVpa: merchant["payeeVpa"],
       name: merchant["Name"],
     });
-    await writeDocumentsFirestore(processedItems, itemsCollection);
-    await writeDocumentsFirestore(processedStores, storesCollection);
+    writeDocumentsFirestore(processedItems, itemsCollection);
+    writeDocumentsFirestore(processedStores, storesCollection);
     // Log successful ingest sync request
     logIngestionFirestore(merchantId, "SUCCESS");
     console.log("INGESTION SUCCESSFUL");
