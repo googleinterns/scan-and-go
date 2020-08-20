@@ -114,7 +114,7 @@ describe("API POST Data", () => {
       expect(res.body).toHaveProperty(field, testStore[field]);
     }
   });
-  it("should display list of nearby stores", async () => {
+  it("should display list of nearby stores, given geolocation", async () => {
     const testLoc = {
       latitude: 1.3591432,
       longitude: 103.8781964,
@@ -132,7 +132,7 @@ describe("API POST Data", () => {
       res.body.every((store) => expectedStores.includes(store["store-id"]))
     ).toBe(true);
   });
-  it("should display stores in alphabetic order when without location", async () => {
+  it("should display at most k stores in alphabetic order, given query limit k", async () => {
     const testQueryLimit = 3;
     const res = await request(app).post("/api/store/list").send({
       queryLimit: testQueryLimit,
@@ -141,6 +141,17 @@ describe("API POST Data", () => {
     const expectedStores = TEST_STORES.sort((a, b) =>
       a.name.localeCompare(b.name)
     ).slice(0, testQueryLimit);
+    expect(res.body).toHaveLength(expectedStores.length);
+    res.body.map((store, i) =>
+      expect(store["store-id"]).toEqual(expectedStores[i]["store-id"])
+    );
+  });
+  it("should display all stores in alphabetic order, given no additional parameters", async () => {
+    const res = await request(app).post("/api/store/list").send({});
+    expect(res.statusCode).toEqual(CONSTANTS.HTTP_SUCCESS);
+    const expectedStores = TEST_STORES.sort((a, b) =>
+      a.name.localeCompare(b.name)
+    );
     expect(res.body).toHaveLength(expectedStores.length);
     res.body.map((store, i) =>
       expect(store["store-id"]).toEqual(expectedStores[i]["store-id"])
