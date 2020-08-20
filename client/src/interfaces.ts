@@ -56,6 +56,7 @@ export interface Store {
   business_status?: string; // State of store opening
   vicinity?: string; // Address of store
   opening_hours?: { open_now: boolean };
+  preprocessedName?: string; // TODO(#115): Refactor out UI-only fields to keep consistency with DB
 }
 
 export const emptyStore = (): Store => ({

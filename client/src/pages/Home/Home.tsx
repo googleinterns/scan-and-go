@@ -14,6 +14,8 @@ import {
   getStoresByLocation,
   getNearbyPlacesTest,
   getStoreRedirectUrl,
+  getAllStores,
+  getSimilarStores,
 } from "src/pages/Actions";
 import { Typography } from "@material-ui/core";
 import { isWeb, isDebug, google } from "src/config";
@@ -32,6 +34,7 @@ function Home(props: any) {
   const [curGeoLocation, setCurGeoLocation] = useState<GeoLocation | null>(
     null
   );
+  const [allStores, setAllStores] = useState<Store[]>([]);
   const theme = useTheme();
   const history = useHistory();
 
@@ -53,6 +56,11 @@ function Home(props: any) {
           setLoadingStores(false);
         }
       });
+    } else if (text) {
+      setLoadingStores(true);
+      const similarStores = getSimilarStores(text, allStores);
+      setStores(similarStores);
+      setLoadingStores(false);
     }
   };
 
@@ -103,6 +111,7 @@ function Home(props: any) {
     if (props.location.state) {
       setStores(props.location.state.stores);
     }
+    getAllStores().then((stores) => setAllStores(stores));
   }, []);
 
   useEffect(() => {

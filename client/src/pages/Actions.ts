@@ -25,6 +25,8 @@ import {
   getTotalPrice,
   fetchText,
   parseOrderName,
+  calculateEditDistance,
+  preprocess,
 } from "src/utils";
 import { isWeb, google, microapps } from "src/config";
 import {
@@ -292,4 +294,63 @@ export const setCart = (
   window.localStorage.setItem("cart", JSON.stringify(cartItems));
   window.localStorage.setItem("merchantId", merchantId);
   window.localStorage.setItem("storeId", storeId);
+};
+
+/**
+ * Gets a list of all stores from the cache, if available.
+ * Otherwise retrieves it from the server, and caches the list.
+ *
+ * @returns {Store[]} stores
+ */
+export const getAllStores = async () => {
+  let stores: Store[] = [];
+  const cachedStores = window.localStorage.getItem("stores");
+  if (cachedStores) {
+    stores = JSON.parse(cachedStores);
+  } else {
+    stores = await fetchJson("POST", {}, STORE_LIST_API);
+    stores.forEach((store) =>
+      Object.assign(store, { preprocessedName: preprocess(store.name) })
+    );
+    window.localStorage.setItem("stores", JSON.stringify(stores));
+  }
+  return stores;
+};
+
+/**
+ *
+ * @param query
+ * @param stores
+ * @param k
+ * @param threshold_init
+ */
+export const getSimilarStores = (
+  query: string,
+  stores: Store[],
+  k: number = 10,
+  threshold_init: number = 2
+) => {
+  const preprocessedQuery = preprocess(query);
+  const threshold = Math.min(
+    threshold_init,
+    Math.trunc((query.length - 1) / 2)
+  );
+
+  // Get a sorted list of <= k stores with inner edit distance <= threshold,
+  const similarIds = stores
+    .reduce((ids: { id: number; dist: number[] }[], store, id) => {
+      const dist = calculateEditDistance(preprocessedQuery, store.name);
+      if (dist[0] <= threshold) {
+        ids.push({ id, dist });
+      }
+      return ids;
+    }, [])
+    .sort(
+      (a, b) =>
+        a.dist[0] - b.dist[0] || a.dist[1] - b.dist[1] || a.dist[2] - b.dist[2]
+    )
+    .slice(0, k);
+
+  const similarStores = similarIds.map(({ id }) => stores[id]);
+  return similarStores;
 };
