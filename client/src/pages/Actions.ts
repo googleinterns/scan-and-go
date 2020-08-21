@@ -25,8 +25,6 @@ import {
   getTotalPrice,
   fetchText,
   parseOrderName,
-  calculateEditDistance,
-  preprocess,
 } from "src/utils";
 import { isWeb, google, microapps } from "src/config";
 import {
@@ -41,6 +39,7 @@ import {
   emptyCartItem,
   User,
 } from "src/interfaces";
+import { preprocess, getTopKStoreIds } from "src/helpers";
 
 // Load up Google Maps Places API Service
 let map: any;
@@ -318,6 +317,10 @@ export const getAllStores = async () => {
 };
 
 /**
+ * Returns a list of at most k stores, each with inner edit distance between
+ * the query and the store name at most a certain threshold. The stores are
+ * sorted by their inner edit distance, number of trailing insertions, and
+ * number of leading insertions.
  *
  * @param query
  * @param stores
@@ -337,20 +340,7 @@ export const getSimilarStores = (
   );
 
   // Get a sorted list of <= k stores with inner edit distance <= threshold,
-  const similarIds = stores
-    .reduce((ids: { id: number; dist: number[] }[], store, id) => {
-      const dist = calculateEditDistance(preprocessedQuery, store.name);
-      if (dist[0] <= threshold) {
-        ids.push({ id, dist });
-      }
-      return ids;
-    }, [])
-    .sort(
-      (a, b) =>
-        a.dist[0] - b.dist[0] || a.dist[1] - b.dist[1] || a.dist[2] - b.dist[2]
-    )
-    .slice(0, k);
-
-  const similarStores = similarIds.map(({ id }) => stores[id]);
+  const similarIds = getTopKStoreIds(stores, preprocessedQuery, k, threshold);
+  const similarStores = similarIds.map(({ storeId }) => stores[storeId]);
   return similarStores;
 };
