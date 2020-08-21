@@ -137,7 +137,6 @@ const popElementsByValue = (heap: Heap<any>, poppedLists: number[]) => {
   if (root) {
     freq += 1;
     storeId = root[0];
-    // let [storeId, listIdx] = root;
     poppedLists.push(root[1]);
     while ((root = heap.peek()) && root[0] === storeId) {
       heap.remove();
@@ -265,7 +264,6 @@ const getTopKStoreIdsBySPS = (
 
     if (freq >= minFreq) {
       // The root store ID might be a top k store
-      console.log(stores[storeId], freq, minFreq);
       threshold = insertTopK(
         storeId,
         stores,
