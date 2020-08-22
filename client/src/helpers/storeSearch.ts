@@ -8,12 +8,10 @@ import { Heap } from "src/packages/Heap";
  * @param s
  */
 export const preprocess = (s: string) => {
-  s = s.toLowerCase(); // make lower case
-  s = s.replace(/[().|[\]{}`]/, ""); // remove the list of chars defined above
   s = s.replace("&", "and");
-  s = s.replace(",", " ");
   s = s.replace("-", " ");
-  s = s.replace(/[^\w\s]/, ""); // remove any remaining non-word characters
+  s = s.replace(/[^\w\s]/g, ""); // remove any remaining non-word characters
+  s = s.trim(); // remove trailing and leading whitespace
   s = s.replace(/\s\s+/g, " "); // replace multiple spaces with a single space
   s = s.replace(
     /\w\S*/g,
@@ -376,15 +374,34 @@ const getTopKStoreIdsByNaive = (
   return topKStoreIds;
 };
 
+/**
+ * Returns a sorted list of the index of at most k stores, each with inner edit
+ * distance between the query and the store name at most a certain threshold.
+ *
+ * @param stores
+ * @param preprocessedQuery
+ * @param k
+ * @param threshold
+ */
 export const getTopKStoreIds = (
   stores: Store[],
   preprocessedQuery: string,
   k: number,
   threshold: number
 ) => {
-  if (preprocessedQuery.length < DEFAULT_NGRAM_LENGTH) {
+  const minFreq = calculateMinFreq(
+    preprocessedQuery.length - DEFAULT_NGRAM_LENGTH + 1,
+    threshold
+  );
+  if (preprocessedQuery.length < DEFAULT_NGRAM_LENGTH || minFreq == 0) {
+    // If the query length is smaller than the length of a ngram, or if the
+    // minimum number of ngrams that needs to be matched between the query and
+    // a store is 0, then we need to calculate the edit distance between the query
+    // and all stores.
     return getTopKStoreIdsByNaive(stores, preprocessedQuery, k, threshold);
   } else {
+    // Otherwise, we can calculate the edit distance for only the stores
+    // that match with at least minFreq of the query's ngrams.
     return getTopKStoreIdsBySPS(stores, preprocessedQuery, k, threshold);
   }
 };
