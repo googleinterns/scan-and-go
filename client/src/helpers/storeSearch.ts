@@ -2,8 +2,12 @@ import { DEFAULT_NGRAM_LENGTH } from "src/constants";
 import { Store } from "src/interfaces";
 import { Heap } from "src/packages/Heap";
 
+// TODO (#243): Add unit tests for all functions
+
 /**
  * Preprocesses a string s to use as input for calculateEditDistance().
+ * Replaces conjunctions ("&" with "and", "-" with " "), removes non-word characters,
+ * trims whitespace, removes multiple whitespace, and normalizes case to title case.
  *
  * @param s
  */
@@ -36,33 +40,37 @@ export const preprocess = (s: string) => {
  *                      s1 to transform it into the full string s2.
  */
 const calculateEditDistance = (s1: string, s2: string) => {
-  const m = s1.length;
-  const n = s2.length;
-  const ed = new Array(m + 1);
-  for (let i = 0; i < m + 1; i++) {
+  const s1Len = s1.length;
+  const s2Len = s2.length;
+  const editDistance = new Array(s1Len + 1);
+  for (let i = 0; i < s1Len + 1; i++) {
     // Each cell ed[i][j] shows the current inner edit distance, number of insertions,
     // and number of deletions respectively to transform s1[:i] to a substring of s2[:j].
-    ed[i] = new Array(n + 1).fill([0, 0, 0]);
-    ed[i][0] = [i, 0, i];
+    editDistance[i] = new Array(s2Len + 1).fill([0, 0, 0]);
+    editDistance[i][0] = [i, 0, i];
   }
 
   // Build the DP table
-  for (let i = 1; i < m + 1; i++) {
-    for (let j = 1; j < n + 1; j++) {
+  for (let i = 1; i < s1Len + 1; i++) {
+    for (let j = 1; j < s2Len + 1; j++) {
       if (s1[i - 1] === s2[j - 1]) {
-        ed[i][j] = ed[i - 1][j - 1];
+        editDistance[i][j] = editDistance[i - 1][j - 1];
       } else {
-        const operations = [ed[i - 1][j - 1], ed[i - 1][j], ed[i][j - 1]];
+        const operations = [
+          editDistance[i - 1][j - 1],
+          editDistance[i - 1][j],
+          editDistance[i][j - 1],
+        ];
         const prev = operations.sort(
           (a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2]
         )[0];
         const [prevEd, prevIns, prevDel] = prev;
-        if (prev === ed[i - 1][j]) {
-          ed[i][j] = [prevEd + 1, prevIns, prevDel + 1]; // s1[i] is deleted
-        } else if (prev === ed[i][j - 1]) {
-          ed[i][j] = [prevEd + 1, prevIns + 1, prevDel]; // s2[j] is inserted
+        if (prev === editDistance[i - 1][j]) {
+          editDistance[i][j] = [prevEd + 1, prevIns, prevDel + 1]; // s1[i] is deleted
+        } else if (prev === editDistance[i][j - 1]) {
+          editDistance[i][j] = [prevEd + 1, prevIns + 1, prevDel]; // s2[j] is inserted
         } else {
-          ed[i][j] = [prevEd + 1, prevIns, prevDel]; // s1[i] is substituted with s2[j]
+          editDistance[i][j] = [prevEd + 1, prevIns, prevDel]; // s1[i] is substituted with s2[j]
         }
       }
     }
@@ -71,18 +79,24 @@ const calculateEditDistance = (s1: string, s2: string) => {
   // Calculate the inner edit distance, number of trailing insertions, and number
   // of leading insertions.
   let maxJ = 0;
-  let [innerEd, numIns, numDel] = ed[m][0];
-  for (let j = 1; j < n + 1; j++) {
-    if (ed[m][j][0] <= innerEd) {
-      [innerEd, numIns, numDel] = ed[m][j];
+  let [innerEd, numIns, numDel] = editDistance[s1Len][0];
+  for (let j = 1; j < s2Len + 1; j++) {
+    if (editDistance[s1Len][j][0] <= innerEd) {
+      [innerEd, numIns, numDel] = editDistance[s1Len][j];
       maxJ = j;
     }
   }
-  const trailing = n - maxJ;
-  const leading = maxJ - (m + numIns - numDel);
+  const trailing = s2Len - maxJ;
+  const leading = maxJ - (s1Len + numIns - numDel);
   return { innerEd, trailing, leading };
 };
 
+/**
+ * Converts a string to its ngrams.
+ *
+ * @param s - The string to be processed.
+ * @param n - The length of each ngram.
+ */
 const getNgrams = (s: string, n: number = DEFAULT_NGRAM_LENGTH) => {
   const ngrams = [];
   for (let i = n; i <= s.length; i++) {
@@ -91,6 +105,12 @@ const getNgrams = (s: string, n: number = DEFAULT_NGRAM_LENGTH) => {
   return ngrams;
 };
 
+/**
+ * Builds an index of store indices by their ngrams.
+ *
+ * @param stores - the list of stores.
+ * @param n - the length of each ngram.
+ */
 const buildNgramIndex = (stores: Store[], n: number = DEFAULT_NGRAM_LENGTH) => {
   const index = new Map(); // performs better than Object type for frequent additions
   stores.forEach((store, id) => {
@@ -107,7 +127,12 @@ const buildNgramIndex = (stores: Store[], n: number = DEFAULT_NGRAM_LENGTH) => {
   return index;
 };
 
-/* Comparator function that defines the sort order of an array of stores. */
+/**
+ * Comparator function that defines the sort order of an array of stores.
+ * Sorts stores by their computed inner edit distance, followed by the number
+ * of trailing insertions, and finally by the number of leading insertions.
+ *
+ */
 const storeCompareFn = (
   a: {
     storeId: number;
@@ -167,6 +192,14 @@ const calculateMinFreq = (
   return Math.max(0, nQueries - n * maxEdits);
 };
 
+/**
+ * Pop all elements that have the same store index as the root element from
+ * the heap, and add the list indices the popped elements are from to
+ * poppedLists. Returns the popped store index and the number of elements popped.
+ *
+ * @param heap
+ * @param poppedLists
+ */
 const popElementsByValue = (heap: Heap<any>, poppedLists: number[]) => {
   let storeId = -1;
   let freq = 0;
@@ -186,6 +219,14 @@ const popElementsByValue = (heap: Heap<any>, poppedLists: number[]) => {
   return { storeId, freq };
 };
 
+/**
+ * Pop count elements from the heap, and add the list indices the popped
+ * elements are from to poppedLists.
+ *
+ * @param heap
+ * @param poppedLists
+ * @param count
+ */
 const popElementsByCount = (
   heap: Heap<any>,
   poppedLists: number[],
@@ -200,8 +241,21 @@ const popElementsByCount = (
   }
 };
 
-// Insert the store into topKStores if its frequency and inner edit distance
-// meet the threshold, and if it is more similar than the kth store.
+/**
+ * Insert the store into topKStores if its frequency and inner edit distance
+ * meet the threshold, and if it is more similar than the kth store.
+ * Returns the new threshold, which is either the same value as the input
+ * threshold, or a new value equal to the inner edit distance of the current
+ * kth store.
+ *
+ * @param storeId
+ * @param stores
+ * @param preprocessedQuery
+ * @param k
+ * @param threshold
+ * @param topKStores
+ * @returns newThreshold
+ */
 const insertTopK = (
   storeId: number,
   stores: Store[],
