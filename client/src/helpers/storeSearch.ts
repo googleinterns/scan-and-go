@@ -23,35 +23,66 @@ export const preprocess = (s: string) => {
 };
 
 /**
- * Runs the Levenshtein distance algorithm with modifications.
- * Returns an array of the inner edit distance, the number of trailing
- * insertions, and the number of leading insertions.
+ * Runs a modified Levenshtein distance algorithm to calculate the edit distance
+ * from s1 to s2. Specifically, it returns the inner edit distance, the number
+ * of trailing insertions, and the number of leading insertions.
  *
  * @param s1
  * @param s2
+ * @returns innerEd   - the inner edit distance, defined as the minimum number of
+ *                      operations (insertions, deletions, or substitutions) needed
+ *                      to transform s1 into any substring of s2.
+ * @returns trailing  - the number of trailing insertions needed after the end of
+ *                      s1 to transform it into the full string s2.
+ * @returns leading   - the number of leading insertions needed before the start of
+ *                      s1 to transform it into the full string s2.
  */
 const calculateEditDistance = (s1: string, s2: string) => {
   const m = s1.length;
   const n = s2.length;
   const ed = new Array(m + 1);
   for (let i = 0; i < m + 1; i++) {
-    ed[i] = new Array(n + 1).fill(0);
-    ed[i][0] = i;
+    // Each cell ed[i][j] shows the current inner edit distance, number of insertions,
+    // and number of deletions respectively to transform s1[:i] to a substring of s2[:j].
+    ed[i] = new Array(n + 1).fill([0, 0, 0]);
+    ed[i][0] = [i, 0, 0];
   }
 
+  // Build the DP table
   for (let i = 1; i < m + 1; i++) {
     for (let j = 1; j < n + 1; j++) {
       if (s1[i - 1] === s2[j - 1]) {
         ed[i][j] = ed[i - 1][j - 1];
       } else {
-        ed[i][j] = Math.min(ed[i - 1][j], ed[i][j - 1], ed[i - 1][j - 1]) + 1;
+        const operations = [ed[i - 1][j - 1], ed[i - 1][j], ed[i][j - 1]];
+        const prev = operations.sort(
+          (a, b) => b[0] - a[0] || b[1] - a[1] || b[2] - a[2]
+        )[0];
+        const [prevEd, prevIns, prevDel] = prev;
+        if (prev === ed[i - 1][j]) {
+          ed[i][j] = [prevEd + 1, prevIns, prevDel + 1]; // s1[i] is deleted
+        } else if (prev === ed[i][j - 1]) {
+          ed[i][j] = [prevEd + 1, prevIns + 1, prevDel]; // s2[j] is inserted
+        } else {
+          ed[i][j] = [prevEd + 1, prevIns, prevDel]; // s1[i] is substituted with s2[j]
+        }
       }
     }
   }
 
-  const min_j = ed[m].indexOf(Math.min(...ed[m]));
-  const min_ed = ed[m][min_j];
-  return [min_ed, n - min_j, min_j - m + min_ed];
+  // Calculate the inner edit distance, number of trailing insertions, and number
+  // of leading insertions.
+  let maxJ = 0;
+  let [innerEd, numIns, numDel] = ed[m][0];
+  for (let j = 1; j < n + 1; j++) {
+    if (ed[m][j][0] <= innerEd) {
+      [innerEd, numIns, numDel] = ed[m][j];
+      maxJ = j;
+    }
+  }
+  const trailing = n - maxJ;
+  const leading = maxJ - (m + numIns + numDel);
+  return { innerEd, trailing, leading };
 };
 
 const getNgrams = (s: string, n: number = DEFAULT_NGRAM_LENGTH) => {
@@ -80,11 +111,19 @@ const buildNgramIndex = (stores: Store[], n: number = DEFAULT_NGRAM_LENGTH) => {
 
 /* Comparator function that defines the sort order of an array of stores. */
 const storeCompareFn = (
-  a: { storeId: number; dist: number[] },
-  b: { storeId: number; dist: number[] }
+  a: {
+    storeId: number;
+    dist: { innerEd: number; trailing: number; leading: number };
+  },
+  b: {
+    storeId: number;
+    dist: { innerEd: number; trailing: number; leading: number };
+  }
 ) => {
   return (
-    a.dist[0] - b.dist[0] || a.dist[1] - b.dist[1] || a.dist[2] - b.dist[2]
+    a.dist.innerEd - b.dist.innerEd ||
+    a.dist.trailing - b.dist.trailing ||
+    a.dist.leading - b.dist.leading
   );
 };
 
@@ -107,9 +146,10 @@ const initializeSPS = (stores: Store[], preprocessedQuery: string) => {
     ngramIndex.has(ngram) ? ngramIndex.get(ngram) : []
   );
 
-  const topKStores = new Heap<{ storeId: number; dist: number[] }>(
-    storeCompareFn
-  );
+  const topKStores = new Heap<{
+    storeId: number;
+    dist: { innerEd: number; trailing: number; leading: number };
+  }>(storeCompareFn);
   const listIndices = new Array(lists.length).fill(0);
   const candidateStores = new Heap<number[]>((a, b) => b[0] - a[0]);
   listIndices.forEach((idx, i) => {
@@ -170,7 +210,10 @@ const insertTopK = (
   preprocessedQuery: string,
   k: number,
   threshold: number,
-  topKStores: Heap<{ storeId: number; dist: number[] }>
+  topKStores: Heap<{
+    storeId: number;
+    dist: { innerEd: number; trailing: number; leading: number };
+  }>
 ) => {
   const preprocessedStoreName = stores[storeId].preprocessedName;
   if (preprocessedStoreName) {
@@ -178,7 +221,7 @@ const insertTopK = (
       preprocessedQuery,
       preprocessedStoreName
     );
-    if (dist[0] <= threshold) {
+    if (dist.innerEd <= threshold) {
       if (topKStores.data.length == k) {
         const root = topKStores.peek();
         if (root && storeCompareFn({ storeId, dist }, root) < 0) {
@@ -195,8 +238,8 @@ const insertTopK = (
   let newThreshold = threshold;
   if (topKStores.data.length == k) {
     const kthStore = topKStores.peek();
-    if (kthStore && kthStore.dist[0] < threshold) {
-      newThreshold = topKStores.peek()!.dist[0];
+    if (kthStore && kthStore.dist.innerEd < threshold) {
+      newThreshold = kthStore.dist.innerEd;
     }
   }
   return newThreshold;
@@ -306,22 +349,29 @@ const getTopKStoreIdsByNaive = (
   threshold: number
 ) => {
   const topKStoreIds = stores
-    .reduce((ids: { storeId: number; dist: number[] }[], store, storeId) => {
-      if (store.preprocessedName) {
-        const dist = calculateEditDistance(
-          preprocessedQuery,
-          store.preprocessedName
-        );
-        if (dist[0] <= threshold) {
-          ids.push({ storeId, dist });
+    .reduce(
+      (
+        ids: {
+          storeId: number;
+          dist: { innerEd: number; trailing: number; leading: number };
+        }[],
+        store,
+        storeId
+      ) => {
+        if (store.preprocessedName) {
+          const dist = calculateEditDistance(
+            preprocessedQuery,
+            store.preprocessedName
+          );
+          if (dist.innerEd <= threshold) {
+            ids.push({ storeId, dist });
+          }
         }
-      }
-      return ids;
-    }, [])
-    .sort(
-      (a, b) =>
-        a.dist[0] - b.dist[0] || a.dist[1] - b.dist[1] || a.dist[2] - b.dist[2]
+        return ids;
+      },
+      []
     )
+    .sort(storeCompareFn)
     .slice(0, k);
   return topKStoreIds;
 };
