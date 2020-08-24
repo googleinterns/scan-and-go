@@ -43,7 +43,7 @@ const calculateEditDistance = (s1: string, s2: string) => {
     // Each cell ed[i][j] shows the current inner edit distance, number of insertions,
     // and number of deletions respectively to transform s1[:i] to a substring of s2[:j].
     ed[i] = new Array(n + 1).fill([0, 0, 0]);
-    ed[i][0] = [i, 0, 0];
+    ed[i][0] = [i, 0, i];
   }
 
   // Build the DP table
@@ -54,7 +54,7 @@ const calculateEditDistance = (s1: string, s2: string) => {
       } else {
         const operations = [ed[i - 1][j - 1], ed[i - 1][j], ed[i][j - 1]];
         const prev = operations.sort(
-          (a, b) => b[0] - a[0] || b[1] - a[1] || b[2] - a[2]
+          (a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2]
         )[0];
         const [prevEd, prevIns, prevDel] = prev;
         if (prev === ed[i - 1][j]) {
@@ -79,7 +79,7 @@ const calculateEditDistance = (s1: string, s2: string) => {
     }
   }
   const trailing = n - maxJ;
-  const leading = maxJ - (m + numIns + numDel);
+  const leading = maxJ - (m + numIns - numDel);
   return { innerEd, trailing, leading };
 };
 

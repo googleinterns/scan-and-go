@@ -60,7 +60,7 @@ describe("Test all exported store search functions", () => {
         0
       );
       expect(storeIds).toContainEqual({
-        dist: [0, 0, 0],
+        dist: { innerEd: 0, leading: 0, trailing: 0 },
         storeId: expectedStoreId,
       });
     });
@@ -104,7 +104,7 @@ describe("Test all exported store search functions", () => {
       expect(storeIds.length).toEqual(expectedStores.length);
       storeIds.forEach(({ dist, storeId }) => {
         expect(testStores[storeId].preprocessedName).toContain(queryNoTypo);
-        expect(dist[0]).toBeLessThanOrEqual(threshold);
+        expect(dist.innerEd).toBeLessThanOrEqual(threshold);
       });
     });
 
@@ -133,13 +133,19 @@ describe("Test all exported store search functions", () => {
         0
       );
       const storeCompareFn = (
-        a: { storeId: number; dist: number[] },
-        b: { storeId: number; dist: number[] }
+        a: {
+          storeId: number;
+          dist: { innerEd: number; trailing: number; leading: number };
+        },
+        b: {
+          storeId: number;
+          dist: { innerEd: number; trailing: number; leading: number };
+        }
       ) => {
         return (
-          a.dist[0] - b.dist[0] ||
-          a.dist[1] - b.dist[1] ||
-          a.dist[2] - b.dist[2]
+          a.dist.innerEd - b.dist.innerEd ||
+          a.dist.trailing - b.dist.trailing ||
+          a.dist.leading - b.dist.leading
         );
       };
       const isSorted = allStoreIds.every(
