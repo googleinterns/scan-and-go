@@ -1,7 +1,7 @@
 import { preprocess, getTopKStoreIds } from "./storeSearch";
 import { emptyStore } from "src/interfaces";
 
-describe("Test all exported store search functions", () => {
+describe("Test store search util functions", () => {
   describe("Test preprocess", () => {
     it("preprocesses an empty string", () => {
       const s = "";
@@ -74,9 +74,11 @@ describe("Test all exported store search functions", () => {
         testStores.length,
         0
       );
-      const expectedStoreIds = testStores.filter((store) =>
-        store.preprocessedName.includes(preprocessedQuery)
-      );
+      const expectedStoreIds = [
+        Object.assign(emptyStore(), { preprocessedName: "Store A" }),
+        Object.assign(emptyStore(), { preprocessedName: "Store Ab" }),
+        Object.assign(emptyStore(), { preprocessedName: "Store Abc" }),
+      ];
       expect(storeIds.length).toBeGreaterThan(0);
       expect(storeIds.length).toEqual(expectedStoreIds.length);
       storeIds.forEach(({ storeId }) => {
@@ -148,10 +150,11 @@ describe("Test all exported store search functions", () => {
           a.dist.leading - b.dist.leading
         );
       };
-      const isSorted = allStoreIds.every(
-        (_, i, a) => !i || storeCompareFn(a[i - 1], a[i]) <= 0
-      );
-      expect(isSorted).toEqual(true);
+      expect(
+        allStoreIds.every(
+          (_, i, a) => !i || storeCompareFn(a[i - 1], a[i]) <= 0
+        )
+      ).toEqual(true);
     });
 
     it("returns 0 stores from an empty list of stores ", () => {
