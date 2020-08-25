@@ -11,9 +11,9 @@ exports.listStores = async (req, res) => {
   let retStores = [];
 
   const distLim = reqProps["distance"] || DEFAULT_SEARCH_RADIUS_METERS; // Limit search radius
-  const queryLim = reqProps["queryLimit"] || DEFAULT_QUERY_LIMIT; // Limit
   const userLat = reqProps["latitude"];
   const userLong = reqProps["longitude"];
+  const queryLim = reqProps["queryLimit"];
 
   //TODO(#10) Implement searching with keywords
   try {
@@ -29,10 +29,9 @@ exports.listStores = async (req, res) => {
         }
       }
     } else {
-      const storesQuery = await storesCollection
-        .orderBy("name")
-        .limit(queryLim)
-        .get();
+      const storesQuery = queryLim
+        ? await storesCollection.orderBy("name").limit(queryLim).get()
+        : await storesCollection.orderBy("name").get();
       retStores = storesQuery.docs.map((doc) =>
         Object.assign({}, doc.data(), { distance: undefined })
       );

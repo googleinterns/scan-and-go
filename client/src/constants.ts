@@ -45,6 +45,7 @@ export const DEFAULT_STORE_RADIUS = 10000;
 export const PLACEHOLDER_ITEM_MEDIA = "http://placekitten.com/200/200";
 export const PLACEHOLDER_STORE_MEDIA = "http://placekitten.com/300/300";
 export const DEFAULT_CURRENCY_CODE = "INR";
+export const DEFAULT_NGRAM_LENGTH = 3;
 // Test variables
 export const TEST_ORDER_ID = "TEST ORDER";
 export const TEST_ORDER_NAME =
