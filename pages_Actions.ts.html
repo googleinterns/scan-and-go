@@ -68,7 +68,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Global</h3><ul><li><a href="global.html#AuthenticatedRoute">AuthenticatedRoute</a></li><li><a href="global.html#createOrder">createOrder</a></li><li><a href="global.html#getCart">getCart</a></li><li><a href="global.html#getInitialUserState">getInitialUserState</a></li><li><a href="global.html#getOrderDetails">getOrderDetails</a></li><li><a href="global.html#IconSearchBar">IconSearchBar</a></li><li><a href="global.html#setCart">setCart</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Classes</h3><ul><li><a href="Heap.html">Heap</a></li></ul><h3>Global</h3><ul><li><a href="global.html#AuthenticatedRoute">AuthenticatedRoute</a></li><li><a href="global.html#buildNgramIndex">buildNgramIndex</a></li><li><a href="global.html#calculateEditDistance">calculateEditDistance</a></li><li><a href="global.html#createOrder">createOrder</a></li><li><a href="global.html#getAllStores">getAllStores</a></li><li><a href="global.html#getCart">getCart</a></li><li><a href="global.html#getInitialUserState">getInitialUserState</a></li><li><a href="global.html#getNgrams">getNgrams</a></li><li><a href="global.html#getOrderDetails">getOrderDetails</a></li><li><a href="global.html#getSimilarStores">getSimilarStores</a></li><li><a href="global.html#getTopKStoreIds">getTopKStoreIds</a></li><li><a href="global.html#getTopKStoreIdsByNaive">getTopKStoreIdsByNaive</a></li><li><a href="global.html#getTopKStoreIdsBySPS">getTopKStoreIdsBySPS</a></li><li><a href="global.html#IconSearchBar">IconSearchBar</a></li><li><a href="global.html#initializeSPS">initializeSPS</a></li><li><a href="global.html#insertTopK">insertTopK</a></li><li><a href="global.html#popElementsByCount">popElementsByCount</a></li><li><a href="global.html#popElementsByValue">popElementsByValue</a></li><li><a href="global.html#preprocess">preprocess</a></li><li><a href="global.html#setCart">setCart</a></li><li><a href="global.html#storeCompareFn">storeCompareFn</a></li><li><a href="global.html#updateCandidates">updateCandidates</a></li></ul></div>
                 
             </nav>
         </div>
@@ -126,6 +126,7 @@ import {
   emptyCartItem,
   User,
 } from "src/interfaces";
+import { preprocess, getTopKStoreIds } from "src/helpers";
 
 // Load up Google Maps Places API Service
 let map: any;
@@ -379,6 +380,56 @@ export const setCart = (
   window.localStorage.setItem("cart", JSON.stringify(cartItems));
   window.localStorage.setItem("merchantId", merchantId);
   window.localStorage.setItem("storeId", storeId);
+};
+
+/**
+ * Gets a list of all stores from the cache, if available.
+ * Otherwise retrieves it from the server, and caches the list.
+ *
+ * @returns {Store[]} stores
+ */
+export const getAllStores = async () => {
+  let stores: Store[] = [];
+  const cachedStores = window.localStorage.getItem("stores");
+  if (cachedStores) {
+    stores = JSON.parse(cachedStores);
+  } else {
+    stores = await fetchJson("POST", {}, STORE_LIST_API);
+    stores.forEach((store) =>
+      Object.assign(store, { preprocessedName: preprocess(store.name) })
+    );
+    window.localStorage.setItem("stores", JSON.stringify(stores));
+  }
+  return stores;
+};
+
+/**
+ * Returns a list of at most k stores, each with inner edit distance between
+ * the query and the store name at most a certain threshold. The stores are
+ * sorted by their inner edit distance, number of trailing insertions, and
+ * number of leading insertions.
+ *
+ * @param query
+ * @param stores
+ * @param k
+ * @param threshold_init
+ */
+export const getSimilarStores = (
+  query: string,
+  stores: Store[],
+  k: number = 10,
+  threshold_init: number = 2
+) => {
+  const preprocessedQuery = preprocess(query);
+  const threshold = Math.min(
+    threshold_init,
+    Math.trunc((query.length - 1) / 2)
+  );
+
+  // Get a sorted list of &lt;= k stores with inner edit distance &lt;= threshold,
+  const similarIds = getTopKStoreIds(stores, preprocessedQuery, k, threshold);
+  const similarStores = similarIds.map(({ storeId }) => stores[storeId]);
+  return similarStores;
 };
 </code></pre>
         </article>

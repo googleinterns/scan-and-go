@@ -66,7 +66,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Global</h3><ul><li><a href="global.html#AuthenticatedRoute">AuthenticatedRoute</a></li><li><a href="global.html#createOrder">createOrder</a></li><li><a href="global.html#getCart">getCart</a></li><li><a href="global.html#getInitialUserState">getInitialUserState</a></li><li><a href="global.html#getOrderDetails">getOrderDetails</a></li><li><a href="global.html#IconSearchBar">IconSearchBar</a></li><li><a href="global.html#setCart">setCart</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Classes</h3><ul><li><a href="Heap.html">Heap</a></li></ul><h3>Global</h3><ul><li><a href="global.html#AuthenticatedRoute">AuthenticatedRoute</a></li><li><a href="global.html#buildNgramIndex">buildNgramIndex</a></li><li><a href="global.html#calculateEditDistance">calculateEditDistance</a></li><li><a href="global.html#createOrder">createOrder</a></li><li><a href="global.html#getAllStores">getAllStores</a></li><li><a href="global.html#getCart">getCart</a></li><li><a href="global.html#getInitialUserState">getInitialUserState</a></li><li><a href="global.html#getNgrams">getNgrams</a></li><li><a href="global.html#getOrderDetails">getOrderDetails</a></li><li><a href="global.html#getSimilarStores">getSimilarStores</a></li><li><a href="global.html#getTopKStoreIds">getTopKStoreIds</a></li><li><a href="global.html#getTopKStoreIdsByNaive">getTopKStoreIdsByNaive</a></li><li><a href="global.html#getTopKStoreIdsBySPS">getTopKStoreIdsBySPS</a></li><li><a href="global.html#IconSearchBar">IconSearchBar</a></li><li><a href="global.html#initializeSPS">initializeSPS</a></li><li><a href="global.html#insertTopK">insertTopK</a></li><li><a href="global.html#popElementsByCount">popElementsByCount</a></li><li><a href="global.html#popElementsByValue">popElementsByValue</a></li><li><a href="global.html#preprocess">preprocess</a></li><li><a href="global.html#setCart">setCart</a></li><li><a href="global.html#storeCompareFn">storeCompareFn</a></li><li><a href="global.html#updateCandidates">updateCandidates</a></li></ul></div>
                 
             </nav>
         </div>
@@ -216,7 +216,81 @@ Returns the Spot Order response if successful.</p>
         <p class="tag-source">
             <a href="pages_Actions.ts.html" class="button">View Source</a>
             <span>
-                <a href="pages_Actions.ts.html">pages/Actions.ts</a>, <a href="pages_Actions.ts.html#line132">line 132</a>
+                <a href="pages_Actions.ts.html">pages/Actions.ts</a>, <a href="pages_Actions.ts.html#line133">line 133</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+<h4 class="name" id="getAllStores">
+    <a class="href-link" href="#getAllStores">#</a>
+    
+        
+            <span class='tag'>constant</span>
+        
+    
+    <span class="code-name">
+        getAllStores
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    <p>Gets a list of all stores from the cache, if available.
+Otherwise retrieves it from the server, and caches the list.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="pages_Actions.ts.html" class="button">View Source</a>
+            <span>
+                <a href="pages_Actions.ts.html">pages/Actions.ts</a>, <a href="pages_Actions.ts.html#line220">line 220</a>
             </span>
         </p>
     
@@ -289,7 +363,7 @@ Returns the Spot Order response if successful.</p>
         <p class="tag-source">
             <a href="pages_Actions.ts.html" class="button">View Source</a>
             <span>
-                <a href="pages_Actions.ts.html">pages/Actions.ts</a>, <a href="pages_Actions.ts.html#line191">line 191</a>
+                <a href="pages_Actions.ts.html">pages/Actions.ts</a>, <a href="pages_Actions.ts.html#line192">line 192</a>
             </span>
         </p>
     
@@ -362,7 +436,7 @@ Returns the Spot Order response if successful.</p>
         <p class="tag-source">
             <a href="pages_Actions.ts.html" class="button">View Source</a>
             <span>
-                <a href="pages_Actions.ts.html">pages/Actions.ts</a>, <a href="pages_Actions.ts.html#line177">line 177</a>
+                <a href="pages_Actions.ts.html">pages/Actions.ts</a>, <a href="pages_Actions.ts.html#line178">line 178</a>
             </span>
         </p>
     
@@ -435,7 +509,232 @@ Returns the Spot Order response if successful.</p>
         <p class="tag-source">
             <a href="pages_Actions.ts.html" class="button">View Source</a>
             <span>
-                <a href="pages_Actions.ts.html">pages/Actions.ts</a>, <a href="pages_Actions.ts.html#line100">line 100</a>
+                <a href="pages_Actions.ts.html">pages/Actions.ts</a>, <a href="pages_Actions.ts.html#line101">line 101</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+<h4 class="name" id="getSimilarStores">
+    <a class="href-link" href="#getSimilarStores">#</a>
+    
+        
+            <span class='tag'>constant</span>
+        
+    
+    <span class="code-name">
+        getSimilarStores
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    <p>Returns a list of at most k stores, each with inner edit distance between
+the query and the store name at most a certain threshold. The stores are
+sorted by their inner edit distance, number of trailing insertions, and
+number of leading insertions.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="pages_Actions.ts.html" class="button">View Source</a>
+            <span>
+                <a href="pages_Actions.ts.html">pages/Actions.ts</a>, <a href="pages_Actions.ts.html#line244">line 244</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+<h4 class="name" id="getTopKStoreIds">
+    <a class="href-link" href="#getTopKStoreIds">#</a>
+    
+        
+            <span class='tag'>constant</span>
+        
+    
+    <span class="code-name">
+        getTopKStoreIds
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    <p>Returns a sorted list of the index of at most k stores, each with inner edit
+distance between the query and the store name at most a certain threshold.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="helpers_storeSearch.ts.html" class="button">View Source</a>
+            <span>
+                <a href="helpers_storeSearch.ts.html">helpers/storeSearch.ts</a>, <a href="helpers_storeSearch.ts.html#line334">line 334</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+<h4 class="name" id="preprocess">
+    <a class="href-link" href="#preprocess">#</a>
+    
+        
+            <span class='tag'>constant</span>
+        
+    
+    <span class="code-name">
+        preprocess
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    <p>Preprocesses a string s to use as input for calculateEditDistance().
+Replaces conjunctions (&quot;&amp;&quot; with &quot;and&quot;, &quot;-&quot; with &quot; &quot;), removes non-word characters,
+trims whitespace, removes multiple whitespace, and normalizes case to title case.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="helpers_storeSearch.ts.html" class="button">View Source</a>
+            <span>
+                <a href="helpers_storeSearch.ts.html">helpers/storeSearch.ts</a>, <a href="helpers_storeSearch.ts.html#line12">line 12</a>
             </span>
         </p>
     
@@ -508,7 +807,7 @@ Returns the Spot Order response if successful.</p>
         <p class="tag-source">
             <a href="pages_Actions.ts.html" class="button">View Source</a>
             <span>
-                <a href="pages_Actions.ts.html">pages/Actions.ts</a>, <a href="pages_Actions.ts.html#line208">line 208</a>
+                <a href="pages_Actions.ts.html">pages/Actions.ts</a>, <a href="pages_Actions.ts.html#line209">line 209</a>
             </span>
         </p>
     
@@ -600,6 +899,945 @@ and redirects the user to the Login page otherwise.</p>
             <a href="components_AuthenticatedRoute_AuthenticatedRoute.tsx.html" class="button">View Source</a>
             <span>
                 <a href="components_AuthenticatedRoute_AuthenticatedRoute.tsx.html">components/AuthenticatedRoute/AuthenticatedRoute.tsx</a>, <a href="components_AuthenticatedRoute_AuthenticatedRoute.tsx.html#line11">line 11</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="buildNgramIndex">
+        <a class="href-link" href="#buildNgramIndex">#</a>
+        
+        <span class="code-name">
+            
+                buildNgramIndex<span class="signature">(stores, n)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <p>Builds an index of store indices by their ngrams.</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>stores</code></td>
+  
+
+  <td class="type">
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>the list of stores.</p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>n</code></td>
+  
+
+  <td class="type">
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>the length of each ngram.</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="helpers_storeSearch.ts.html" class="button">View Source</a>
+            <span>
+                <a href="helpers_storeSearch.ts.html">helpers/storeSearch.ts</a>, <a href="helpers_storeSearch.ts.html#line105">line 105</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="calculateEditDistance">
+        <a class="href-link" href="#calculateEditDistance">#</a>
+        
+        <span class="code-name">
+            
+                calculateEditDistance<span class="signature">(s1, s2)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <p>Runs a modified Levenshtein distance algorithm to calculate the edit distance
+from s1 to s2. Specifically, it returns the inner edit distance, the number
+of trailing insertions, and the number of leading insertions.</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>s1</code></td>
+  
+
+  <td class="type">
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>s2</code></td>
+  
+
+  <td class="type">
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="helpers_storeSearch.ts.html" class="button">View Source</a>
+            <span>
+                <a href="helpers_storeSearch.ts.html">helpers/storeSearch.ts</a>, <a href="helpers_storeSearch.ts.html#line36">line 36</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>innerEd   - the inner edit distance, defined as the minimum number of
+operations (insertions, deletions, or substitutions) needed
+to transform s1 into any substring of s2.</p></div>
+    
+    
+</div>
+
+                
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>trailing  - the number of trailing insertions needed after the end of
+s1 to transform it into the full string s2.</p></div>
+    
+    
+</div>
+
+                
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>leading   - the number of leading insertions needed before the start of
+s1 to transform it into the full string s2.</p></div>
+    
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="getNgrams">
+        <a class="href-link" href="#getNgrams">#</a>
+        
+        <span class="code-name">
+            
+                getNgrams<span class="signature">(s, n)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <p>Converts a string to its ngrams.</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>s</code></td>
+  
+
+  <td class="type">
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>The string to be processed.</p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>n</code></td>
+  
+
+  <td class="type">
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>The length of each ngram.</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="helpers_storeSearch.ts.html" class="button">View Source</a>
+            <span>
+                <a href="helpers_storeSearch.ts.html">helpers/storeSearch.ts</a>, <a href="helpers_storeSearch.ts.html#line92">line 92</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="getTopKStoreIdsByNaive">
+        <a class="href-link" href="#getTopKStoreIdsByNaive">#</a>
+        
+        <span class="code-name">
+            
+                getTopKStoreIdsByNaive<span class="signature">(stores, preprocessedQuery, k, threshold)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <p>Get the top k store IDs by calculating the edit distance from the query to all stores.</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>stores</code></td>
+  
+
+  <td class="type">
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>preprocessedQuery</code></td>
+  
+
+  <td class="type">
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>k</code></td>
+  
+
+  <td class="type">
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>threshold</code></td>
+  
+
+  <td class="type">
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="helpers_storeSearch.ts.html" class="button">View Source</a>
+            <span>
+                <a href="helpers_storeSearch.ts.html">helpers/storeSearch.ts</a>, <a href="helpers_storeSearch.ts.html#line310">line 310</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="getTopKStoreIdsBySPS">
+        <a class="href-link" href="#getTopKStoreIdsBySPS">#</a>
+        
+        <span class="code-name">
+            
+                getTopKStoreIdsBySPS<span class="signature">(stores, preprocessedQuery, k, threshold)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <p>Get the top k store IDs using the Single-Pass Search Algorithm, with heap, to prune
+the stores search space.</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>stores</code></td>
+  
+
+  <td class="type">
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>preprocessedQuery</code></td>
+  
+
+  <td class="type">
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>k</code></td>
+  
+
+  <td class="type">
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>threshold</code></td>
+  
+
+  <td class="type">
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="helpers_storeSearch.ts.html" class="button">View Source</a>
+            <span>
+                <a href="helpers_storeSearch.ts.html">helpers/storeSearch.ts</a>, <a href="helpers_storeSearch.ts.html#line279">line 279</a>
             </span>
         </p>
     
@@ -851,6 +2089,1176 @@ and redirects the user to the Login page otherwise.</p>
   iconCallback={iconStateCallback}
 /></code></pre>
     
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="initializeSPS">
+        <a class="href-link" href="#initializeSPS">#</a>
+        
+        <span class="code-name">
+            
+                initializeSPS<span class="signature">(stores, preprocessedQuery)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <p>Initialize the variables needed for the Single-Pass Search algorithm, with heap.</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>stores</code></td>
+  
+
+  <td class="type">
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>preprocessedQuery</code></td>
+  
+
+  <td class="type">
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="helpers_storeSearch.ts.html" class="button">View Source</a>
+            <span>
+                <a href="helpers_storeSearch.ts.html">helpers/storeSearch.ts</a>, <a href="helpers_storeSearch.ts.html#line142">line 142</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>lists - the list of ngram inverted list indices, corresponding to the
+ngrams of the preprocessed query.</p></div>
+    
+    
+</div>
+
+                
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>listIndices - the index of the next store for each list.</p></div>
+    
+    
+</div>
+
+                
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>candidateStores - a heap to hold the next store IDs from each list.</p></div>
+    
+    
+</div>
+
+                
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>topKStores - a heap to hold the top k stores.</p></div>
+    
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="insertTopK">
+        <a class="href-link" href="#insertTopK">#</a>
+        
+        <span class="code-name">
+            
+                insertTopK<span class="signature">(storeId, stores, preprocessedQuery, k, threshold, topKStores)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <p>Insert the store into topKStores if its frequency and inner edit distance
+meet the threshold, and if it is more similar than the kth store.
+Returns the new threshold, which is either the same value as the input
+threshold, or a new value equal to the inner edit distance of the current
+kth store.</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>storeId</code></td>
+  
+
+  <td class="type">
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>stores</code></td>
+  
+
+  <td class="type">
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>preprocessedQuery</code></td>
+  
+
+  <td class="type">
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>k</code></td>
+  
+
+  <td class="type">
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>threshold</code></td>
+  
+
+  <td class="type">
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>topKStores</code></td>
+  
+
+  <td class="type">
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="helpers_storeSearch.ts.html" class="button">View Source</a>
+            <span>
+                <a href="helpers_storeSearch.ts.html">helpers/storeSearch.ts</a>, <a href="helpers_storeSearch.ts.html#line217">line 217</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'><p>newThreshold</p></div>
+    
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="popElementsByCount">
+        <a class="href-link" href="#popElementsByCount">#</a>
+        
+        <span class="code-name">
+            
+                popElementsByCount<span class="signature">(heap, poppedLists, count)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <p>Pop count elements from the heap, and add the list indices the popped
+elements are from to poppedLists.</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>heap</code></td>
+  
+
+  <td class="type">
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>poppedLists</code></td>
+  
+
+  <td class="type">
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>count</code></td>
+  
+
+  <td class="type">
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="helpers_storeSearch.ts.html" class="button">View Source</a>
+            <span>
+                <a href="helpers_storeSearch.ts.html">helpers/storeSearch.ts</a>, <a href="helpers_storeSearch.ts.html#line193">line 193</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="popElementsByValue">
+        <a class="href-link" href="#popElementsByValue">#</a>
+        
+        <span class="code-name">
+            
+                popElementsByValue<span class="signature">(heap, poppedLists)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <p>Pop all elements that have the same store index as the root element from
+the heap, and add the list indices the popped elements are from to
+poppedLists. Returns the popped store index and the number of elements popped.</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>heap</code></td>
+  
+
+  <td class="type">
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>poppedLists</code></td>
+  
+
+  <td class="type">
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="helpers_storeSearch.ts.html" class="button">View Source</a>
+            <span>
+                <a href="helpers_storeSearch.ts.html">helpers/storeSearch.ts</a>, <a href="helpers_storeSearch.ts.html#line169">line 169</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="storeCompareFn">
+        <a class="href-link" href="#storeCompareFn">#</a>
+        
+        <span class="code-name">
+            
+                storeCompareFn<span class="signature">()</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <p>Comparator function that defines the sort order of an array of stores.
+Sorts stores by their computed inner edit distance, followed by the number
+of trailing insertions, and finally by the number of leading insertions.</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="helpers_storeSearch.ts.html" class="button">View Source</a>
+            <span>
+                <a href="helpers_storeSearch.ts.html">helpers/storeSearch.ts</a>, <a href="helpers_storeSearch.ts.html#line126">line 126</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="updateCandidates">
+        <a class="href-link" href="#updateCandidates">#</a>
+        
+        <span class="code-name">
+            
+                updateCandidates<span class="signature">(poppedLists, lists, listIndices, candidateStores, skipStores)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <p>Push the next element (if any) of each popped list to candidateStores;</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+            <th>Default</th>
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>poppedLists</code></td>
+  
+
+  <td class="type">
+  
+  </td>
+
+  
+
+  
+      <td class="default">
+      
+      </td>
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>lists</code></td>
+  
+
+  <td class="type">
+  
+  </td>
+
+  
+
+  
+      <td class="default">
+      
+      </td>
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>listIndices</code></td>
+  
+
+  <td class="type">
+  
+  </td>
+
+  
+
+  
+      <td class="default">
+      
+      </td>
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>candidateStores</code></td>
+  
+
+  <td class="type">
+  
+  </td>
+
+  
+
+  
+      <td class="default">
+      
+      </td>
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>skipStores</code></td>
+  
+
+  <td class="type">
+  
+  </td>
+
+  
+
+  
+      <td class="default">
+      
+          false
+      
+      </td>
+  
+
+  <td class="description last"><p>If true, skips any store ID smaller than than of the current root of candidateStores.</p></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="helpers_storeSearch.ts.html" class="button">View Source</a>
+            <span>
+                <a href="helpers_storeSearch.ts.html">helpers/storeSearch.ts</a>, <a href="helpers_storeSearch.ts.html#line253">line 253</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 </div>

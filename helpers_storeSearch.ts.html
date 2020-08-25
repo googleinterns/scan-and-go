@@ -1,0 +1,577 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> helpers/storeSearch.ts</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Classes</h3><ul><li><a href="Heap.html">Heap</a></li></ul><h3>Global</h3><ul><li><a href="global.html#AuthenticatedRoute">AuthenticatedRoute</a></li><li><a href="global.html#buildNgramIndex">buildNgramIndex</a></li><li><a href="global.html#calculateEditDistance">calculateEditDistance</a></li><li><a href="global.html#createOrder">createOrder</a></li><li><a href="global.html#getAllStores">getAllStores</a></li><li><a href="global.html#getCart">getCart</a></li><li><a href="global.html#getInitialUserState">getInitialUserState</a></li><li><a href="global.html#getNgrams">getNgrams</a></li><li><a href="global.html#getOrderDetails">getOrderDetails</a></li><li><a href="global.html#getSimilarStores">getSimilarStores</a></li><li><a href="global.html#getTopKStoreIds">getTopKStoreIds</a></li><li><a href="global.html#getTopKStoreIdsByNaive">getTopKStoreIdsByNaive</a></li><li><a href="global.html#getTopKStoreIdsBySPS">getTopKStoreIdsBySPS</a></li><li><a href="global.html#IconSearchBar">IconSearchBar</a></li><li><a href="global.html#initializeSPS">initializeSPS</a></li><li><a href="global.html#insertTopK">insertTopK</a></li><li><a href="global.html#popElementsByCount">popElementsByCount</a></li><li><a href="global.html#popElementsByValue">popElementsByValue</a></li><li><a href="global.html#preprocess">preprocess</a></li><li><a href="global.html#setCart">setCart</a></li><li><a href="global.html#storeCompareFn">storeCompareFn</a></li><li><a href="global.html#updateCandidates">updateCandidates</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>helpers/storeSearch.ts</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { DEFAULT_NGRAM_LENGTH } from "src/constants";
+import { Store } from "src/interfaces";
+import { Heap } from "src/packages/Heap";
+
+// TODO (#243): Add unit tests for all functions
+
+/**
+ * Preprocesses a string s to use as input for calculateEditDistance().
+ * Replaces conjunctions ("&amp;" with "and", "-" with " "), removes non-word characters,
+ * trims whitespace, removes multiple whitespace, and normalizes case to title case.
+ *
+ * @param s
+ */
+export const preprocess = (s: string) => {
+  s = s.replace("&amp;", "and");
+  s = s.replace("-", " ");
+  s = s.replace(/[^\w\s]/g, ""); // remove any remaining non-word characters
+  s = s.trim(); // remove trailing and leading whitespace
+  s = s.replace(/\s\s+/g, " "); // replace multiple spaces with a single space
+  s = s.replace(
+    /\w\S*/g,
+    (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+  ); // capital at start of each word and lowercase remaining letters
+  return s;
+};
+
+/**
+ * Runs a modified Levenshtein distance algorithm to calculate the edit distance
+ * from s1 to s2. Specifically, it returns the inner edit distance, the number
+ * of trailing insertions, and the number of leading insertions.
+ *
+ * @param s1
+ * @param s2
+ * @returns innerEd   - the inner edit distance, defined as the minimum number of
+ *                      operations (insertions, deletions, or substitutions) needed
+ *                      to transform s1 into any substring of s2.
+ * @returns trailing  - the number of trailing insertions needed after the end of
+ *                      s1 to transform it into the full string s2.
+ * @returns leading   - the number of leading insertions needed before the start of
+ *                      s1 to transform it into the full string s2.
+ */
+const calculateEditDistance = (s1: string, s2: string) => {
+  const s1Len = s1.length;
+  const s2Len = s2.length;
+  const editDistance = new Array(s1Len + 1);
+  for (let i = 0; i &lt; s1Len + 1; i++) {
+    // Each cell ed[i][j] shows the current inner edit distance, number of insertions,
+    // and number of deletions respectively to transform s1[:i] to a substring of s2[:j].
+    editDistance[i] = new Array(s2Len + 1).fill([0, 0, 0]);
+    editDistance[i][0] = [i, 0, i];
+  }
+
+  // Build the DP table
+  for (let i = 1; i &lt; s1Len + 1; i++) {
+    for (let j = 1; j &lt; s2Len + 1; j++) {
+      if (s1[i - 1] === s2[j - 1]) {
+        editDistance[i][j] = editDistance[i - 1][j - 1];
+      } else {
+        const operations = [
+          editDistance[i - 1][j - 1],
+          editDistance[i - 1][j],
+          editDistance[i][j - 1],
+        ];
+        const prev = operations.sort(
+          (a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2]
+        )[0];
+        const [prevEd, prevIns, prevDel] = prev;
+        if (prev === editDistance[i - 1][j]) {
+          editDistance[i][j] = [prevEd + 1, prevIns, prevDel + 1]; // s1[i] is deleted
+        } else if (prev === editDistance[i][j - 1]) {
+          editDistance[i][j] = [prevEd + 1, prevIns + 1, prevDel]; // s2[j] is inserted
+        } else {
+          editDistance[i][j] = [prevEd + 1, prevIns, prevDel]; // s1[i] is substituted with s2[j]
+        }
+      }
+    }
+  }
+
+  // Calculate the inner edit distance, number of trailing insertions, and number
+  // of leading insertions.
+  let maxJ = 0;
+  let [innerEd, numIns, numDel] = editDistance[s1Len][0];
+  for (let j = 1; j &lt; s2Len + 1; j++) {
+    if (editDistance[s1Len][j][0] &lt;= innerEd) {
+      [innerEd, numIns, numDel] = editDistance[s1Len][j];
+      maxJ = j;
+    }
+  }
+  const trailing = s2Len - maxJ;
+  const leading = maxJ - (s1Len + numIns - numDel);
+  return { innerEd, trailing, leading };
+};
+
+/**
+ * Converts a string to its ngrams.
+ *
+ * @param s - The string to be processed.
+ * @param n - The length of each ngram.
+ */
+const getNgrams = (s: string, n: number = DEFAULT_NGRAM_LENGTH) => {
+  const ngrams = [];
+  for (let i = n; i &lt;= s.length; i++) {
+    ngrams.push(s.slice(i - n, i));
+  }
+  return ngrams;
+};
+
+/**
+ * Builds an index of store indices by their ngrams.
+ *
+ * @param stores - the list of stores.
+ * @param n - the length of each ngram.
+ */
+const buildNgramIndex = (stores: Store[], n: number = DEFAULT_NGRAM_LENGTH) => {
+  const index = new Map(); // performs better than Object type for frequent additions
+  stores.forEach((store, id) => {
+    if (store.preprocessedName) {
+      const ngrams = getNgrams(store.preprocessedName);
+      ngrams.forEach((ngram) => {
+        if (!index.has(ngram)) {
+          index.set(ngram, []);
+        }
+        index.get(ngram).push(id);
+      });
+    }
+  });
+  return index;
+};
+
+/**
+ * Comparator function that defines the sort order of an array of stores.
+ * Sorts stores by their computed inner edit distance, followed by the number
+ * of trailing insertions, and finally by the number of leading insertions.
+ *
+ */
+const storeCompareFn = (
+  a: {
+    storeId: number;
+    dist: { innerEd: number; trailing: number; leading: number };
+  },
+  b: {
+    storeId: number;
+    dist: { innerEd: number; trailing: number; leading: number };
+  }
+) => {
+  return (
+    a.dist.innerEd - b.dist.innerEd ||
+    a.dist.trailing - b.dist.trailing ||
+    a.dist.leading - b.dist.leading
+  );
+};
+
+/**
+ * Initialize the variables needed for the Single-Pass Search algorithm, with heap.
+ *
+ * @param stores
+ * @param preprocessedQuery
+ * @returns lists - the list of ngram inverted list indices, corresponding to the
+ *                  ngrams of the preprocessed query.
+ * @returns listIndices - the index of the next store for each list.
+ * @returns candidateStores - a heap to hold the next store IDs from each list.
+ * @returns topKStores - a heap to hold the top k stores.
+ */
+const initializeSPS = (stores: Store[], preprocessedQuery: string) => {
+  // Get ngram inverted list indices
+  const ngramIndex = buildNgramIndex(stores);
+  const queryNgrams: string[] = getNgrams(preprocessedQuery);
+  const lists = queryNgrams.map((ngram) =>
+    ngramIndex.has(ngram) ? ngramIndex.get(ngram) : []
+  );
+
+  const topKStores = new Heap&lt;{
+    storeId: number;
+    dist: { innerEd: number; trailing: number; leading: number };
+  }>(storeCompareFn);
+  const listIndices = new Array(lists.length).fill(0);
+  const candidateStores = new Heap&lt;number[]>((a, b) => b[0] - a[0]);
+  listIndices.forEach((idx, i) => {
+    if (idx &lt; lists[i].length) {
+      candidateStores.insert([lists[i][idx], i]);
+      listIndices[i] = 1;
+    }
+  });
+  return { lists, listIndices, candidateStores, topKStores };
+};
+
+const calculateMinFreq = (
+  nQueries: number,
+  maxEdits: number,
+  n: number = 3
+) => {
+  return Math.max(0, nQueries - n * maxEdits);
+};
+
+/**
+ * Pop all elements that have the same store index as the root element from
+ * the heap, and add the list indices the popped elements are from to
+ * poppedLists. Returns the popped store index and the number of elements popped.
+ *
+ * @param heap
+ * @param poppedLists
+ */
+const popElementsByValue = (heap: Heap&lt;any>, poppedLists: number[]) => {
+  let storeId = -1;
+  let freq = 0;
+
+  let root = heap.remove();
+  if (root) {
+    freq += 1;
+    storeId = root[0];
+    poppedLists.push(root[1]);
+    while ((root = heap.peek()) &amp;&amp; root[0] === storeId) {
+      heap.remove();
+      poppedLists.push(root[1]);
+      freq += 1;
+    }
+  }
+
+  return { storeId, freq };
+};
+
+/**
+ * Pop count elements from the heap, and add the list indices the popped
+ * elements are from to poppedLists.
+ *
+ * @param heap
+ * @param poppedLists
+ * @param count
+ */
+const popElementsByCount = (
+  heap: Heap&lt;any>,
+  poppedLists: number[],
+  count: number
+) => {
+  let root = heap.peek();
+  while (root &amp;&amp; count > 0) {
+    heap.remove();
+    poppedLists.push(root[1]);
+    count -= 1;
+    root = heap.peek();
+  }
+};
+
+/**
+ * Insert the store into topKStores if its frequency and inner edit distance
+ * meet the threshold, and if it is more similar than the kth store.
+ * Returns the new threshold, which is either the same value as the input
+ * threshold, or a new value equal to the inner edit distance of the current
+ * kth store.
+ *
+ * @param storeId
+ * @param stores
+ * @param preprocessedQuery
+ * @param k
+ * @param threshold
+ * @param topKStores
+ * @returns newThreshold
+ */
+const insertTopK = (
+  storeId: number,
+  stores: Store[],
+  preprocessedQuery: string,
+  k: number,
+  threshold: number,
+  topKStores: Heap&lt;{
+    storeId: number;
+    dist: { innerEd: number; trailing: number; leading: number };
+  }>
+) => {
+  const preprocessedStoreName = stores[storeId].preprocessedName;
+  if (preprocessedStoreName) {
+    const dist = calculateEditDistance(
+      preprocessedQuery,
+      preprocessedStoreName
+    );
+    if (dist.innerEd &lt;= threshold) {
+      if (topKStores.data.length == k) {
+        const root = topKStores.peek();
+        if (root &amp;&amp; storeCompareFn({ storeId, dist }, root) &lt; 0) {
+          topKStores.remove();
+          topKStores.insert({ storeId, dist });
+        }
+      } else {
+        topKStores.insert({ storeId, dist });
+      }
+    }
+  }
+
+  // Update threshold
+  let newThreshold = threshold;
+  if (topKStores.data.length == k) {
+    const kthStore = topKStores.peek();
+    if (kthStore &amp;&amp; kthStore.dist.innerEd &lt; threshold) {
+      newThreshold = kthStore.dist.innerEd;
+    }
+  }
+  return newThreshold;
+};
+
+/**
+ * Push the next element (if any) of each popped list to candidateStores;
+ *
+ * @param poppedLists
+ * @param lists
+ * @param listIndices
+ * @param candidateStores
+ * @param skipStores - If true, skips any store ID smaller than than of the current root of candidateStores.
+ */
+const updateCandidates = (
+  poppedLists: number[],
+  lists: number[][],
+  listIndices: number[],
+  candidateStores: Heap&lt;number[]>,
+  skipStores: Boolean = false
+) => {
+  poppedLists.forEach((i) => {
+    let idx = listIndices[i];
+    const root = candidateStores.peek();
+    if (skipStores &amp;&amp; root) {
+      const rootStoreId = root[0];
+      while (idx &lt; lists[i].length &amp;&amp; lists[i][idx] &lt; rootStoreId) {
+        listIndices[i] += 1;
+        idx = listIndices[i];
+      }
+    }
+    if (idx &lt; lists[i].length) {
+      candidateStores.insert([lists[i][idx], i]);
+      listIndices[i] += 1;
+    }
+  });
+};
+
+/**
+ * Get the top k store IDs using the Single-Pass Search Algorithm, with heap, to prune
+ * the stores search space.
+ *
+ * @param stores
+ * @param preprocessedQuery
+ * @param k
+ * @param threshold
+ */
+const getTopKStoreIdsBySPS = (
+  stores: Store[],
+  preprocessedQuery: string,
+  k: number,
+  threshold: number
+) => {
+  const { lists, listIndices, candidateStores, topKStores } = initializeSPS(
+    stores,
+    preprocessedQuery
+  );
+  let minFreq = calculateMinFreq(lists.length, threshold);
+
+  // Traverse the lists in order of store ID
+  while (!candidateStores.empty()) {
+    // Pop elements with the root store ID
+    const poppedLists: number[] = [];
+    const { storeId, freq } = popElementsByValue(candidateStores, poppedLists);
+
+    if (freq >= minFreq) {
+      // The root store ID might be a top k store
+      threshold = insertTopK(
+        storeId,
+        stores,
+        preprocessedQuery,
+        k,
+        threshold,
+        topKStores
+      );
+      minFreq = calculateMinFreq(lists.length, threshold);
+    } else {
+      // Otherwise, the next minFreq − freq − 1 store IDs in the heap
+      // are also not candidate stores and should be removed.
+      popElementsByCount(candidateStores, poppedLists, minFreq - freq - 1);
+    }
+
+    // Update the candidate stores heap by adding the next store ID from each popped list
+    updateCandidates(
+      poppedLists,
+      lists,
+      listIndices,
+      candidateStores,
+      freq &lt; minFreq
+    );
+  }
+  return topKStores.data;
+};
+
+/**
+ * Get the top k store IDs by calculating the edit distance from the query to all stores.
+ *
+ * @param stores
+ * @param preprocessedQuery
+ * @param k
+ * @param threshold
+ */
+const getTopKStoreIdsByNaive = (
+  stores: Store[],
+  preprocessedQuery: string,
+  k: number,
+  threshold: number
+) => {
+  const topKStoreIds = stores
+    .reduce(
+      (
+        ids: {
+          storeId: number;
+          dist: { innerEd: number; trailing: number; leading: number };
+        }[],
+        store,
+        storeId
+      ) => {
+        if (store.preprocessedName) {
+          const dist = calculateEditDistance(
+            preprocessedQuery,
+            store.preprocessedName
+          );
+          if (dist.innerEd &lt;= threshold) {
+            ids.push({ storeId, dist });
+          }
+        }
+        return ids;
+      },
+      []
+    )
+    .sort(storeCompareFn)
+    .slice(0, k);
+  return topKStoreIds;
+};
+
+/**
+ * Returns a sorted list of the index of at most k stores, each with inner edit
+ * distance between the query and the store name at most a certain threshold.
+ *
+ * @param stores
+ * @param preprocessedQuery
+ * @param k
+ * @param threshold
+ */
+export const getTopKStoreIds = (
+  stores: Store[],
+  preprocessedQuery: string,
+  k: number,
+  threshold: number
+) => {
+  const minFreq = calculateMinFreq(
+    preprocessedQuery.length - DEFAULT_NGRAM_LENGTH + 1,
+    threshold
+  );
+  if (preprocessedQuery.length &lt; DEFAULT_NGRAM_LENGTH || minFreq == 0) {
+    // If the query length is smaller than the length of a ngram, or if the
+    // minimum number of ngrams that needs to be matched between the query and
+    // a store is 0, then we need to calculate the edit distance between the query
+    // and all stores.
+    return getTopKStoreIdsByNaive(stores, preprocessedQuery, k, threshold);
+  } else {
+    // Otherwise, we can calculate the edit distance for only the stores
+    // that match with at least minFreq of the query's ngrams.
+    return getTopKStoreIdsBySPS(stores, preprocessedQuery, k, threshold);
+  }
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a></p>
+                    <p class="sidebar-created-by">
+                        <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by 
+                        <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+                    </p>
+                </div>
+            </footer>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+</body>
+</html>
