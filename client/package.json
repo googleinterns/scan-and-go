@@ -20,7 +20,7 @@
     "@types/react-test-renderer": "^16.9.2",
     "@types/styled-components": "^5.1.0",
     "@zxing/library": "^0.17.0",
-    "elliptic": "^6.5.3",
+    "elliptic": "^6.5.4",
     "lodash": "^4.17.19",
     "material-components-web": "^6.0.0",
     "material-ui": "^0.20.2",
